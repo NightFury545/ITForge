@@ -21,6 +21,8 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->date('birthday')->nullable();
             $table->string('avatar')->nullable();
+            $table->json('portfolio_urls')->nullable();
+            $table->json('skills')->nullable();
             $table->enum('role', UserRole::getValues())->default(UserRole::USER);
             $table->rememberToken();
             $table->timestamps();

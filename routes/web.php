@@ -25,5 +25,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('developers.index');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('projects', function () {
+        return Inertia::render('projects');
+    })->name('projects.index');
+});
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
