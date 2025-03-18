@@ -31,12 +31,29 @@ export interface SharedData {
 }
 
 export interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
     avatar?: string;
+    bio?: string;
+    birthday?: Date;
+    portfolio_urls?: string[];
+    skills?: string[];
+    role?: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown;
+}
+
+export interface ProjectCardProps {
+    title: string;
+    description: string;
+    budget: number;
+    tech_stack: string[];
+    status: string;
+    user: {
+        name: string;
+        avatar: string;
+    };
 }

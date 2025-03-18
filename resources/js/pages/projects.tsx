@@ -1,18 +1,38 @@
-import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ProjectCard } from '@/components/project-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react'; // Додаємо usePage для отримання даних користувача
-import { Filter } from 'lucide-react'; // Іконка фільтра
+import { Head } from '@inertiajs/react';
+import { Filter } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
-} from '@/components/ui/dropdown-menu'; // Компоненти для випадаючого меню
+} from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
+
+// Додані дані для проектів, для прикладу
+const projects = [
+    {
+        title: 'Проєкт 1',
+        description: 'Опис проєкту 1  афаца фца фцафцафца ф афццццццццццццццццц аааааааааааааааа фввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввв',
+        budget: 500,
+        tech_stack: ['React', 'Node.js', 'Vue.js', 'PHP', 'MySQL', 'Laravel'],
+        status: 'В процесі',
+        user: { name: 'Іван', avatar: '/avatars/ivan.png' },
+    },
+    {
+        title: 'Проєкт 2',
+        description: 'Опис проєкту 2',
+        budget: 1000,
+        tech_stack: ['Vue.js', 'PHP'],
+        status: 'Завершений',
+        user: { name: 'Марія', avatar: '/avatars/maria.png' },
+    },
+];
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,53 +41,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface Project {
-    id: number;
-    title: string;
-    description: string;
-    author: {
-        name: string;
-        avatar: string;
-        bio: string;
-    };
-    price: number;
-}
-
 export default function Projects() {
-    const { auth } = usePage<SharedData>().props; // Отримуємо дані авторизованого користувача
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [showCreateForm, setShowCreateForm] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState(0);
-    const [filter, setFilter] = useState<'price-asc' | 'price-desc'>('price-asc');
+    const [budget, setBudget] = useState('');
+    const [isFormVisible, setIsFormVisible] = useState(false);
 
+    // Обробник для створення нового проекту
     const handleCreateProject = () => {
-        const newProject = {
-            id: projects.length + 1,
-            title,
-            description,
-            author: {
-                name: auth.user?.name || 'Гість', // Використовуємо ім'я авторизованого користувача
-                avatar: auth.user?.avatar || 'https://via.placeholder.com/150', // Використовуємо аватарку користувача
-                bio: auth.user?.bio || 'Професійний розробник з 5-річним досвідом.', // Використовуємо біо користувача
-            },
-            price,
-        };
-        setProjects([...projects, newProject]);
-        setTitle('');
-        setDescription('');
-        setPrice(0);
-        setShowCreateForm(false);
-    };
-
-    // Функція для фільтрації та сортування проєктів
-    const getFilteredProjects = () => {
-        return [...projects].sort((a, b) => {
-            if (filter === 'price-asc') return a.price - b.price;
-            if (filter === 'price-desc') return b.price - a.price;
-            return 0;
-        });
+        console.log('Створено новий проєкт:', { title, description, budget });
+        // Тут можна додати логіку для створення проекту на сервері
     };
 
     return (
@@ -82,71 +65,65 @@ export default function Projects() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="icon">
-                                    <Filter className="h-4 w-4" /> {/* Іконка фільтра */}
+                                    <Filter className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem onSelect={() => setFilter('price-asc')}>
-                                    Від дешевих до дорогих
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onSelect={() => setFilter('price-desc')}>
-                                    Від дорогих до дешевих
-                                </DropdownMenuItem>
+                                <DropdownMenuItem>Від дешевих до дорогих</DropdownMenuItem>
+                                <DropdownMenuItem>Від дорогих до дешевих</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        {/* Кнопка створення нового проєкту */}
-                        <Button onClick={() => setShowCreateForm(!showCreateForm)}>
-                            {showCreateForm ? 'Скасувати' : 'Створити новий проєкт'}
+                        {/* Кнопка для відкриття/закриття форми */}
+                        <Button onClick={() => setIsFormVisible(!isFormVisible)}>
+                            {isFormVisible ? 'Сховати форму' : 'Створити новий проєкт'}
                         </Button>
                     </div>
                 </div>
 
                 {/* Форма для створення нового проєкту */}
-                {showCreateForm && (
-                    <div className="flex flex-col gap-4 p-4 border rounded-lg">
-                        <h2 className="text-xl font-bold">Створити новий проєкт</h2>
-                        <div className="space-y-2">
-                            <Label>Назва проєкту</Label>
-                            <Input
-                                type="text"
-                                placeholder="Назва"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Опис проєкту</Label>
-                            <Input
-                                type="text"
-                                placeholder="Опис"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Ціна проєкту ($)</Label>
-                            <Input
-                                type="number"
-                                placeholder="Ціна"
-                                value={price}
-                                onChange={(e) => setPrice(Number(e.target.value))}
-                            />
-                        </div>
-                        <Button onClick={handleCreateProject}>Створити</Button>
+                <div
+                    className={`flex flex-col gap-4 p-4 border rounded-lg transition-all duration-500 ${
+                        isFormVisible
+                            ? 'opacity-100 transform translate-y-0 block'
+                            : 'opacity-0 transform translate-y-4 hidden'
+                    }`}
+                >
+                    <h2 className="text-xl font-bold">Створити новий проєкт</h2>
+                    <div className="space-y-2">
+                        <Label>Назва проєкту</Label>
+                        <Input
+                            type="text"
+                            placeholder="Назва"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
                     </div>
-                )}
+                    <div className="space-y-2">
+                        <Label>Опис проєкту</Label>
+                        <Input
+                            type="text"
+                            placeholder="Опис"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Ціна проєкту ($)</Label>
+                        <Input
+                            type="number"
+                            placeholder="Ціна"
+                            value={budget}
+                            onChange={(e) => setBudget(e.target.value)}
+                        />
+                    </div>
+                    <Button onClick={handleCreateProject}>Створити</Button>
+                </div>
 
                 {/* Сітка карток */}
                 <div className="grid auto-rows-min gap-6 md:grid-cols-3">
-                    {getFilteredProjects().map(project => (
-                        <ProjectCard
-                            key={project.id}
-                            title={project.title}
-                            description={project.description}
-                            author={project.author}
-                            price={project.price}
-                        />
+                    {projects.map((project, index) => (
+                        <ProjectCard key={index} {...project} />
                     ))}
                 </div>
             </div>

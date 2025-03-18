@@ -157,3 +157,28 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* CSS для приховування скролбару */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Для Chrome, Safari, Edge */
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* Для Internet Explorer 10+ */
+    scrollbar-width: none;  /* Для Firefox */
+}
+
+/* Контейнер для прокручування */
+.hide-scrollbar {
+    overflow-x: auto; /* автоматичне прокручування при необхідності */
+    -webkit-overflow-scrolling: touch; /* для плавного прокручування на мобільних пристроях */
+}
+
+.hide-scrollbar > span {
+    flex-shrink: 0; /* Запобігає стисканню елементів */
+    min-width: max-content; /* Забезпечує, щоб елементи не стискались */
+}
+
+
+
+

@@ -48,7 +48,7 @@ class ProjectController extends Controller
     {
         $this->projectService->createProject($request->validated());
 
-        return redirect()->route('projects.index')->with('success', 'Проєкт створено успішно!');
+        return to_route('projects.index')->with('success', 'Проєкт створено успішно!');
     }
 
     /**
@@ -58,7 +58,7 @@ class ProjectController extends Controller
     {
         $this->projectService->updateProject($project, $request->validated());
 
-        return redirect()->route('projects.index')->with('success', 'Проєкт оновлено успішно!');
+        return to_route('projects.index')->with('success', 'Проєкт оновлено успішно!');
     }
 
     /**
@@ -68,6 +68,6 @@ class ProjectController extends Controller
     {
         $this->projectService->deleteProject($project);
 
-        return redirect()->route('projects.index')->with('success', 'Проєкт видалено успішно!');
+        return to_route('projects.index')->with('success', 'Проєкт видалено успішно!');
     }
 }
