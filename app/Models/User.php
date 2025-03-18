@@ -28,6 +28,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'bio',
         'birthday',
         'avatar',
+        'portfolio_urls',
+        'skills',
         'role'
     ];
 
@@ -52,6 +54,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'birthday' => 'date',
+            'portfolio_urls' => 'array',
+            'skills' => 'array',
         ];
     }
 
