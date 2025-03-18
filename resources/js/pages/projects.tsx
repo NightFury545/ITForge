@@ -31,6 +31,7 @@ interface Project {
         bio: string;
     };
     price: number;
+    createdAt: string; // Додаємо поле для дати створення
 }
 
 export default function Projects() {
@@ -40,7 +41,20 @@ export default function Projects() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState(0);
-    const [filter, setFilter] = useState<'price-asc' | 'price-desc'>('price-asc');
+    const [filter, setFilter] = useState<'price-asc' | 'price-desc' | 'date-asc' | 'date-desc'>('date-desc');
+
+    // Завантаження проєктів з localStorage при першому рендері
+    useEffect(() => {
+        const savedProjects = localStorage.getItem('projects');
+        if (savedProjects) {
+            setProjects(JSON.parse(savedProjects));
+        }
+    }, []);
+
+    // Збереження проєктів у localStorage при їх зміні
+    useEffect(() => {
+        localStorage.setItem('projects', JSON.stringify(projects));
+    }, [projects]);
 
     const handleCreateProject = () => {
         const newProject = {
@@ -53,6 +67,7 @@ export default function Projects() {
                 bio: auth.user?.bio || 'Професійний розробник з 5-річним досвідом.', // Використовуємо біо користувача
             },
             price,
+            createdAt: new Date().toISOString(), // Додаємо поточну дату
         };
         setProjects([...projects, newProject]);
         setTitle('');
@@ -66,6 +81,8 @@ export default function Projects() {
         return [...projects].sort((a, b) => {
             if (filter === 'price-asc') return a.price - b.price;
             if (filter === 'price-desc') return b.price - a.price;
+            if (filter === 'date-asc') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            if (filter === 'date-desc') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
             return 0;
         });
     };
@@ -86,6 +103,12 @@ export default function Projects() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
+                                <DropdownMenuItem onSelect={() => setFilter('date-desc')}>
+                                    Новіші
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => setFilter('date-asc')}>
+                                    Старіші
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onSelect={() => setFilter('price-asc')}>
                                     Від дешевих до дорогих
                                 </DropdownMenuItem>
