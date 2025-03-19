@@ -2,13 +2,39 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProjectCardProps } from '@/types';
+import { useRef, useEffect } from 'react';
 
 export function ProjectCard({ title, description, budget, tech_stack, status, user }: ProjectCardProps) {
+    const techScrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const techScrollElement = techScrollRef.current;
+
+        const handleWheel = (event: WheelEvent) => {
+            if (event.deltaY !== 0) {
+                event.preventDefault();
+                techScrollElement?.scrollBy({
+                    left: event.deltaY < 0 ? -30 : 30,
+                    behavior: 'smooth',
+                });
+            }
+        };
+
+        techScrollElement?.addEventListener('wheel', handleWheel);
+
+        return () => {
+            techScrollElement?.removeEventListener('wheel', handleWheel);
+        };
+    }, []);
+
     return (
         <Card className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border">
             <CardHeader>
                 <CardTitle className="truncate">{title}</CardTitle>
-                <CardDescription className="line-clamp-3">{description}</CardDescription>
+                {/* Додано мінімальну висоту для опису */}
+                <CardDescription className="line-clamp-3 min-h-[60px]">
+                    {description}
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="flex items-center gap-2">
@@ -31,7 +57,10 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Status: {status}
                 </div>
-                <div className="mt-4 flex gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                <div
+                    ref={techScrollRef}
+                    className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto"
+                >
                     {tech_stack.map((tech, index) => (
                         <span
                             key={index}
