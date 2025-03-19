@@ -29,48 +29,46 @@ export default function Welcome() {
 
             <div className="flex flex-col">
                 {/* Головний блок */}
-                <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6 text-[#1b1b18] dark:text-[#EDEDEC]">
-                    <div className="text-center">
-                        <header className="w-full max-w-6xl mx-auto flex justify-between items-center p-4">
-                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">🚀 ITForge </h2>
-                            <div className="space-x-4">
-                                {auth.user ? (
-                                    <Link href={route('dashboard')} className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                        Dashboard
+                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6 text-[#1b1b18] dark:text-[#EDEDEC]">
+                    <header className="w-full max-w-6xl mx-auto flex justify-between items-center p-4">
+                        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">🚀 ITForge </h2>
+                        <div className="space-x-4">
+                            {auth.user ? (
+                                <Link href={route('dashboard')} className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
+                                    Dashboard
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link href={route('login')} className="px-5 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition">
+                                        Увійти
                                     </Link>
-                                ) : (
-                                    <>
-                                        <Link href={route('login')} className="px-5 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition">
-                                            Log in
-                                        </Link>
-                                        <Link href={route('register')} className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                            Get Started
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </header>
+                                    <Link href={route('register')} className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
+                                        Реєстрація
+                                    </Link>
+                                </>
+                            )}
+                        </div>
+                    </header>
 
-                        <main className="mt-12 max-w-4xl mx-auto">
-                            <h1 className="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
-                                Ефективна платформа для замовлення та розробки IT-проєктів
-                            </h1>
-                            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                                Об’єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
-                            </p>
-                            <div className="mt-6">
-                                {auth.user ? (
-                                    <Link href={route('dashboard')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                                        Перейти до замовлень
-                                    </Link>
-                                ) : (
-                                    <Link href={route('register')} className="px-6 py-3 text-lg font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
-                                        Почати співпрацю
-                                    </Link>
-                                )}
-                            </div>
-                        </main>
-                    </div>
+                    <main className="text-center mt-12 max-w-4xl mx-auto">
+                        <h1 className="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
+                            Ефективна платформа для замовлення та розробки IT-проєктів
+                        </h1>
+                        <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                            Об’єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
+                        </p>
+                        <div className="mt-6">
+                            {auth.user ? (
+                                <Link href={route('dashboard')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                    Перейти до замовлень
+                                </Link>
+                            ) : (
+                                <Link href={route('register')} className="px-6 py-3 text-lg font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+                                    Почати співпрацю
+                                </Link>
+                            )}
+                        </div>
+                    </main>
                 </div>
 
                 {/* Опис можливостей */}
@@ -92,6 +90,20 @@ export default function Welcome() {
                             <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
                                 <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">🚀 Реалізація та здача</h3>
                                 <p className="mt-2 text-gray-600 dark:text-gray-300">Контроль ходу виконання, тестування та фінальна передача.</p>
+                            </div>
+                        </div>
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">📊 Аналіз результатів</h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-300">Регулярний звіт про хід виконання проєкту.</p>
+                            </div>
+                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                <h3 className="text-xl font-bold text-green-600 dark:text-green-400">💼 Управління проєктами</h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-300">Зручні інструменти для керування завданнями.</p>
+                            </div>
+                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">📈 Оптимізація процесів</h3>
+                                <p className="mt-2 text-gray-600 dark:text-gray-300">Постійне вдосконалення робочих процесів.</p>
                             </div>
                         </div>
                     </section>
@@ -138,6 +150,9 @@ export default function Welcome() {
                             <li className="text-lg text-gray-600 dark:text-gray-300">⚖️ Чесна система рейтингів та відгуків</li>
                             <li className="text-lg text-gray-600 dark:text-gray-300">📜 Юридична підтримка та гарантії</li>
                         </ul>
+                        <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">
+                            Ми прагнемо забезпечити найвищий рівень безпеки для наших користувачів, щоб ви могли зосередитися на своїх проєктах.
+                        </p>
                     </section>
                 </div>
 
