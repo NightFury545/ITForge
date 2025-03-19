@@ -158,29 +158,27 @@
     }
 }
 
-/* Горизонтальне прокручування */
+
 .tech-scroll {
-    overflow-x: auto;  /* Дозволяє горизонтальне прокручування */
+    overflow-x: auto;
     display: flex;
     gap: 8px;
     padding-bottom: 8px;
     scroll-behavior: smooth;
 }
 
-/* Приховуємо скролбар */
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
 
 .hide-scrollbar {
-    -ms-overflow-style: none;  /* Для Internet Explorer */
-    scrollbar-width: none;  /* Для Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-/* Для елементів у списку */
 .tech-scroll > span {
-    flex-shrink: 0; /* Не дозволяє елементам стискатись */
-    min-width: max-content; /* Забезпечує правильний розмір елемента */
+    flex-shrink: 0;
+    min-width: max-content;
 }
 
 /* Плавне прокручування */
@@ -195,14 +193,14 @@
 .tech-scroll-container {
     display: flex;
     overflow-x: auto;
-    gap: 8px; /* Відступи між елементами */
-    padding-bottom: 8px; /* Щоб не заважало скролу */
-    scrollbar-width: none; /* Приховує скроллбар у Firefox */
-    -ms-overflow-style: none; /* Приховує скроллбар у IE/Edge */
+    gap: 8px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .tech-scroll-container::-webkit-scrollbar {
-    display: none; /* Приховує скроллбар у WebKit (Chrome, Safari) */
+    display: none;
 }
 
 

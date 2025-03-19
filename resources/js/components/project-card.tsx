@@ -14,7 +14,7 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
             if (event.deltaY !== 0) {
                 event.preventDefault();
                 techScrollElement?.scrollBy({
-                    left: event.deltaY < 0 ? -30 : 30,
+                    left: event.deltaY < 0 ? -50 : 50,
                     behavior: 'smooth',
                 });
             }
