@@ -30,6 +30,7 @@ export default function Welcome() {
             <div className="flex flex-col">
                 {/* Головний блок */}
                 <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6 text-[#1b1b18] dark:text-[#EDEDEC]">
+                    {/* Header зверху */}
                     <header className="w-full max-w-6xl mx-auto flex justify-between items-center p-4">
                         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">🚀 ITForge </h2>
                         <div className="space-x-4">
@@ -50,110 +51,119 @@ export default function Welcome() {
                         </div>
                     </header>
 
-                    <main className="text-center mt-12 max-w-4xl mx-auto">
-                        <h1 className="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
-                            Ефективна платформа для замовлення та розробки IT-проєктів
-                        </h1>
-                        <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                            Об’єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
-                        </p>
-                        <div className="mt-6">
-                            {auth.user ? (
-                                <Link href={route('dashboard')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                                    Перейти до замовлень
-                                </Link>
-                            ) : (
-                                <Link href={route('register')} className="px-6 py-3 text-lg font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
-                                    Почати співпрацю
-                                </Link>
-                            )}
-                        </div>
-                    </main>
+                    {/* Основний контент по центру */}
+                    <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+                        <main className="text-center max-w-4xl mx-auto">
+                            <h1 className="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
+                                Ефективна платформа для замовлення та розробки IT-проєктів
+                            </h1>
+                            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                                Об’єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
+                            </p>
+                            <div className="mt-6">
+                                {auth.user ? (
+                                    <Link href={route('dashboard')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                        Перейти до замовлень
+                                    </Link>
+                                ) : (
+                                    <Link href={route('register')} className="px-6 py-3 text-lg font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">
+                                        Почати співпрацю
+                                    </Link>
+                                )}
+                            </div>
+                        </main>
+                    </div>
                 </div>
 
                 {/* Опис можливостей */}
-                <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 p-6">
-                    <section className="max-w-5xl mx-auto text-center">
-                        <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Як працює платформа?</h2>
-                        <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
-                            Простий процес замовлення, прозорі умови співпраці та професійна комунікація.
-                        </p>
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">📌 Створення замовлення</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Детальний опис проєкту, визначення термінів та бюджету.</p>
+                <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 p-6">
+                    <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+                        <section className="max-w-5xl mx-auto text-center">
+                            <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Як працює платформа?</h2>
+                            <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
+                                Простий процес замовлення, прозорі умови співпраці та професійна комунікація.
+                            </p>
+                            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">📌 Створення замовлення</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Детальний опис проєкту, визначення термінів та бюджету.</p>
+                                </div>
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-green-600 dark:text-green-400">🎯 Підбір виконавця</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Перевірені розробники з високим рейтингом та портфоліо.</p>
+                                </div>
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">🚀 Реалізація та здача</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Контроль ходу виконання, тестування та фінальна передача.</p>
+                                </div>
                             </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-green-600 dark:text-green-400">🎯 Підбір виконавця</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Перевірені розробники з високим рейтингом та портфоліо.</p>
+                            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">📊 Аналіз результатів</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Регулярний звіт про хід виконання проєкту.</p>
+                                </div>
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-green-600 dark:text-green-400">💼 Управління проєктами</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Зручні інструменти для керування завданнями.</p>
+                                </div>
+                                <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">📈 Оптимізація процесів</h3>
+                                    <p className="mt-2 text-gray-600 dark:text-gray-300">Постійне вдосконалення робочих процесів.</p>
+                                </div>
                             </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">🚀 Реалізація та здача</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Контроль ходу виконання, тестування та фінальна передача.</p>
-                            </div>
-                        </div>
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400">📊 Аналіз результатів</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Регулярний звіт про хід виконання проєкту.</p>
-                            </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-green-600 dark:text-green-400">💼 Управління проєктами</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Зручні інструменти для керування завданнями.</p>
-                            </div>
-                            <div className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                                <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400">📈 Оптимізація процесів</h3>
-                                <p className="mt-2 text-gray-600 dark:text-gray-300">Постійне вдосконалення робочих процесів.</p>
-                            </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
 
                 {/* Секція з категоріями */}
-                <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 p-6">
-                    <section className="max-w-5xl mx-auto flex flex-col md:flex-row">
-                        <div className="md:w-1/3">
-                            <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-4">Шукайте роботу серед <span className="text-green-500">1736</span> відкритих фриланс-проєктів</h2>
-                            <ul className="space-y-3">
-                                {categories.map(category => (
-                                    <li 
-                                        key={category.id}
-                                        className={`cursor-pointer p-3 text-lg font-medium rounded-md transition ${
-                                            selectedCategory.id === category.id ? 'text-blue-600 bg-gray-200 dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'
-                                        }`}
-                                        onClick={() => setSelectedCategory(category)}
-                                    >
-                                        {category.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="md:w-2/3 flex items-center justify-center">
-                            <img 
-                                src={selectedCategory.image} 
-                                alt={selectedCategory.name} 
-                                className="w-full max-w-lg rounded-lg shadow-lg transition-all"
-                            />
-                        </div>
-                    </section>
+                <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 p-6">
+                    <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+                        <section className="max-w-5xl mx-auto flex flex-col md:flex-row">
+                            <div className="md:w-1/3">
+                                <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-4">Шукайте роботу серед <span className="text-green-500">1736</span> відкритих фриланс-проєктів</h2>
+                                <ul className="space-y-3">
+                                    {categories.map(category => (
+                                        <li 
+                                            key={category.id}
+                                            className={`cursor-pointer p-3 text-lg font-medium rounded-md transition ${
+                                                selectedCategory.id === category.id ? 'text-blue-600 bg-gray-200 dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'
+                                            }`}
+                                            onClick={() => setSelectedCategory(category)}
+                                        >
+                                            {category.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="md:w-2/3 flex items-center justify-center">
+                                <img 
+                                    src={selectedCategory.image} 
+                                    alt={selectedCategory.name} 
+                                    className="w-full max-w-lg rounded-lg shadow-lg transition-all"
+                                />
+                            </div>
+                        </section>
+                    </div>
                 </div>
 
                 {/* Безпека та надійність */}
-                <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-900 dark:to-gray-800 p-6">
-                    <section className="max-w-5xl mx-auto text-center">
-                        <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Безпечне та надійне середовище</h2>
-                        <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
-                            Ваша безпека — наш пріоритет. Ми забезпечуємо прозорі умови співпраці та захист фінансових транзакцій.
-                        </p>
-                        <ul className="mt-6 space-y-4">
-                            <li className="text-lg text-gray-600 dark:text-gray-300">🔒 Захищені платежі</li>
-                            <li className="text-lg text-gray-600 dark:text-gray-300">⚖️ Чесна система рейтингів та відгуків</li>
-                            <li className="text-lg text-gray-600 dark:text-gray-300">📜 Юридична підтримка та гарантії</li>
-                        </ul>
-                        <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">
-                            Ми прагнемо забезпечити найвищий рівень безпеки для наших користувачів, щоб ви могли зосередитися на своїх проєктах.
-                        </p>
-                    </section>
+                <div className="min-h-screen bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-900 dark:to-gray-800 p-6">
+                    <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+                        <section className="max-w-5xl mx-auto text-center">
+                            <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">Безпечне та надійне середовище</h2>
+                            <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
+                                Ваша безпека — наш пріоритет. Ми забезпечуємо прозорі умови співпраці та захист фінансових транзакцій.
+                            </p>
+                            <ul className="mt-6 space-y-4">
+                                <li className="text-lg text-gray-600 dark:text-gray-300">🔒 Захищені платежі</li>
+                                <li className="text-lg text-gray-600 dark:text-gray-300">⚖️ Чесна система рейтингів та відгуків</li>
+                                <li className="text-lg text-gray-600 dark:text-gray-300">📜 Юридична підтримка та гарантії</li>
+                            </ul>
+                            <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">
+                                Ми прагнемо забезпечити найвищий рівень безпеки для наших користувачів, щоб ви могли зосередитися на своїх проєктах.
+                            </p>
+                        </section>
+                    </div>
                 </div>
 
                 {/* Футер */}
