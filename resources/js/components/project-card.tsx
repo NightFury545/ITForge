@@ -31,11 +31,11 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
                 <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Status: {status}
                 </div>
-                <div className="mt-4 flex gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                <div className="mt-4 tech-scroll hide-scrollbar">
                     {tech_stack.map((tech, index) => (
                         <span
                             key={index}
-                            className="px-3 py-1 text-sm flex items-center border border-gray-400 dark:border-gray-500 rounded-md backdrop-blur-md bg-transparent text-gray-700 dark:text-gray-300"
+                            className="px-3 py-1 text-sm flex items-center border border-gray-400 dark:border-gray-500 rounded-md backdrop-blur-md bg-transparent text-gray-700 dark:text-gray-300 mr-2"
                         >
                             <span className="mr-1">#</span>{tech}
                         </span>

@@ -158,26 +158,45 @@
     }
 }
 
-/* CSS для приховування скролбару */
+/* Горизонтальне прокручування */
+.tech-scroll {
+    overflow-x: auto;  /* Дозволяє горизонтальне прокручування */
+    display: flex;
+    gap: 8px;
+    padding-bottom: 8px;
+    scroll-behavior: smooth;
+}
+
+/* Приховуємо скролбар */
 .hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Для Chrome, Safari, Edge */
+    display: none;
 }
 
 .hide-scrollbar {
-    -ms-overflow-style: none;  /* Для Internet Explorer 10+ */
+    -ms-overflow-style: none;  /* Для Internet Explorer */
     scrollbar-width: none;  /* Для Firefox */
 }
 
-/* Контейнер для прокручування */
-.hide-scrollbar {
-    overflow-x: auto; /* автоматичне прокручування при необхідності */
-    -webkit-overflow-scrolling: touch; /* для плавного прокручування на мобільних пристроях */
+/* Для елементів у списку */
+.tech-scroll > span {
+    flex-shrink: 0; /* Не дозволяє елементам стискатись */
+    min-width: max-content; /* Забезпечує правильний розмір елемента */
 }
 
-.hide-scrollbar > span {
-    flex-shrink: 0; /* Запобігає стисканню елементів */
-    min-width: max-content; /* Забезпечує, щоб елементи не стискались */
+/* Плавне прокручування */
+.tech-scroll {
+    cursor: grab;
 }
+
+.tech-scroll:active {
+    cursor: grabbing;
+}
+
+
+
+
+
+
 
 
 
