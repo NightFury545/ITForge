@@ -2,8 +2,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Project, type BreadcrumbItem } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react'; // Додано usePage
 import { Filter } from 'lucide-react';
 import {
     DropdownMenu,
@@ -11,8 +11,9 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { ProjectCard } from '@/components/project-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,6 +23,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Projects() {
+    const { props } = usePage() as { props: { projects: { data: Project[] } } };
+    const projects: Project[] = props.projects.data || [];
+    console.log(projects);
+
     const [isFormVisible, setIsFormVisible] = useState(false);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -29,16 +34,25 @@ export default function Projects() {
         description: '',
         budget: '',
         requirements: '',
-        tech_stack: [] as string[], // Виправлено: додаємо явний тип
+        tech_stack: [] as string[],
         bids_deadline: '',
         project_deadline: '',
     });
+
+    const bidsDeadlineRef = useRef<HTMLInputElement>(null);
+    const projectDeadlineRef = useRef<HTMLInputElement>(null);
 
     const handleCreateProject = () => {
         post('/projects', {
             preserveScroll: true,
             onSuccess: () => setIsFormVisible(false),
         });
+    };
+
+    const handleDateInputClick = (ref: React.RefObject<HTMLInputElement>) => {
+        if (ref.current) {
+            ref.current.showPicker();
+        }
     };
 
     return (
@@ -66,10 +80,10 @@ export default function Projects() {
                     </div>
                 </div>
 
+                {/* Форма створення нового проєкту */}
                 <div
-                    className={`flex flex-col gap-4 p-4 border rounded-lg transition-all duration-500 ${
-                        isFormVisible ? 'opacity-100 transform translate-y-0 block' : 'opacity-0 transform translate-y-4 hidden'
-                    }`}
+                    className={`flex flex-col gap-4 p-4 border rounded-lg transition-all duration-500 ${isFormVisible ? 'opacity-100 transform translate-y-0 block' : 'opacity-0 transform translate-y-4 hidden'
+                        }`}
                 >
                     <h2 className="text-xl font-bold">Створити новий проєкт</h2>
 
@@ -133,6 +147,9 @@ export default function Projects() {
                             type="date"
                             value={data.bids_deadline}
                             onChange={(e) => setData('bids_deadline', e.target.value)}
+                            ref={bidsDeadlineRef}
+                            onClick={() => handleDateInputClick(bidsDeadlineRef)}
+                            className="date-picker"
                         />
                         {errors.bids_deadline && <p className="text-red-500">{errors.bids_deadline}</p>}
                     </div>
@@ -143,6 +160,9 @@ export default function Projects() {
                             type="date"
                             value={data.project_deadline}
                             onChange={(e) => setData('project_deadline', e.target.value)}
+                            ref={projectDeadlineRef}
+                            onClick={() => handleDateInputClick(projectDeadlineRef)}
+                            className="date-picker"
                         />
                         {errors.project_deadline && <p className="text-red-500">{errors.project_deadline}</p>}
                     </div>
@@ -151,7 +171,36 @@ export default function Projects() {
                         {processing ? 'Збереження...' : 'Створити'}
                     </Button>
                 </div>
+
+                {/* Відображення списку проектів за допомогою ProjectCard */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {projects.map((project) => (
+                        <ProjectCard
+                            key={project.id}
+                            title={project.title}
+                            description={project.description}
+                            budget={project.budget}
+                            tech_stack={project.tech_stack}
+                            status={project.status}
+                            user={{
+                                name: project.client.name,
+                                avatar: project.client.avatar
+                            }}
+                        />
+                    ))}
+                </div>
             </div>
+
+            <style>
+                {`
+                    .date-picker::-webkit-calendar-picker-indicator {
+                        filter: invert(1); // Робить іконку календаря білою
+                    }
+                    .date-picker::-webkit-datetime-edit {
+                        color: white; // Робить текст білим
+                    }
+                `}
+            </style>
         </AppLayout>
     );
 }

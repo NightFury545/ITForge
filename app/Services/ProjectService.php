@@ -22,6 +22,7 @@ class ProjectService
     public function getProjects(int $perPage = 20): LengthAwarePaginator
     {
         return QueryBuilder::for(Project::class)
+            ->with('client')
             ->allowedFilters([
                 AllowedFilter::partial('title'),
                 AllowedFilter::partial('client.name'),
