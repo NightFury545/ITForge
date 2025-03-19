@@ -192,6 +192,19 @@
     cursor: grabbing;
 }
 
+.tech-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px; /* Відступи між елементами */
+    padding-bottom: 8px; /* Щоб не заважало скролу */
+    scrollbar-width: none; /* Приховує скроллбар у Firefox */
+    -ms-overflow-style: none; /* Приховує скроллбар у IE/Edge */
+}
+
+.tech-scroll-container::-webkit-scrollbar {
+    display: none; /* Приховує скроллбар у WebKit (Chrome, Safari) */
+}
+
 
 
 
