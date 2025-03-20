@@ -32,7 +32,7 @@ class ProjectService
                 AllowedFilter::exact('status'),
             ])
             ->allowedSorts(['created_at', 'budget', 'bids_deadline', 'project_deadline'])
-            ->allowedIncludes(['client', 'bids'])
+            ->allowedIncludes(['bids'])
             ->paginate($perPage);
     }
 

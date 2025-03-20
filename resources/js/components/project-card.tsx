@@ -1,8 +1,9 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProjectCardProps } from '@/types';
-import { useRef, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
+import { useEffect, useRef } from 'react';
 
 export function ProjectCard({ title, description, budget, tech_stack, status, user }: ProjectCardProps) {
     const techScrollRef = useRef<HTMLDivElement>(null);
@@ -32,9 +33,7 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
             <CardHeader>
                 <CardTitle className="truncate">{title}</CardTitle>
                 {/* Додано мінімальну висоту для опису */}
-                <CardDescription className="line-clamp-3 min-h-[60px]">
-                    {description}
-                </CardDescription>
+                <CardDescription className="line-clamp-3 min-h-[60px]">{description}</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="flex items-center gap-2">
@@ -54,24 +53,22 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
                             <p>{user.name}</p>
                         </TooltipContent>
                     </Tooltip>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">{user.name}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <Link href={`/users/${user.name}`} className="text-sm text-gray-600 hover:underline dark:text-gray-400">
+                            {user.name}
+                        </Link>
+                    </span>
                 </div>
-                <div className="mt-4 text-lg font-bold text-gray-900 dark:text-gray-100">
-                    ${budget}
-                </div>
-                <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Status: {status}
-                </div>
-                <div
-                    ref={techScrollRef}
-                    className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto"
-                >
+                <div className="mt-4 text-lg font-bold text-gray-900 dark:text-gray-100">${budget}</div>
+                <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">Status: {status}</div>
+                <div ref={techScrollRef} className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto">
                     {tech_stack.map((tech, index) => (
                         <span
                             key={index}
-                            className="px-3 py-1 text-sm flex items-center border border-gray-400 dark:border-gray-500 rounded-md backdrop-blur-md bg-transparent text-gray-700 dark:text-gray-300"
+                            className="flex items-center rounded-md border border-gray-400 bg-transparent px-3 py-1 text-sm text-gray-700 backdrop-blur-md dark:border-gray-500 dark:text-gray-300"
                         >
-                            <span className="mr-1">#</span>{tech}
+                            <span className="mr-1">#</span>
+                            {tech}
                         </span>
                     ))}
                 </div>
