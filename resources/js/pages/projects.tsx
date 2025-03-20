@@ -29,7 +29,7 @@ export default function Projects() {
         description: '',
         budget: '',
         requirements: '',
-        tech_stack: [] as string[], // Виправлено: додаємо явний тип
+        tech_stack: [] as string[],
         bids_deadline: '',
         project_deadline: '',
     });
