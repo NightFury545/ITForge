@@ -57,3 +57,19 @@ export interface ProjectCardProps {
         avatar: string;
     };
 }
+
+export interface Project {
+    id: string;
+    title: string; 
+    description: string;
+    requirements: string; 
+    status: string; 
+    budget: number; 
+    bids_deadline: string; 
+    project_deadline: string; 
+    tech_stack: string[]; 
+    client_id: string; 
+    created_at: string; 
+    updated_at: string; 
+    client: User;
+  }

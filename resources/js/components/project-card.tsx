@@ -41,8 +41,13 @@ export function ProjectCard({ title, description, budget, tech_stack, status, us
                     <Tooltip>
                         <TooltipTrigger>
                             <Avatar>
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                {user.avatar ? (
+                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                ) : (
+                                    <AvatarFallback>
+                                        {user.name ? user.name[0].toUpperCase() : 'U'} {/* Плейсхолдер, якщо аватар відсутній */}
+                                    </AvatarFallback>
+                                )}
                             </Avatar>
                         </TooltipTrigger>
                         <TooltipContent>

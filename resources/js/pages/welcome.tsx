@@ -129,6 +129,11 @@ export default function Welcome() {
                                                 selectedCategory.id === category.id ? 'text-blue-600 bg-gray-200 dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'
                                             }`}
                                             onClick={() => setSelectedCategory(category)}
+                                            style={{ 
+                                                width: '200px', // Фіксована ширина
+                                                textAlign: 'center', // Центрування тексту
+                                                fontWeight: selectedCategory.id === category.id ? 'bold' : 'normal' // Жирний шрифт для виділеного елемента
+                                            }}
                                         >
                                             {category.name}
                                         </li>
