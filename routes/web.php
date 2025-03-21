@@ -19,12 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('chats.index');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('developers', function () {
-        return Inertia::render('developers');
-    })->name('developers.index');
-});
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/web/project.php';
+require __DIR__.'/web/users.php';

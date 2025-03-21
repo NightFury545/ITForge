@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         $users = $this->userService->getUsers();
 
-        return Inertia::render('Users/Index', [
+        return Inertia::render('developers', [
             'users' => $users
         ]);
     }
@@ -36,7 +36,7 @@ class UserController extends Controller
             abort(404, 'User not found');
         }
 
-        return Inertia::render('Users/Show', [
+        return Inertia::render('user-details', [
             'user' => $user
         ]);
     }
