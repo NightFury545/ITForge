@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserType;
 use App\Models\User;
 use App\Services\Filters\JsonFilter;
 use App\Services\Filters\RangeFilter;
@@ -15,16 +16,23 @@ class UserService
     /**
      * Отримати список користувачів з фільтрацією та сортуванням
      */
-    public function getUsers(): LengthAwarePaginator
+    public function getUsers(int $perPage = 20): LengthAwarePaginator
     {
         return QueryBuilder::for(User::class)
+            ->where('user_type', UserType::DEVELOPER->value)
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::custom('birthday', new RangeFilter()),
                 AllowedFilter::custom('skills', new JsonFilter()),
             ])
+            ->withCount([
+                'projects as projects_count' => function ($query) {
+                    $query->where('status', 'completed');
+                }
+            ])
+            ->withAvg('reviews as average_rating', 'rating')
             ->allowedSorts(['name', 'created_at', 'birthday'])
-            ->paginate(10);
+            ->paginate($perPage);
     }
 
     /**

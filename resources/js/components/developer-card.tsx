@@ -1,6 +1,7 @@
-// components/DeveloperCard.tsx
 import { StarIcon } from '@heroicons/react/24/solid';
-import { type User } from '@/types'; // Імпортуйте інтерфейс User
+import { type User } from '@/types';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface DeveloperCardProps {
     developer: User;
@@ -10,19 +11,30 @@ interface DeveloperCardProps {
 
 export default function DeveloperCard({ developer, projectsCount, averageRating }: DeveloperCardProps) {
     return (
-        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 w-full max-w-4xl mx-auto"> {/* Центрування та обмеження ширини */}
+        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 w-full max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Перший стовпчик: Аватарка, ім'я, біографія */}
                 <div className="col-span-1">
                     <div className="flex items-center gap-4">
-                        <img
-                            src={developer.avatar || 'https://via.placeholder.com/150'}
-                            alt={developer.name}
-                            className="h-20 w-20 rounded-full object-cover"
-                        />
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Avatar>
+                                    {developer.avatar ? (
+                                        <AvatarImage src={developer.avatar} alt={developer.name} />
+                                    ) : (
+                                        <AvatarFallback>
+                                            {developer.name ? developer.name[0].toUpperCase() : 'U'}
+                                        </AvatarFallback>
+                                    )}
+                                </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{developer.name}</p>
+                            </TooltipContent>
+                        </Tooltip>
                         <div className="flex-1 min-w-0">
                             <h2 className="text-xl font-semibold truncate">{developer.name}</h2>
-                            <p className="text-sm text-gray-500 truncate">{developer.role}</p>
+                            <p className="text-sm text-gray-500 truncate">{developer.user_type ?? 'Невідомий тип'}</p>
                         </div>
                     </div>
                     {developer.bio && (
@@ -33,16 +45,20 @@ export default function DeveloperCard({ developer, projectsCount, averageRating 
                 {/* Другий стовпчик: Навички */}
                 <div className="col-span-1">
                     <h3 className="font-semibold">Навички:</h3>
-                    <div className="flex flex-wrap gap-2">
-                        {developer.skills.map((skill) => (
-                            <span
-                                key={skill}
-                                className="rounded bg-gray-200 px-2 py-1 text-sm dark:bg-gray-700 truncate"
-                            >
-                                {skill}
-                            </span>
-                        ))}
-                    </div>
+                    {developer.skills && developer.skills.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                            {developer.skills.map((skill) => (
+                                <span
+                                    key={skill}
+                                    className="rounded bg-gray-200 px-2 py-1 text-sm dark:bg-gray-700 truncate"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-gray-500 italic">Навички не вказані</p>
+                    )}
                 </div>
 
                 {/* Третій стовпчик: Проекти та рейтинг */}
@@ -56,7 +72,7 @@ export default function DeveloperCard({ developer, projectsCount, averageRating 
 
                     <div className="mt-4 flex items-center gap-2">
                         <span className="font-semibold">Рейтинг:</span>
-                        <div className="flex items-center flex-wrap"> {/* Додано flex-wrap для рейтингу */}
+                        <div className="flex items-center flex-wrap">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <StarIcon
                                     key={star}
@@ -69,7 +85,7 @@ export default function DeveloperCard({ developer, projectsCount, averageRating 
                             ))}
                         </div>
                         <span className="text-sm text-gray-500">
-                            ({averageRating.toFixed(1)})
+                            ({(+averageRating).toFixed(1)})
                         </span>
                     </div>
                 </div>

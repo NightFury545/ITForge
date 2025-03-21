@@ -25,7 +25,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Projects() {
     const { props } = usePage() as { props: { projects: { data: Project[] } } };
     const projects: Project[] = props.projects.data || [];
-    console.log(projects);
 
     const [isFormVisible, setIsFormVisible] = useState(false);
 

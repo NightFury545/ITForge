@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Enums\UserType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->json('portfolio_urls')->nullable();
             $table->json('skills')->nullable();
+            $table->enum('user_type', UserType::getValues())->default(UserType::CLIENT);
             $table->enum('role', UserRole::getValues())->default(UserRole::USER);
             $table->rememberToken();
             $table->timestamps();

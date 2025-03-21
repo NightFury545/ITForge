@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,6 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
         'portfolio_urls',
         'skills',
+        'user_type',
         'role'
     ];
 
@@ -64,12 +66,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Project::class, 'client_id');
     }
 
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(Review::class, Contract::class, 'developer_id', 'contract_id');
+    }
+
     /**
      * Отримати контракти користувача
      */
     public function contracts(): HasMany
     {
-        return $this->hasMany(Contract::class, 'client_id');
+        return $this->hasMany(Contract::class)
+            ->where(function ($query) {
+                $query->where('client_id', $this->id)
+                    ->orWhere('developer_id', $this->id);
+            });
     }
 
     /**

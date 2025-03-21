@@ -39,10 +39,13 @@ export interface User {
     birthday?: Date;
     portfolio_urls?: string[];
     skills?: string[];
+    user_type: string;
     role?: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+    projects_count?: number;
+    average_rating?: number;
     [key: string]: unknown;
 }
 
@@ -60,16 +63,16 @@ export interface ProjectCardProps {
 
 export interface Project {
     id: string;
-    title: string; 
+    title: string;
     description: string;
-    requirements: string; 
-    status: string; 
-    budget: number; 
-    bids_deadline: string; 
-    project_deadline: string; 
-    tech_stack: string[]; 
-    client_id: string; 
-    created_at: string; 
-    updated_at: string; 
+    requirements: string;
+    status: string;
+    budget: number;
+    bids_deadline: string;
+    project_deadline: string;
+    tech_stack: string[];
+    client_id: string;
+    created_at: string;
+    updated_at: string;
     client: User;
   }

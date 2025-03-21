@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index(Request $request): Response
     {
-        $users = $this->userService->getUsers();
+        $users = $this->userService->getUsers($request->query('per_page', 20));
 
         return Inertia::render('developers', [
             'users' => $users
