@@ -76,3 +76,11 @@ export interface Project {
     updated_at: string;
     client: User;
   }
+
+  export interface Chat {
+    id: string;
+    name: string;
+    lastMessage: string;
+    lastMessageTime: string;
+    avatar: string;
+}
