@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('type', TransactionType::getValues());
             $table->decimal('amount', 10, 2);
             $table->enum('status', TransactionStatus::getValues())->default(TransactionStatus::Pending);
+            $table->string('method')->nullable();
             $table->timestamps();
         });
     }
