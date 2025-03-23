@@ -49,6 +49,13 @@ export interface User {
     [key: string]: unknown;
 }
 
+
+interface Review {
+    id: number;
+    text: string;
+    author: string;
+}
+
 export interface ProjectCardProps {
     title: string;
     description: string;
