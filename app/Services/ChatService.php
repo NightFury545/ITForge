@@ -42,7 +42,7 @@ class ChatService
     /**
      * Видалити чат.
      */
-    public function deleteChat(int $chatId): void
+    public function deleteChat(string $chatId): void
     {
         $chat = Chat::find($chatId);
 
@@ -65,26 +65,23 @@ class ChatService
             ->orWhere('developer_id', $userId)
             ->with([
                 'client' => function ($query) {
-                    $query->select('id', 'name', 'avatar'); // Вибираємо тільки необхідні поля для клієнта
+                    $query->select('id', 'name', 'avatar');
                 },
                 'developer' => function ($query) {
-                    $query->select('id', 'name', 'avatar'); // Вибираємо тільки необхідні поля для розробника
+                    $query->select('id', 'name', 'avatar');
                 }
             ])
             ->orderByDesc('last_message_at')
             ->get()
             ->map(function ($chat) use ($userId) {
-                // Якщо поточний користувач — клієнт, беремо розробника
                 if ($chat->client_id === $userId) {
                     $chat->name = $chat->developer->name;
                     $chat->avatar = $chat->developer->avatar;
                 } else {
-                    // Якщо поточний користувач — розробник, беремо клієнта
                     $chat->name = $chat->client->name;
                     $chat->avatar = $chat->client->avatar;
                 }
 
-                // Видаляємо непотрібні дані про поточного користувача
                 unset($chat->client, $chat->developer);
 
                 return $chat;
@@ -96,7 +93,7 @@ class ChatService
     /**
      * Отримати конкретний чат разом із повідомленнями.
      */
-    public function getChat(int $chatId, int $limit = 20)
+    public function getChat(string $chatId, int $limit = 20)
     {
         $chat = Chat::find($chatId);
 

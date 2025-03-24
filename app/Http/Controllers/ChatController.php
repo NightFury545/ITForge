@@ -40,11 +40,11 @@ class ChatController extends Controller
     /**
      * Відобразити конкретний чат із повідомленнями.
      */
-    public function show(int $chatId): JsonResponse
+    public function show(string $chatId): Response
     {
         $chat = $this->chatService->getChat($chatId);
 
-        return response()->json([
+        return Inertia::render('chat', [
             'chat' => $chat,
         ]);
     }
@@ -53,7 +53,7 @@ class ChatController extends Controller
     /**
      * Видалити чат.
      */
-    public function destroy(int $chatId): RedirectResponse
+    public function destroy(string $chatId): RedirectResponse
     {
         $this->chatService->deleteChat($chatId);
         return to_route('chats.index')->with('success', 'Чат успішно видалено!');
