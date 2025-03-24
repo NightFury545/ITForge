@@ -1,74 +1,49 @@
-import { useState } from 'react';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
-import { type Chat, Message } from '@/types'; // Імпортуйте тип Chat
+import { type Chat } from '@/types';
 
 interface ChatWindowProps {
     activeChat: Chat;
-    onSendMessage: (message: string) => void; // Функція для надсилання повідомлення
-    messages: string[]; // Повідомлення для активного чату
+    messages: string[];
+    onSendMessage: (message: string) => void;
 }
 
-export default function ChatWindow({ activeChat, onSendMessage, messages }: ChatWindowProps) {
-    const [message, setMessage] = useState(''); // Стан для введення повідомлення
+export default function ChatWindow({ activeChat, messages, onSendMessage }: ChatWindowProps) {
+    const [newMessage, setNewMessage] = useState('');
 
-    // Функція для надсилання повідомлення
-    const handleSendMessage = () => {
-        if (message.trim()) {
-            onSendMessage(message); // Викликаємо функцію для надсилання повідомлення
-            setMessage(''); // Очищуємо поле введення
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newMessage.trim()) {
+            onSendMessage(newMessage);
+            setNewMessage('');
         }
     };
 
     return (
-        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 w-full md:w-3/4">
-            <h2 className="text-xl font-semibold mb-4">{activeChat.name}</h2>
-            <div className="flex flex-col gap-4 h-[70vh] overflow-y-auto">
-                {/* Повідомлення від іншого користувача */}
-                {activeChat.messages && activeChat.messages.length > 0 && activeChat.messages.map((msg) => (
-                    <div key={msg.id} className="flex items-start gap-2">
-                        <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                            <span className="text-sm">{msg.sender_name ? msg.sender_name[0].toUpperCase() : 'U'}</span> {/* Використовуйте правильне поле для відображення */}
-                        </div>
-                        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg max-w-[70%]">
-                            <p className="text-sm">{msg.message}</p>
-                            <span className="text-xs text-gray-500">{msg.created_at}</span>
-                        </div>
-                    </div>
-                ))}
-
-                {/* Ваші повідомлення */}
-                {messages.map((msg, index) => (
-                    <div key={index} className="flex items-start gap-2 justify-end">
-                        <div className="bg-blue-500 text-white p-3 rounded-lg max-w-[70%]">
-                            <p className="text-sm">{msg.message}</p>
-                            <span className="text-xs text-blue-200">Just now</span>
-                        </div>
-                        <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
-                            <span className="text-sm text-white">Я</span>
+        <div className="flex flex-col flex-1">
+            <div className="flex-1 p-4 overflow-y-auto">
+                {messages.map((msg, i) => (
+                    <div key={i} className="mb-3">
+                        <div className="bg-blue-100 dark:bg-blue-900 rounded-lg p-3 max-w-xs md:max-w-md">
+                            {msg}
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Поле для введення повідомлення з іконкою надсилання */}
-            <div className="mt-4 flex items-center gap-2">
+            <form onSubmit={handleSubmit} className="p-4 border-t flex gap-2">
                 <input
                     type="text"
-                    placeholder="Напишіть повідомлення..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)} // Оновлюємо стан при введенні
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSendMessage(); // Надсилаємо повідомлення при натисканні Enter
-                    }}
-                    className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    className="flex-1 border rounded-lg p-2"
+                    placeholder="Написати повідомлення..."
                 />
                 <button
-                    onClick={handleSendMessage} // Надсилаємо повідомлення при кліку
-                    className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                 >
-                    <PaperAirplaneIcon className="h-5 w-5" />
+                    Надіслати
                 </button>
-            </div>
+            </form>
         </div>
     );
 }
