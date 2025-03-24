@@ -2,7 +2,6 @@ import { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import ChatWindow from '@/components/chat-card';
 import { type Chat } from '@/types';
 
 const mockChats: Record<string, Chat> = {
@@ -59,25 +58,25 @@ export default function ChatPage({ id }: { id: string }) {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title={`Chat with ${chat.name}`} />
-      <div className="flex flex-col h-full">
-        <div className="p-4 border-b flex items-center gap-3">
+      <div className="flex flex-col h-full p-4">
+        {/* Шапка чату */}
+        <div className="flex items-center gap-3 mb-4 p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
           <Link 
             href="/chats" 
-            className="md:hidden p-2 rounded-full hover:bg-gray-100"
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
           >
             ←
           </Link>
-          <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
             <span className="text-sm">{chat.avatar}</span>
           </div>
-          <h2 className="font-semibold">{chat.name}</h2>
+          <div>
+            <h2 className="font-semibold">{chat.name}</h2>
+            <p className="text-xs text-gray-500">Online</p>
+          </div>
         </div>
         
-        <ChatWindow 
-          activeChat={chat}
-          onSendMessage={handleSendMessage}
-          messages={messages}
-        />
+
       </div>
     </AppLayout>
   );
