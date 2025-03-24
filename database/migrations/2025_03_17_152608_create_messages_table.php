@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUuid('chat_id')->constrained('chats')->onDelete('cascade');
             $table->foreignUuid('sender_id')->constrained('users')->onDelete('cascade');
             $table->text('message');
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
     }

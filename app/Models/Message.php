@@ -14,7 +14,12 @@ class Message extends Model
     protected $fillable = [
         'chat_id',
         'sender_id',
-        'message'
+        'message',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     /**

@@ -27,6 +27,7 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     ziggy: Config & { location: string };
+
     [key: string]: unknown;
 }
 
@@ -46,6 +47,7 @@ export interface User {
     updated_at: string;
     projects_count?: number;
     average_rating?: number;
+
     [key: string]: unknown;
 }
 
@@ -75,12 +77,22 @@ export interface Project {
     created_at: string;
     updated_at: string;
     client: User;
-  }
+}
 
-  export interface Chat {
+export interface Message {
+    id: string;
+    chat_id: string;
+    sender_id: string;
+    message: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Chat {
     id: string;
     name: string;
-    lastMessage: string;
-    lastMessageTime: string;
+    last_message: string;
+    last_message_at: string;
     avatar: string;
+    messages: Message[];
 }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('client_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('developer_id')->constrained('users')->onDelete('cascade');
+            $table->string('last_message')->nullable();
+            $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
         });
     }

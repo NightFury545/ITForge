@@ -15,6 +15,12 @@ class Chat extends Model
     protected $fillable = [
         'client_id',
         'developer_id',
+        'last_message',
+        'last_message_at'
+    ];
+
+    protected $casts = [
+        'last_message_at' => 'datetime',
     ];
 
     /**

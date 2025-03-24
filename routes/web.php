@@ -13,16 +13,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('chats', function () {
-        return Inertia::render('chats');
-    })->name('chats.index');
-});
-
-
-
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/web/project.php';
 require __DIR__.'/web/users.php';
 require __DIR__.'/web/deposit.php';
+require __DIR__.'/web/chat.php';
+require __DIR__.'/web/message.php';

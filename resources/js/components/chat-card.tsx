@@ -1,7 +1,6 @@
-// components/ChatWindow.tsx
 import { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
-import { type Chat } from '@/types'; // Імпортуйте тип Chat
+import { type Chat, Message } from '@/types'; // Імпортуйте тип Chat
 
 interface ChatWindowProps {
     activeChat: Chat;
@@ -25,21 +24,23 @@ export default function ChatWindow({ activeChat, onSendMessage, messages }: Chat
             <h2 className="text-xl font-semibold mb-4">{activeChat.name}</h2>
             <div className="flex flex-col gap-4 h-[70vh] overflow-y-auto">
                 {/* Повідомлення від іншого користувача */}
-                <div className="flex items-start gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                        <span className="text-sm">{activeChat.avatar}</span>
+                {activeChat.messages && activeChat.messages.length > 0 && activeChat.messages.map((msg) => (
+                    <div key={msg.id} className="flex items-start gap-2">
+                        <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                            <span className="text-sm">{msg.sender_name ? msg.sender_name[0].toUpperCase() : 'U'}</span> {/* Використовуйте правильне поле для відображення */}
+                        </div>
+                        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg max-w-[70%]">
+                            <p className="text-sm">{msg.message}</p>
+                            <span className="text-xs text-gray-500">{msg.created_at}</span>
+                        </div>
                     </div>
-                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg max-w-[70%]">
-                        <p className="text-sm">{activeChat.lastMessage}</p>
-                        <span className="text-xs text-gray-500">{activeChat.lastMessageTime}</span>
-                    </div>
-                </div>
+                ))}
 
                 {/* Ваші повідомлення */}
                 {messages.map((msg, index) => (
                     <div key={index} className="flex items-start gap-2 justify-end">
                         <div className="bg-blue-500 text-white p-3 rounded-lg max-w-[70%]">
-                            <p className="text-sm">{msg}</p>
+                            <p className="text-sm">{msg.message}</p>
                             <span className="text-xs text-blue-200">Just now</span>
                         </div>
                         <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
