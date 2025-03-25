@@ -95,6 +95,7 @@ class ChatService
      */
     public function getChat(string $chatId, int $limit = 20)
     {
+        $userId = Auth::id();
         $chat = Chat::find($chatId);
 
         if (!$chat) {
@@ -103,13 +104,27 @@ class ChatService
 
         $this->authorizeChatAccess($chat);
 
-        return $chat->load([
+        return $chat->with([
             'client',
             'developer',
             'messages' => function ($query) use ($limit) {
                 $query->orderBy('created_at', 'desc')->limit($limit);
             }
-        ]);
+        ])
+        ->get()
+        ->map(function ($chat) use ($userId) {
+            if ($chat->client_id === $userId) {
+                $chat->name = $chat->developer->name;
+                $chat->avatar = $chat->developer->avatar;
+            } else {
+                $chat->name = $chat->client->name;
+                $chat->avatar = $chat->client->avatar;
+            }
+
+            unset($chat->client, $chat->developer);
+
+            return $chat;
+        });
     }
 
     /**
