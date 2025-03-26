@@ -22,4 +22,11 @@ export default defineConfig({
             'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
         },
     },
+    /*server: {
+        cors: {
+            origin: 'https://f84f-188-163-68-67.ngrok-free.app',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+        },
+    },*/
 });

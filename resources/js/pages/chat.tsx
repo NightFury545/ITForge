@@ -4,7 +4,7 @@ import { type BreadcrumbItem, type Chat, type Message } from '@/types';
 import { ChevronLeftIcon, EllipsisHorizontalIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { Head, Link, usePage } from '@inertiajs/react';
 import axios from 'axios';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface ChatPageProps {
     chat: Chat;
@@ -17,6 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function ChatPage({ chat }: ChatPageProps) {
     const [messages, setMessages] = useState<Message[]>(chat.messages || []);
+    const [isSending, setIsSending] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { auth } = usePage().props;
@@ -39,20 +40,22 @@ export default function ChatPage({ chat }: ChatPageProps) {
             window.Echo.leave(`chat.${chat.id}`);
         };
     }, [chat?.id]);
-
-    const handleSendMessage = useCallback(async () => {
-        if (!inputRef.current?.value.trim() || !chat?.id) return;
+    const handleSendMessage = async () => {
+        if (!inputRef.current?.value.trim() || !chat?.id || isSending) return;
 
         try {
+            setIsSending(true)
             await axios.post('/messages', {
                 chat_id: chat.id,
                 message: inputRef.current.value,
             });
             inputRef.current.value = '';
+            setIsSending(false)
         } catch (error) {
             console.error('Помилка відправки повідомлення:', error);
+            setIsSending(false)
         }
-    }, [chat?.id]);
+    };
 
     const groupMessagesByDate = (messages: Message[]) => {
         return messages.reduce((acc: { [date: string]: Message[] }, message) => {
