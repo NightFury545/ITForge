@@ -203,6 +203,20 @@
     display: none;
 }
 
+/* Для Webkit (Chrome, Safari) */
+.scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+}
+
+/* Для Firefox */
+.scrollbar-hidden {
+    scrollbar-width: none;
+}
+
+/* Для IE/Edge */
+.scrollbar-hidden {
+    -ms-overflow-style: none;
+}
 
 
 

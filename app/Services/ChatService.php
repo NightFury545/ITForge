@@ -93,7 +93,7 @@ class ChatService
     /**
      * Отримати конкретний чат разом із повідомленнями.
      */
-    public function getChat(string $chatId, int $limit = 20)
+    public function getChat(string $chatId)
     {
         $userId = Auth::id();
         $chat = Chat::find($chatId);
@@ -107,9 +107,19 @@ class ChatService
         $chat->load([
             'client',
             'developer',
-            'messages' => function ($query) use ($limit) {
-                $query->orderBy('created_at', 'desc')->limit($limit);
+            'messages' => function ($query) {
+                $query->select([
+                    'messages.*',
+                    'users.name as sender_name',
+                    'users.avatar'
+                ])
+                    ->leftJoin('users', 'messages.sender_id', '=', 'users.id')
+                    ->orderBy('messages.created_at', 'asc');
             }
+
+
+
+
         ]);
 
         if ($chat->client_id === $userId) {

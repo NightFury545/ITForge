@@ -90,6 +90,8 @@ export interface Message {
     id: string;
     chat_id: string;
     sender_id: string;
+    sender_name: string;
+    avatar: string;
     message: string;
     created_at: string;
     updated_at: string;

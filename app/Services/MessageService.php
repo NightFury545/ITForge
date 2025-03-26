@@ -13,33 +13,32 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class MessageService
 {
     /**
-     * Створити нове повідомлення в чаті та оновити інформацію про останнє повідомлення в чаті.
+     * Створити нове повідомлення в чаті та оновити інформацію про останнє повідомлення.
      *
      * @throws Exception
      */
     public function sendMessage(array $data)
     {
-        $chat = Chat::find($data['chat_id']);
-
-        if (!$chat) {
-            throw new ModelNotFoundException('Чат не знайдено.');
-        }
-
+        // Знаходимо чат або кидаємо помилку
+        $chat = Chat::where('id', $data['chat_id'])->firstOrFail();
         $user = Auth::user();
 
-        if ($chat->client_id !== $user->id && $chat->developer_id !== $user->id) {
+        // Перевіряємо, чи користувач має доступ до чату
+        if ($user->isNot($chat->client) && $user->isNot($chat->developer)) {
             throw new Exception('Ви не маєте дозволу надсилати повідомлення в цьому чаті.');
         }
 
         // Створюємо повідомлення
-        $message = Message::create([
+        $message = new Message();
+        $message->fill([
             'chat_id' => $data['chat_id'],
             'sender_id' => $user->id,
             'message' => $data['message'],
         ]);
+        $message->save();
 
-        // Оновлюємо дані про останнє повідомлення в чаті
-        $chat->update([
+        // Оновлюємо дані про останнє повідомлення в чаті без виклику подій
+        $chat->updateQuietly([
             'last_message' => $message->message,
             'last_message_at' => now(),
         ]);
@@ -54,27 +53,26 @@ class MessageService
      * Отримати повідомлення для певного чату з пагінацією.
      *
      * @param int $chatId
-     * @param int $perPage
      * @return LengthAwarePaginator
+     * @throws Exception
      */
-    public function getMessages(int $chatId, int $perPage = 20): LengthAwarePaginator
+    public function getMessages(int $chatId): LengthAwarePaginator
     {
-        $chat = Chat::find($chatId);
-
-        if (!$chat) {
+        // Перевіряємо, чи існує чат
+        if (!Chat::where('id', $chatId)->exists()) {
             throw new ModelNotFoundException('Чат не знайдено.');
         }
 
-        // Перевірка, чи має користувач доступ до чату
         $user = Auth::user();
+        $chat = Chat::select(['client_id', 'developer_id'])->where('id', $chatId)->first();
 
-        if ($chat->client_id !== $user->id && $chat->developer_id !== $user->id) {
+        if ($user->isNot($chat->client) && $user->isNot($chat->developer)) {
             throw new Exception('Ви не маєте доступу до цього чату.');
         }
 
-        // Отримуємо повідомлення для чату з пагінацією
-        return Message::where('chat_id', $chatId)
+        return Message::select(['id', 'chat_id', 'sender_id', 'message', 'created_at'])
+            ->where('chat_id', $chatId)
             ->orderBy('created_at', 'asc')
-            ->paginate($perPage);
+            ->get();
     }
 }
