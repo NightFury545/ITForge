@@ -104,28 +104,27 @@ class ChatService
 
         $this->authorizeChatAccess($chat);
 
-        return $chat->with([
+        $chat->load([
             'client',
             'developer',
             'messages' => function ($query) use ($limit) {
                 $query->orderBy('created_at', 'desc')->limit($limit);
             }
-        ])
-        ->get()
-        ->map(function ($chat) use ($userId) {
-            if ($chat->client_id === $userId) {
-                $chat->name = $chat->developer->name;
-                $chat->avatar = $chat->developer->avatar;
-            } else {
-                $chat->name = $chat->client->name;
-                $chat->avatar = $chat->client->avatar;
-            }
+        ]);
 
-            unset($chat->client, $chat->developer);
+        if ($chat->client_id === $userId) {
+            $chat->name = $chat->developer->name;
+            $chat->avatar = $chat->developer->avatar;
+        } else {
+            $chat->name = $chat->client->name;
+            $chat->avatar = $chat->client->avatar;
+        }
 
-            return $chat;
-        });
+        unset($chat->client, $chat->developer);
+
+        return $chat;
     }
+
 
     /**
      * Перевірити, чи користувач має доступ до чату.

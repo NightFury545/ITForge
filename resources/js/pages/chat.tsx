@@ -20,7 +20,8 @@ export default function ChatPage({ chat }: ChatPageProps) {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { auth } = usePage().props;
-
+    console.log(chat);
+    console.log(chat.name);
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
@@ -63,8 +64,8 @@ export default function ChatPage({ chat }: ChatPageProps) {
                     <div className="text-center p-6 max-w-md">
                         <h2 className="text-xl font-bold mb-2">Чат не знайдено</h2>
                         <p className="text-gray-500 mb-4">На жаль, цей чат не існує або був видалений</p>
-                        <Link 
-                            href="/chats" 
+                        <Link
+                            href="/chats"
                             className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                         >
                             Повернутися до списку чатів
@@ -78,12 +79,12 @@ export default function ChatPage({ chat }: ChatPageProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Чат з ${chat.name || 'користувачем'}`} />
-            
+
             {/* Хедер чату */}
             <div className="flex items-center justify-between p-3 border-b bg-white dark:bg-gray-800">
                 <div className="flex items-center space-x-3">
-                    <Link 
-                        href="/chats" 
+                    <Link
+                        href="/chats"
                         className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                         <ChevronLeftIcon className="h-5 w-5" />
@@ -101,9 +102,6 @@ export default function ChatPage({ chat }: ChatPageProps) {
                         <h2 className="font-semibold text-base truncate dark:text-white">
                             {chat.name || 'Чат'}
                         </h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {chat.name || 'Користувач'}
-                        </p>
                     </div>
                 </div>
                 <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -135,8 +133,8 @@ export default function ChatPage({ chat }: ChatPageProps) {
                                     {msg.text}
                                 </p>
                                 <p className={`text-xs mt-1 ${
-                                    msg.sender_id === auth.user.id 
-                                        ? 'text-blue-200' 
+                                    msg.sender_id === auth.user.id
+                                        ? 'text-blue-200'
                                         : 'text-gray-500 dark:text-gray-400'
                                 }`}>
                                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -150,7 +148,7 @@ export default function ChatPage({ chat }: ChatPageProps) {
 
             {/* Форма введення */}
             <div className="p-3 border-t bg-white dark:bg-gray-800">
-                <form 
+                <form
                     onSubmit={(e) => {
                         e.preventDefault();
                         handleSendMessage();
@@ -174,8 +172,8 @@ export default function ChatPage({ chat }: ChatPageProps) {
                         type="submit"
                         disabled={!input.trim()}
                         className={`p-2 rounded-full ${
-                            input.trim() 
-                                ? 'bg-blue-500 text-white hover:bg-blue-600' 
+                            input.trim()
+                                ? 'bg-blue-500 text-white hover:bg-blue-600'
                                 : 'bg-gray-200 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         }`}
                     >
