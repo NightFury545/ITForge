@@ -10,9 +10,8 @@ class JsonFilter implements Filter
     /**
      * Фільтрує запит по JSON полях.
      *
-     * Це дозволяє фільтрувати поля з JSON масивами або об'єктами за точним або частковим збігом.
-     *
-     * Якщо приходить кілька значень, кожне з них перевіряється.
+     * Якщо приходить масив значень, то кожне з них додається з `AND`, щоб знайти
+     * тільки ті записи, які містять всі значення одночасно.
      *
      * @param Builder $query Запит, до якого застосовуються фільтри
      * @param string|array $value Значення для фільтрації (одне або масив значень)
@@ -23,18 +22,12 @@ class JsonFilter implements Filter
     {
         if (is_array($value)) {
             foreach ($value as $item) {
-                $query->orWhereJsonContains($property, $item);
+                $query->whereJsonContains($property, $item);
             }
         } else {
-            if (str_contains($value, '%')) {
-                return $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT({$property}, '$')) LIKE ?", [$value]);
-            }
-
-            return $query->whereJsonContains($property, $value);
+            $query->whereJsonContains($property, $value);
         }
 
         return $query;
     }
 }
-
-

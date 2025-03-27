@@ -22,6 +22,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface ProfileForm {
     name: string;
     email: string;
+    avatar: string;
+    bio: string;
+    birthday: Date;
+    portfolio_urls: string[];
+    skills: string[];
+    user_type: string;
 }
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {

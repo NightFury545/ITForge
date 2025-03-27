@@ -70,8 +70,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Projects() {
     const { props } = usePage() as { props: { projects: { data: Project[] } } };
     const initialProjects: Project[] = props.projects.data || [];
-
-    // Стани для фільтрації та сортування
     const [searchTerm, setSearchTerm] = useState('');
     const [techStackFilter, setTechStackFilter] = useState<string[]>([]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
@@ -94,36 +92,34 @@ export default function Projects() {
     const bidsDeadlineRef = useRef<HTMLInputElement>(null);
     const projectDeadlineRef = useRef<HTMLInputElement>(null);
 
-    // Функція для фільтрації проектів
-    const filteredProjects = initialProjects.filter(project => {
-        const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            project.description.toLowerCase().includes(searchTerm.toLowerCase());
-        
-        const matchesTechStack = techStackFilter.length === 0 || 
-                               techStackFilter.some(tech => project.tech_stack.includes(tech));
-        
-        const matchesPrice = Number(project.budget) >= priceRange[0] && 
-                           Number(project.budget) <= priceRange[1];
-        
-        const matchesDeadline = !deadlineFilter || 
-                              (project.bids_deadline && new Date(project.bids_deadline) <= new Date(deadlineFilter));
-        
-        const matchesStatus = statusFilter.length === 0 || 
-                            (project.status && statusFilter.includes(project.status));
-        
-        return matchesSearch && matchesTechStack && matchesPrice && matchesDeadline && matchesStatus;
-    });
+    const applyFilters = () => {
+        const params = new URLSearchParams();
 
-    // Функція для сортування проектів
-    const sortedProjects = [...filteredProjects].sort((a, b) => {
-        switch (sortOption) {
-            case 'price-asc': return Number(a.budget) - Number(b.budget);
-            case 'price-desc': return Number(b.budget) - Number(a.budget);
-            case 'newest': return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-            case 'oldest': return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-            default: return 0;
+        if (searchTerm) params.append('filter[title]', searchTerm);
+
+        // Якщо фільтр за технічним стеком є, додаємо
+        if (techStackFilter.length > 0) params.append('filter[tech_stack]', techStackFilter.join(','));
+
+        // Якщо фільтр за статусом є, додаємо його
+        if (statusFilter.length > 0) params.append('filter[status]', statusFilter.join(','));
+
+        // Якщо є фільтр за дедлайном, додаємо його
+        if (deadlineFilter) params.append('filter[deadline]', deadlineFilter);
+
+        // Якщо є фільтр за бюджетом, додаємо його
+        if (priceRange[0] > 0 || priceRange[1] < 10000) {
+            params.append('filter[budget][from]', priceRange[0].toString());
+            params.append('filter[budget][to]', priceRange[1].toString());
         }
-    });
+
+        // Якщо є опція сортування, додаємо її
+        if (sortOption) params.append('sort', sortOption === 'price-asc' ? 'budget' :
+            sortOption === 'price-desc' ? '-budget' :
+                sortOption === 'newest' ? '-created_at' : 'created_at');
+
+        window.location.href = `/projects?${params.toString()}`;
+    };
+
 
     const handleCreateProject = () => {
         post('/projects', {
@@ -164,8 +160,8 @@ export default function Projects() {
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Проєкти</h1>
                     <div className="flex items-center gap-4">
-                        <Button 
-                            variant="outline" 
+                        <Button
+                            variant="outline"
                             onClick={() => setShowFilters(!showFilters)}
                             className="flex items-center gap-2"
                         >
@@ -239,9 +235,9 @@ export default function Projects() {
                                         className="w-full"
                                     />
                                     {deadlineFilter && (
-                                        <Button 
-                                            variant="ghost" 
-                                            size="sm" 
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
                                             onClick={() => setDeadlineFilter('')}
                                             className="mt-2 w-full"
                                         >
@@ -256,11 +252,11 @@ export default function Projects() {
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline" className="flex items-center gap-1">
                                         <span>
-                                            {statusFilter.length === 0 ? 'Статус' : 
-                                             statusFilter.length === 1 ? (
-                                                statusFilter[0] === 'active' ? 'Активний' :
-                                                statusFilter[0] === 'in_progress' ? 'В роботі' : 'Завершений'
-                                             ) : `${statusFilter.length} статуси`}
+                                            {statusFilter.length === 0 ? 'Статус' :
+                                                statusFilter.length === 1 ? (
+                                                    statusFilter[0] === 'active' ? 'Активний' :
+                                                        statusFilter[0] === 'in_progress' ? 'В роботі' : 'Завершений'
+                                                ) : `${statusFilter.length} статуси`}
                                         </span>
                                         <ChevronDown className="h-4 w-4" />
                                     </Button>
@@ -283,51 +279,57 @@ export default function Projects() {
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                    {/* Сортування */}
-                    <div className="flex justify-end">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="flex items-center gap-2">
-                                <ArrowUpDown className="h-4 w-4" />
-                                <span>
+                            {/* Сортування */}
+                            <div className="flex justify-end">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" className="flex items-center gap-2">
+                                            <ArrowUpDown className="h-4 w-4" />
+                                            <span>
                                     {sortOption === 'price-asc' && 'Від дешевих'}
-                                    {sortOption === 'price-desc' && 'Від дорогих'}
-                                    {sortOption === 'newest' && 'Нові'}
-                                    {sortOption === 'oldest' && 'Старі'}
+                                                {sortOption === 'price-desc' && 'Від дорогих'}
+                                                {sortOption === 'newest' && 'Нові'}
+                                                {sortOption === 'oldest' && 'Старі'}
                                 </span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => setSortOption('price-asc')}>
-                                Від дешевих
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setSortOption('price-desc')}>
-                                Від дорогих
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setSortOption('newest')}>
-                                Спочатку нові
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setSortOption('oldest')}>
-                                Спочатку старі
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem onClick={() => setSortOption('price-asc')}>
+                                            Від дешевих
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setSortOption('price-desc')}>
+                                            Від дорогих
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setSortOption('newest')}>
+                                            Спочатку нові
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setSortOption('oldest')}>
+                                            Спочатку старі
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
 
 
                             {/* Скидання фільтрів */}
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 onClick={resetFilters}
                                 className="ml-auto"
                             >
                                 Скинути фільтри
                             </Button>
+                            <Button
+                                variant="ghost"
+                                onClick={applyFilters}
+                                className="ml-auto"
+                            >
+                                Застосувати фільтри
+                            </Button>
                         </div>
                     </div>
                 )}
 
-                
 
                 {/* Форма створення проекту */}
                 {isFormVisible && (
@@ -422,8 +424,8 @@ export default function Projects() {
 
                 {/* Список проектів */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {sortedProjects.length > 0 ? (
-                        sortedProjects.map((project) => (
+                    {initialProjects?.length > 0 ? (
+                        initialProjects.map((project) => (
                             <ProjectCard
                                 key={project.id}
                                 title={project.title}
@@ -433,7 +435,7 @@ export default function Projects() {
                                 status={project.status}
                                 user={{
                                     name: project.client?.name || 'Невідомий',
-                                    avatar: project.client?.avatar
+                                    avatar: project.client?.avatar,
                                 }}
                             />
                         ))
@@ -443,6 +445,7 @@ export default function Projects() {
                         </div>
                     )}
                 </div>
+
             </div>
 
             <style>
