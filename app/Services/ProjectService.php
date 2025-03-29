@@ -37,12 +37,17 @@ class ProjectService
     }
 
     /**
-     * Отримати один проект
+     * Отримати один проєкт разом із клієнтом і ставками (з іменами девелоперів).
      */
     public function getProjectById(string $id): ?Project
     {
-        return Project::with(['client', 'bids'])->findOrFail($id);
+        return Project::with(['client', 'bids' => function ($query) {
+            $query->join('users', 'bids.developer_id', '=', 'users.id')
+                ->orderBy('bids.created_at', 'desc')
+                ->select(['bids.*', 'users.name as developer_name', 'users.avatar as developer_avatar']);
+        }])->findOrFail($id);
     }
+
 
     /**
      * Створити новий проект

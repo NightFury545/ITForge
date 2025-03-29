@@ -51,7 +51,6 @@ export interface User {
     [key: string]: unknown;
 }
 
-
 interface Review {
     id: number;
     text: string;
@@ -59,6 +58,7 @@ interface Review {
 }
 
 export interface ProjectCardProps {
+    id: string;
     title: string;
     description: string;
     budget: number;
@@ -84,6 +84,7 @@ export interface Project {
     created_at: string;
     updated_at: string;
     client: User;
+    bids: Bid[];
 }
 
 export interface Message {
@@ -104,4 +105,17 @@ export interface Chat {
     last_message_at: string;
     avatar: string;
     messages: Message[];
+}
+
+export interface Bid {
+    id?: string;
+    project_id?: string;
+    developer_id?: string;
+    developer_name?: string;
+    developer_avatar?: string;
+    amount?: number;
+    proposal?: string;
+    status?: string;
+    created_at?: string;
+    updated_at?: string;
 }
