@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Enums\BidStatus;
 use App\Models\Bid;
 use App\Models\Project;
 use App\Models\User;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,7 +51,14 @@ class BidService
             throw new Exception('Ви не можете залишити ставку, оскільки ви є власником проєкту.');
         }
 
-        // Перевірка чи користувач вже залишив ставку на цей проєкт
+        $acceptedBidExists = Bid::where('project_id', $data['project_id'])
+            ->where('status', 'accepted')
+            ->exists();
+
+        if ($acceptedBidExists) {
+            throw new Exception('Цей проєкт вже має прийняту ставку. Ви не можете створити нову.');
+        }
+
         $existingBid = Bid::where('project_id', $data['project_id'])
             ->where('developer_id', Auth::id())
             ->exists();
@@ -58,7 +67,6 @@ class BidService
             throw new Exception('Ви вже залишили ставку на цей проєкт.');
         }
 
-        // Створюємо нову ставку
         return Bid::create([
             'amount' => $data['amount'],
             'proposal' => $data['proposal'],
@@ -66,6 +74,7 @@ class BidService
             'developer_id' => Auth::id(),
         ]);
     }
+
 
 
 
@@ -86,9 +95,52 @@ class BidService
      *
      * @param string $bidId
      * @return bool|null
+     * @throws Exception
      */
     public function deleteBid(string $bidId): ?bool
     {
-        return Bid::where('id', $bidId)->delete();
+        $bid = Bid::find($bidId);
+
+        if (!$bid) {
+            throw new Exception("Ставку не знайдено.");
+        }
+
+        if ($bid->status === BidStatus::Accepted->value) {
+            throw new Exception("Ви не можете видалити прийняту ставку.");
+        }
+
+        if ($bid->developer_id !== Auth::id()) {
+            throw new Exception("Ви не маєте права видаляти цю ставку.");
+        }
+
+        return $bid->delete();
+    }
+
+    /**
+     * Прийняти ставку.
+     *
+     * @param string $bidId
+     * @return void
+     * @throws Exception
+     */
+    public function acceptBid(string $bidId): void
+    {
+        $bid = Bid::find($bidId);
+
+        if (!$bid) {
+            throw new Exception('Ставку не знайдено.');
+        }
+
+        $project = $bid->project;
+
+        if (Auth::id() !== $project->client_id) {
+            throw new Exception('Ви не можете прийняти цю ставку, оскільки не є автором проєкту.');
+        }
+
+        $bid->update(['status' => BidStatus::Accepted->value]);
+
+        Bid::where('project_id', $project->id)
+            ->where('id', '!=', $bidId)
+            ->update(['status' => BidStatus::Rejected->value]);
     }
 }

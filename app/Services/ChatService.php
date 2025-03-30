@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Chat;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
@@ -12,13 +13,15 @@ class ChatService
 {
     /**
      * Створити новий чат між авторизованим користувачем і іншим користувачем.
+     *
+     * @throws Exception
      */
     public function createChat(string $developerId): Chat
     {
         $authUserId = Auth::id();
 
         if ($authUserId === $developerId) {
-            throw new InvalidArgumentException('Ви не можете створити чат із самим собою.');
+            throw new Exception('Ви не можете створити чат із самим собою.');
         }
 
         $existingChat = Chat::where(function ($query) use ($authUserId, $developerId) {

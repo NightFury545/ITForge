@@ -8,4 +8,5 @@ Route::middleware(['auth', 'verified'])->prefix('bids')->group(function () {
     Route::post('/', [BidController::class, 'store'])->name('bids.store');
     Route::put('/{bidId}', [BidController::class, 'update'])->name('bids.update');
     Route::delete('/{bidId}', [BidController::class, 'destroy'])->name('bids.destroy');
+    Route::post('/{bidId}/accept', [BidController::class, 'accept'])->name('bids.accept');
 });

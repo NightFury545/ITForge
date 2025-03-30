@@ -2,6 +2,7 @@ import { StarIcon } from '@heroicons/react/24/solid';
 import { type User } from '@/types';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Link } from '@inertiajs/react';
 
 interface DeveloperCardProps {
     developer: User;
@@ -11,14 +12,17 @@ interface DeveloperCardProps {
 
 export default function DeveloperCard({ developer, projectsCount, averageRating }: DeveloperCardProps) {
     return (
-        <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 w-full max-w-4xl mx-auto">
+        <Link
+            href={`/users/${developer.name}`}
+            className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-6 w-full max-w-4xl mx-auto cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Перший стовпчик: Аватарка, ім'я, біографія */}
                 <div className="col-span-1">
                     <div className="flex items-center gap-4">
                         <Tooltip>
                             <TooltipTrigger>
-                                <Avatar>
+                                <Avatar className="h-10 w-10">
                                     {developer.avatar ? (
                                         <AvatarImage src={developer.avatar} alt={developer.name} />
                                     ) : (
@@ -38,7 +42,7 @@ export default function DeveloperCard({ developer, projectsCount, averageRating 
                         </div>
                     </div>
                     {developer.bio && (
-                        <p className="mt-4 text-sm text-gray-600">{developer.bio}</p>
+                        <p className="mt-4 text-sm text-gray-600 line-clamp-3">{developer.bio}</p>
                     )}
                 </div>
 
@@ -90,6 +94,6 @@ export default function DeveloperCard({ developer, projectsCount, averageRating 
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }

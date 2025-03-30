@@ -24,6 +24,10 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->json('portfolio_urls')->nullable();
             $table->json('skills')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('country')->nullable();
+            $table->json('social_links')->nullable();
+            $table->text('work_experience')->nullable();
             $table->enum('user_type', UserType::getValues())->default(UserType::CLIENT);
             $table->enum('role', UserRole::getValues())->default(UserRole::USER);
             $table->rememberToken();

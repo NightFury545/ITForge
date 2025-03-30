@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,7 +32,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'portfolio_urls',
         'skills',
         'user_type',
-        'role'
+        'role',
+        'phone',
+        'country',
+        'social_links',
+        'work_experience'
     ];
 
     /**
@@ -58,6 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'birthday' => 'date',
             'portfolio_urls' => 'array',
             'skills' => 'array',
+            'social_links' => 'array',
         ];
     }
 

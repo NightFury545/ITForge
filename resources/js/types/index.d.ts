@@ -47,6 +47,10 @@ export interface User {
     updated_at: string;
     projects_count?: number;
     average_rating?: number;
+    phone?: string;
+    country?: string;
+    social_links?: string[];
+    work_experience?: string;
 
     [key: string]: unknown;
 }

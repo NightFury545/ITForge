@@ -15,24 +15,10 @@ class CreateChatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => [
-                'required',
-                'exists:users,id',
-                Rule::notIn([auth()->id()]),
-            ],
             'developer_id' => [
                 'required',
                 'exists:users,id',
-                Rule::notIn([auth()->id()]),
             ],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'client_id.not_in' => 'Ви не можете створити чат із самим собою.',
-            'developer_id.not_in' => 'Ви не можете створити чат із самим собою.',
         ];
     }
 }

@@ -1,11 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type Project } from '@/types';
+import { type BreadcrumbItem, type Project, SharedData } from '@/types';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { CheckIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface ProjectDetailsProps {
     project: Project;
@@ -13,7 +15,7 @@ interface ProjectDetailsProps {
 
 export default function ProjectDetails({ project }: ProjectDetailsProps) {
     const [showBidForm, setShowBidForm] = useState(false);
-
+    const currentUser = usePage<SharedData>().props.auth.user;
     const { data, setData, post, processing, reset, errors } = useForm({
         amount: '',
         proposal: '',
@@ -39,11 +41,43 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
 
         post(route('bids.store'), {
             preserveScroll: true,
-            onSuccess: () => {
+            onSuccess: (page) => {
                 reset();
                 setShowBidForm(false);
+                toast.success(page.props.flash?.success || 'Ставку успішно створено.');
+                console.log(page.props);
             },
         });
+    };
+
+    const handleDeleteBid = (bidId: string) => {
+        if (confirm('Ви впевнені, що хочете видалити ставку?')) {
+            router.delete(route('bids.destroy', bidId), {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    toast.success(page.props.flash?.success || 'Ставка успішно видалена.');
+                },
+                onError: (errors) => {
+                    toast.error(errors.error || 'Не вдалося видалити ставку.');
+                },
+            });
+        }
+    };
+
+    const handleAcceptBid = (bidId: string) => {
+        router.post(
+            route('bids.accept', bidId),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Ставка успішно прийнята!');
+                },
+                onError: (errors) => {
+                    toast.error(errors.error || 'Не вдалося прийняти ставку.');
+                },
+            },
+        );
     };
 
     return (
@@ -184,26 +218,46 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
 
                                     {/* Статус ставки */}
                                     <div className="mt-2">
-                                       <span
-                                           className={`inline - block rounded-full px-3 py-1 text-sm font-medium ${
-                                               bid.status === 'accepted'
-                                               ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                               : bid.status === 'rejected'
-                                               ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                                               : bid.status === 'expired'
-                                               ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
-                                               : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                                           }`}
-                                       >
+                                        <span
+                                            className={`- block inline rounded-full px-3 py-1 text-sm font-medium ${
+                                                bid.status === 'accepted'
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                                                    : bid.status === 'rejected'
+                                                      ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                                                      : bid.status === 'expired'
+                                                        ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                                            }`}
+                                        >
                                             {bid.status === 'accepted'
                                                 ? 'Прийнято'
                                                 : bid.status === 'rejected'
-                                                    ? 'Відхилено'
-                                                    : bid.status === 'expired'
-                                                        ? 'Прострочено'
-                                                        : 'Очікує'}
+                                                  ? 'Відхилено'
+                                                  : bid.status === 'expired'
+                                                    ? 'Прострочено'
+                                                    : 'Очікує'}
                                         </span>
                                     </div>
+
+                                    {/* Кнопка для видалення ставки */}
+                                    {bid.developer_id === currentUser.id && (
+                                        <button
+                                            onClick={() => handleDeleteBid(bid.id)}
+                                            className="mt-4 rounded-lg bg-red-500 p-2 text-white hover:bg-red-600"
+                                        >
+                                            <TrashIcon className="h-4 w-4" />
+                                        </button>
+                                    )}
+
+                                    {/* Кнопка для прийняття ставки (тільки для адміністратора) */}
+                                    {project.client.id === currentUser.id && bid.status !== 'accepted' && (
+                                        <button
+                                            onClick={() => handleAcceptBid(bid.id)}
+                                            className="mt-4 ml-1 rounded-lg bg-green-500 p-2 text-white hover:bg-green-600"
+                                        >
+                                            <CheckIcon className="h-4 w-4" />
+                                        </button>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -213,4 +267,3 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
         </AppLayout>
     );
 }
-

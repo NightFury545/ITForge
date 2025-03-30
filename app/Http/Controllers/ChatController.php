@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Chat\CreateChatRequest;
 use App\Services\ChatService;
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,10 +32,20 @@ class ChatController extends Controller
      */
     public function store(CreateChatRequest $request): RedirectResponse
     {
-        $this->chatService->createChat($request->validated()['developer_id']);
+        try {
+            $chat = $this->chatService->createChat($request->validated()['developer_id']);
 
-        return to_route('chats.index')->with('success', 'Чат створено успішно!');
+            if ($chat->wasRecentlyCreated) {
+                return to_route('chats.show', ['chatId' => $chat->id])->with('success', 'Чат створено успішно!');
+            } else {
+                return to_route('chats.show', ['chatId' => $chat->id]);
+            }
+
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Не вдалося створити чат: ' . $e->getMessage()]);
+        }
     }
+
 
     /**
      * Відобразити конкретний чат із повідомленнями.

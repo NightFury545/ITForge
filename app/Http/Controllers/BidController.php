@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Bid\CreateBidRequest;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class BidController extends Controller
 
             return redirect()->route('projects.show', $request->project_id)
                 ->with('success', 'Ставка успішно додана.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return redirect()->route('projects.show', $request->project_id)
                 ->withErrors(['error' => 'Не вдалося додати ставку: ' . $e->getMessage()]);
         }
@@ -97,16 +98,38 @@ class BidController extends Controller
      * Видалити ставку.
      *
      * @param string $bidId
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function destroy(string $bidId)
+    public function destroy(string $bidId): RedirectResponse
     {
-        $deleted = $this->bidService->deleteBid($bidId);
+        try {
+            $bid = $this->bidService->getBidById($bidId);
 
-        if (!$deleted) {
-            return response()->json(['error' => 'Bid not found'], 404);
+            if (!$bid) {
+                return back()->withErrors(['error' => 'Ставку не знайдено.']);
+            }
+
+            $this->bidService->deleteBid($bidId);
+
+            return back()->with('success', 'Ставка успішно видалена.');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Не вдалося видалити ставку: ' . $e->getMessage()]);
         }
+    }
 
-        return response()->json(['message' => 'Bid deleted successfully']);
+    /**
+     * Прийняти ставку.
+     *
+     * @param string $bidId
+     * @return RedirectResponse
+     */
+    public function accept(string $bidId): RedirectResponse
+    {
+        try {
+            $this->bidService->acceptBid($bidId);
+            return back()->with('success', 'Ставка успішно прийнята.');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Не вдалося прийняти ставку: ' . $e->getMessage()]);
+        }
     }
 }
