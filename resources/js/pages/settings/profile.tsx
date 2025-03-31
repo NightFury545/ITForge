@@ -46,15 +46,15 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         name: auth.user.name,
         email: auth.user.email,
         avatar: null,
-        bio: auth.user.bio,
-        birthday: auth.user.birthday,
-        portfolio_urls: auth.user.portfolio_urls,
-        skills: auth.user.skills,
+        bio: auth.user.bio || '',
+        birthday: auth.user.birthday || '',
+        portfolio_urls: auth.user.portfolio_urls || [],
+        skills: auth.user.skills || [],
         user_type: auth.user.user_type,
-        phone: auth.user.phone,
-        country: auth.user.country,
-        social_links: auth.user.social_links,
-        work_experience: auth.user.work_experience,
+        phone: auth.user.phone || '',
+        country: auth.user.country || '',
+        social_links: auth.user.social_links || [],
+        work_experience: auth.user.work_experience || '',
     });
 
     const submit: FormEventHandler = (e) => {

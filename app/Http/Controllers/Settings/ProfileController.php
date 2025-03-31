@@ -31,35 +31,42 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
-        $user->fill($request->validated());
-
+        
+        // Отримуємо валідовані дані
+        $validatedData = $request->validated();
+        
+        // Якщо avatar передано як null, зберігаємо поточне значення
+        if ($request->input('avatar') === null) {
+            $validatedData['avatar'] = $user->avatar;
+        }
+        
+        // Заповнюємо модель
+        $user->fill($validatedData);
+    
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
-
+    
+        // Обробка нового аватара
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-
+    
             if ($avatar->isValid()) {
+                // Видаляємо старий аватар
                 if ($user->avatar) {
                     $oldAvatarPath = str_replace('/storage/', '', $user->avatar);
-                    logger($oldAvatarPath);
-                    if (Storage::disk('public')->exists($oldAvatarPath)) {
-                        Storage::disk('public')->delete($oldAvatarPath);
-                    }
+                    Storage::disk('public')->delete($oldAvatarPath);
                 }
-
+    
+                // Зберігаємо новий аватар
                 $avatarName = $user->id.'_'.time().'.'.$avatar->getClientOriginalExtension();
-
                 $avatarPath = $avatar->storeAs('avatars', $avatarName, 'public');
-
                 $user->avatar = '/storage/'.$avatarPath;
             }
         }
-
+    
         $user->save();
-
+    
         return to_route('profile.edit');
     }
 
