@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,16 +30,39 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+
+            if ($avatar->isValid()) {
+                if ($user->avatar) {
+                    $oldAvatarPath = str_replace('/storage/', '', $user->avatar);
+                    logger($oldAvatarPath);
+                    if (Storage::disk('public')->exists($oldAvatarPath)) {
+                        Storage::disk('public')->delete($oldAvatarPath);
+                    }
+                }
+
+                $avatarName = $user->id.'_'.time().'.'.$avatar->getClientOriginalExtension();
+
+                $avatarPath = $avatar->storeAs('avatars', $avatarName, 'public');
+
+                $user->avatar = '/storage/'.$avatarPath;
+            }
+        }
+
+        $user->save();
 
         return to_route('profile.edit');
     }
+
 
     /**
      * Delete the user's account.

@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, User } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import toast from 'react-hot-toast';
+import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -25,6 +26,11 @@ export default function UserInfo({ user }: { user: User }) {
                 toast.error(errors.error || 'Не вдалося створити чат.');
             },
         });
+    };
+
+    const formatDate = (dateString: string) => {
+        if (!dateString) return 'Не вказано';
+        return format(new Date(dateString), 'dd.MM.yyyy');
     };
 
     return (
@@ -78,6 +84,12 @@ export default function UserInfo({ user }: { user: User }) {
                                         <p className="text-gray-100">{user.phone || 'Не вказано'}</p>
                                     </div>
                                     <div>
+                                        <Label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-300">
+                                            Дата народження
+                                        </Label>
+                                        <p className="text-gray-100">{formatDate(user.birthday) || 'Не вказано'}</p>
+                                    </div>
+                                    <div>
                                         <Label htmlFor="location" className="mb-2 block text-sm font-medium text-gray-300">
                                             Місцезнаходження
                                         </Label>
@@ -90,15 +102,15 @@ export default function UserInfo({ user }: { user: User }) {
                             <div className="rounded-lg bg-gray-800 p-6 shadow-sm">
                                 <h3 className="mb-6 text-xl font-semibold text-gray-100">Рейтинг</h3>
                                 <div className="flex items-center">
-                                    <span className="text-2xl font-bold text-gray-100">{user.rating || 'Не вказано'}</span>
-                                    <span className="ml-2 text-gray-300">/ 5.0</span>
+                                    <span className="text-2xl font-medium text-gray-300">{user.average_rating?.toFixed(1) || '0'}</span>
+                                    <span className="ml-1 text-sm text-gray-400">/ 5.0</span>
                                 </div>
                             </div>
 
                             {/* Кількість виконаних проєктів */}
                             <div className="rounded-lg bg-gray-800 p-6 shadow-sm">
                                 <h3 className="mb-6 text-xl font-semibold text-gray-100">Виконані проєкти</h3>
-                                <div className="text-2xl font-bold text-gray-100">{user.projects_count || 'Не вказано'}</div>
+                                <div className="text-2xl font-bold text-gray-300">{user.projects_count || '0'}</div>
                             </div>
 
                             {/* Навички (мови) */}
@@ -107,10 +119,7 @@ export default function UserInfo({ user }: { user: User }) {
                                 <div className="flex flex-wrap gap-2">
                                     {user.skills?.length > 0 ? (
                                         user.skills.map((skill, index) => (
-                                            <span
-                                                key={index}
-                                                className="rounded-full bg-blue-900 px-4 py-1 text-sm text-blue-300"
-                                            >
+                                            <span key={index} className="rounded-full bg-blue-900 px-4 py-1 text-sm text-blue-300">
                                                 {skill}
                                             </span>
                                         ))
