@@ -33,22 +33,22 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Developers',
+        title: 'Розробники',
         href: '/developers',
         icon: UserCog2Icon,
     },
     {
-        title: 'Chats',
+        title: 'Чати',
         href: '/chats',
         icon: MessageCircleMore,
     },
     {
-        title: 'Projects',
+        title: 'Проєкти',
         href: '/projects',
         icon: FolderOpenDot,
     },
     {
-        title: 'Deposit',
+        title: 'Поповнення',
         href: '/deposit',
         icon: WalletIcon,
     },

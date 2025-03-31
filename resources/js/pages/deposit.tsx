@@ -4,7 +4,16 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { CreditCard, Wallet, Smartphone, Banknote, Bitcoin } from 'lucide-react'; // Імпорт іконок
+import { type BreadcrumbItem } from '@/types';
+import { CreditCard, Wallet, Smartphone, Banknote, Bitcoin } from 'lucide-react'; 
+
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Поповнення',
+        href: '/deposit',
+    },
+];
 
 export default function PaymentPage() {
     const [selectedMethod, setSelectedMethod] = useState(null);
@@ -99,7 +108,7 @@ export default function PaymentPage() {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-col gap-6 p-6 text-white">
                 <h1 className="text-3xl font-bold text-white"></h1>
 

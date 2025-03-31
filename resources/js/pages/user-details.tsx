@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'User',
+        title: 'Користувач',
         href: '/user',
     },
 ];
