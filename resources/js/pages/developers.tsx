@@ -61,7 +61,7 @@ const MaterialSlider = styled(MuiSlider)(({ theme }) => ({
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Developers',
+        title: 'Розробники',
         href: '/developers',
     },
 ];

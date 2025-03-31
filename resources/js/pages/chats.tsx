@@ -10,7 +10,7 @@ interface ChatsPageProps {
     chats: Chat[];
 }
 
-const breadcrumbs: BreadcrumbItem[] = [{ title: 'Chats', href: '/chats' }];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Чати', href: '/chats' }];
 
 // Отримуємо часовий пояс користувача
 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

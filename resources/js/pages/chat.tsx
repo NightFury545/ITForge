@@ -11,8 +11,8 @@ interface ChatPageProps {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Chats', href: '/chats' },
-    { title: 'Chat', href: '#' },
+    { title: 'Чати', href: '/chats' },
+    { title: 'Чат', href: '#' },
 ];
 
 export default function ChatPage({ chat }: ChatPageProps) {
