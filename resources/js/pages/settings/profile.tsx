@@ -30,11 +30,16 @@ interface ProfileForm {
     portfolio_urls: string[];
     skills: string[];
     user_type: string;
+    phone: string;
+    country: string;
+    social_links: string[];
+    work_experience: string;
 }
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
     const [newPortfolioUrl, setNewPortfolioUrl] = useState('');
+    const [newSocialLink, setNewSocialLink] = useState('');
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<ProfileForm>({
         name: auth.user.name,
@@ -45,6 +50,10 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         portfolio_urls: auth.user.portfolio_urls || [],
         skills: auth.user.skills || [],
         user_type: auth.user.user_type || 'developer',
+        phone: auth.user.phone || '',
+        country: auth.user.country || '',
+        social_links: auth.user.social_links || [],
+        work_experience: auth.user.work_experience || '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -85,12 +94,113 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         setData('portfolio_urls', data.portfolio_urls.filter(u => u !== url));
     };
 
+    const addSocialLink = () => {
+        if (newSocialLink.trim() && !data.social_links.includes(newSocialLink.trim())) {
+            setData('social_links', [...data.social_links, newSocialLink.trim()]);
+            setNewSocialLink('');
+        }
+    };
+
+    const removeSocialLink = (url: string) => {
+        setData('social_links', data.social_links.filter(u => u !== url));
+    };
+
     const skillOptions = [
-        'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular',
-        'Node.js', 'Python', 'Django', 'Laravel', 'PHP',
-        'Java', 'Kotlin', 'Swift', 'Go', 'Rust',
-        'HTML', 'CSS', 'SASS', 'Tailwind', 'Bootstrap',
-        'MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'GraphQL'
+        // Мови програмування (40+)
+        'JavaScript', 'TypeScript', 'Python', 'Ruby', 'PHP', 'Java', 'Kotlin', 'C#', 'Go', 'Rust', 
+        'Dart', 'Elixir', 'Clojure', 'Scala', 'Perl', 'Lua', 'Haskell', 'OCaml', 'Erlang', 'F#', 
+        'Swift', 'Objective-C', 'R', 'Julia', 'Groovy', 'D', 'Nim', 'Zig', 'Crystal', 
+        'CoffeeScript', 'ReasonML', 'PureScript', 'Ballerina', 'WebAssembly', 'Bash', 'PowerShell', 'SQL', 'PL/SQL', 'T-SQL',
+      
+        // Фронтенд (50+)
+        'React', 'Vue', 'Angular', 'Svelte', 'Solid.js', 'Alpine.js', 'Ember.js', 'Lit', 'Preact', 'Stencil', 
+        'Meteor', 'Aurelia', 'Mithril', 'Riot.js', 'Marko', 'Stimulus', 'HTMX', 'Qwik', 'Astro', 'Next.js', 
+        'Nuxt.js', 'Gatsby', 'Remix', 'SvelteKit', 'Eleventy', 'Hugo', 'Jekyll', 'Docusaurus', 'VitePress', 'Hexo', 
+        'Blazor', 'Web Components', 'Shadow DOM', 'Custom Elements', 'PWA', 'AMP', 'Web Workers', 'Service Workers', 
+        'IndexedDB', 'Web Storage', 'WebSockets', 'WebRTC', 'WebGL', 'Canvas API', 'Web Audio API', 'Geolocation API', 
+        'Payment Request API', 'Web Share API', 'WebXR', 'Web NFC',
+      
+        // Бекенд (60+)
+        'Node.js', 'Express', 'NestJS', 'Fastify', 'Koa', 'AdonisJS', 'Hapi', 'LoopBack', 'Moleculer', 'FeathersJS', 
+        'Django', 'Flask', 'FastAPI', 'Sanic', 'Bottle', 'Pyramid', 'Tornado', 'CherryPy', 'Ruby on Rails', 'Sinatra', 
+        'Hanami', 'Grape', 'Laravel', 'Symfony', 'CodeIgniter', 'CakePHP', 'Yii', 'Phalcon', 'Slim', 'Zend Framework', 
+        'Phoenix (Elixir)', 'Gin (Go)', 'Fiber (Go)', 'Echo (Go)', 'Beego (Go)', 'Revel (Go)', 'Actix (Rust)', 'Rocket (Rust)', 
+        'Warp (Rust)', 'Spring Boot', 'Micronaut', 'Quarkus', 'Vert.x', 'Play Framework', 'Akka', '.NET Core', 'ASP.NET', 
+        'NancyFX', 'ServiceStack', 'Dapr', 'Serverless Framework', 'ColdFusion', 'Deno', 'Bun', 'Cloudflare Workers', 
+        'Firebase Functions', 'AWS Lambda', 'Google Cloud Functions', 'Azure Functions',
+      
+        // Мобільна розробка (30+)
+        'React Native', 'Flutter', 'SwiftUI', 'Jetpack Compose', 'Kotlin Multiplatform', 'Xamarin', 'Ionic', 'Capacitor', 
+        'NativeScript', 'MAUI', 'PhoneGap', 'Cordova', 'PWA', 'Expo', 'KMM (Kotlin)', 'Appcelerator Titanium', 'Onsen UI', 
+        'Framework7', 'Quasar Framework', 'NativeBase', 'Tamagui', 'Glide', 'Fastlane', 'Appium', 'Detox', 'Espresso', 
+        'XCUITest', 'Sentry (Mobile)', 'Firebase Crashlytics', 'Google Mobile Ads',
+      
+        // Бази даних (40+)
+        'PostgreSQL', 'MySQL', 'SQLite', 'MariaDB', 'Microsoft SQL Server', 'Oracle', 'CockroachDB', 'TiDB', 'MongoDB', 
+        'Redis', 'Cassandra', 'DynamoDB', 'Firebase Firestore', 'CouchDB', 'Neo4j', 'ArangoDB', 'RethinkDB', 'FaunaDB', 
+        'SurrealDB', 'InfluxDB', 'TimescaleDB', 'ClickHouse', 'Elasticsearch', 'Solr', 'Meilisearch', 'Algolia', 'Prisma', 
+        'Sequelize', 'TypeORM', 'Drizzle', 'SQLAlchemy', 'Hibernate', 'Entity Framework', 'Mongoose', 'Eloquent', 
+        'ActiveRecord', 'Doctrine', 'WatermelonDB', 'Realm', 'ObjectBox', 'PouchDB',
+      
+        // Хмарні технології (50+)
+        'AWS (S3, EC2, Lambda, RDS, etc.)', 'Google Cloud', 'Azure', 'Firebase', 'DigitalOcean', 'Heroku', 'Vercel', 
+        'Netlify', 'Cloudflare', 'Linode', 'Render', 'Fly.io', 'Railway', 'Supabase', 'Appwrite', 'Hasura', 'Nhost', 
+        'AWS Amplify', 'AWS CDK', 'AWS SAM', 'AWS ECS', 'AWS EKS', 'AWS Fargate', 'AWS SNS/SQS', 'AWS Sagemaker', 
+        'Google Cloud Run', 'Google Kubernetes Engine', 'Azure App Service', 'Azure Functions', 'Azure Cosmos DB', 
+        'Cloudflare Workers', 'Cloudflare Pages', 'Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Pulumi', 'Crossplane', 
+        'Helm', 'Prometheus', 'Grafana', 'Loki', 'Jaeger', 'Istio', 'Linkerd', 'Consul', 'Vault', 'ArgoCD', 'Tekton', 
+        'Jenkins', 'Spinnaker',
+      
+        // AI/ML & Data Science (40+)
+        'TensorFlow', 'PyTorch', 'Keras', 'Scikit-learn', 'OpenCV', 'spaCy', 'NLTK', 'Hugging Face', 'LangChain', 
+        'LlamaIndex', 'Rasa', 'MLflow', 'Weka', 'Jupyter', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Plotly', 
+        'Dask', 'Ray', 'Apache Spark', 'Apache Flink', 'Apache Beam', 'Apache Kafka', 'BigQuery', 'Snowflake', 
+        'Databricks', 'Tableau', 'Power BI', 'Looker', 'Metabase', 'Apache Superset', 'H2O.ai', 'Fast.ai', 'ONNX', 
+        'Core ML', 'TensorRT', 'Dialogflow', 'IBM Watson',
+      
+        // Блокчейн & Web3 (30+)
+        'Solidity', 'Ethereum', 'Bitcoin', 'Polkadot', 'Cosmos', 'Hyperledger', 'Web3.js', 'Ethers.js', 'Hardhat', 
+        'Truffle', 'Foundry', 'Brownie', 'IPFS', 'Filecoin', 'The Graph', 'Alchemy', 'Moralis', 'Infura', 'Chainlink', 
+        'OpenZeppelin', 'Ganache', 'Remix IDE', 'MetaMask', 'WalletConnect', 'Uniswap', 'Aave', 'Compound', 'DAO', 
+        'NFT', 'DeFi', 'ZK-SNARKs',
+      
+        // Ігрова розробка (30+)
+        'Unity', 'Unreal Engine', 'Godot', 'Phaser', 'Three.js', 'Babylon.js', 'PlayCanvas', 'Cocos2d-x', 'MonoGame', 
+        'LibGDX', 'PixiJS', 'ImpactJS', 'Construct', 'GameMaker Studio', 'RPG Maker', 'LÖVE', 'Defold', 'Corona SDK', 
+        'Amazon Lumberyard', 'CryEngine', 'Source Engine', 'OpenGL', 'Vulkan', 'DirectX', 'WebGPU', 'Raylib', 'SFML', 
+        'SDL', 'OpenAL', 'FMOD',
+      
+        // DevOps & CI/CD (30+)
+        'Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jenkins', 'CircleCI', 'Travis CI', 'GitHub Actions', 'GitLab CI/CD', 
+        'ArgoCD', 'Tekton', 'Spinnaker', 'Drone', 'TeamCity', 'Bamboo', 'Azure DevOps', 'Codefresh', 'Flux', 'Harness', 
+        'Skaffold', 'Tilt', 'Telepresence', 'Kustomize', 'Kubectl', 'Helm', 'Docker Compose', 'Podman', 'Buildah', 
+        'Skopeo', 'Kaniko',
+      
+        // Тестування (30+)
+        'Jest', 'Vitest', 'Mocha', 'Chai', 'Jasmine', 'Karma', 'Cypress', 'Playwright', 'Selenium', 'Puppeteer', 
+        'Testing Library', 'Detox', 'Appium', 'Espresso', 'XCUITest', 'JUnit', 'TestNG', 'Mockito', 'WireMock', 
+        'Postman', 'Insomnia', 'SoapUI', 'Karate', 'RestAssured', 'Locust', 'JMeter', 'Gatling', 'k6', 'SonarQube', 
+        'OWASP ZAP',
+      
+        // UI/UX & Дизайн (40+)
+        'Figma', 'Adobe XD', 'Sketch', 'InVision', 'Zeplin', 'Framer', 'Webflow', 'Blender', 'Spline', 'Canva', 
+        'Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Cinema 4D', 'Maya', '3ds Max', 'Substance Painter', 
+        'Unity UI', 'Unreal UMG', 'Chakra UI', 'Material UI', 'Ant Design', 'Tailwind CSS', 'Bootstrap', 'Bulma', 
+        'Foundation', 'Semantic UI', 'Styled Components', 'Emotion', 'SASS', 'LESS', 'PostCSS', 'CSS Modules', 
+        'CSS-in-JS', 'Vanilla Extract', 'Storybook', 'Figma API', 'Design Systems', 'Accessibility (a11y)',
+      
+        // Інше (50+)
+        'Linux', 'Bash', 'Zsh', 'PowerShell', 'Nginx', 'Apache', 'HAProxy', 'Traefik', 'Caddy', 'WebSockets', 
+        'gRPC', 'GraphQL', 'REST', 'OpenAPI', 'Swagger', 'PostgREST', 'tRPC', 'WebAssembly', 'Electron', 'Tauri', 
+        'NW.js', 'Progressive Web Apps', 'Web Extensions', 'Web Components', 'Microfrontends', 'JAMstack', 'Headless CMS', 
+        'Strapi', 'Contentful', 'Sanity', 'Ghost', 'WordPress', 'Drupal', 'Joomla', 'Shopify', 'Magento', 'WooCommerce', 
+        'OAuth', 'JWT', 'OpenID Connect', 'SAML', 'LDAP', 'WebAuthn', 'OAuth 2.0', 'HTTP/2', 'HTTP/3', 'QUIC', 
+        'gzip', 'Brotli', 'WebP', 'AVIF'
+      ];
+
+    const countryOptions = [
+        'Україна', 'Польща', 'Німеччина', 'США', 'Великобританія',
+        'Канада', 'Франція', 'Іспанія', 'Італія', 'Швеція'
     ];
 
     const userTypes = [
@@ -167,6 +277,39 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             <InputError className="mt-2" message={errors.email} />
                         </div>
 
+                        {/* Телефон */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="phone">Телефон</Label>
+                            <Input
+                                id="phone"
+                                type="tel"
+                                className="mt-1 block w-full"
+                                value={data.phone}
+                                onChange={(e) => setData('phone', e.target.value)}
+                                placeholder="+380 XX XXX XX XX"
+                            />
+                            <InputError className="mt-2" message={errors.phone} />
+                        </div>
+
+                        {/* Країна */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="country">Країна</Label>
+                            <select
+                                id="country"
+                                value={data.country}
+                                onChange={(e) => setData('country', e.target.value)}
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <option value="">Оберіть країну</option>
+                                {countryOptions.map((country) => (
+                                    <option key={country} value={country}>
+                                        {country}
+                                    </option>
+                                ))}
+                            </select>
+                            <InputError className="mt-2" message={errors.country} />
+                        </div>
+
                         {/* Біографія */}
                         <div className="grid gap-2">
                             <Label htmlFor="bio">Біографія</Label>
@@ -178,6 +321,19 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 placeholder="Розкажіть про себе"
                             />
                             <InputError className="mt-2" message={errors.bio} />
+                        </div>
+
+                        {/* Досвід роботи */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="work_experience">Досвід роботи</Label>
+                            <textarea
+                                id="work_experience"
+                                className="flex h-32 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                value={data.work_experience}
+                                onChange={(e) => setData('work_experience', e.target.value)}
+                                placeholder="Опишіть ваш досвід роботи"
+                            />
+                            <InputError className="mt-2" message={errors.work_experience} />
                         </div>
 
                         {/* День народження */}
@@ -262,6 +418,48 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                                 ))}
                             </div>
                             <InputError className="mt-2" message={errors.portfolio_urls} />
+                        </div>
+
+                        {/* Соціальні мережі */}
+                        <div className="grid gap-2">
+                            <Label>Соціальні мережі</Label>
+                            <div className="flex gap-2">
+                                <Input
+                                    type="url"
+                                    value={newSocialLink}
+                                    onChange={(e) => setNewSocialLink(e.target.value)}
+                                    placeholder="Додати посилання на соцмережу"
+                                    className="flex-1"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={addSocialLink}
+                                    disabled={!newSocialLink.trim()}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <div className="mt-2 space-y-2">
+                                {data.social_links.map((url) => (
+                                    <div key={url} className="flex items-center justify-between rounded-md bg-gray-100 px-3 py-2 dark:bg-gray-800">
+                                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm hover:underline">
+                                            {url}
+                                        </a>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6"
+                                            onClick={() => removeSocialLink(url)}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                            <InputError className="mt-2" message={errors.social_links} />
                         </div>
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
