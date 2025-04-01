@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Project, type BreadcrumbItem } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage, router } from '@inertiajs/react';
 import { Filter, ArrowUpDown, ChevronDown } from 'lucide-react';
 import {
     DropdownMenu,
@@ -18,46 +18,45 @@ import { ProjectCard } from '@/components/project-card';
 import { Slider as MuiSlider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-// Стилізований Material Design слайдер
 const MaterialSlider = styled(MuiSlider)(({ theme }) => ({
-  color: '#3a8589',
-  height: 4,
-  padding: '15px 0',
-  '& .MuiSlider-thumb': {
-    height: 20,
-    width: 20,
-    backgroundColor: '#fff',
-    boxShadow: '0 0 2px 0px rgba(0, 0, 0, 0.1)',
-    '&:focus, &:hover, &.Mui-active': {
-      boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
-    },
-    '&:before': {
-      boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
-    },
-  },
-  '& .MuiSlider-valueLabel': {
-    fontSize: 12,
-    fontWeight: 'normal',
-    top: -6,
-    backgroundColor: 'unset',
-    color: theme.palette.text.primary,
-    '&:before': {
-      display: 'none',
-    },
-    '& *': {
-      background: 'transparent',
-      color: theme.palette.mode === 'dark' ? '#fff' : '#000',
-    },
-  },
-  '& .MuiSlider-track': {
-    border: 'none',
+    color: '#3a8589',
     height: 4,
-  },
-  '& .MuiSlider-rail': {
-    opacity: 0.5,
-    backgroundColor: '#bfbfbf',
-    height: 4,
-  },
+    padding: '15px 0',
+    '& .MuiSlider-thumb': {
+        height: 20,
+        width: 20,
+        backgroundColor: '#fff',
+        boxShadow: '0 0 2px 0px rgba(0, 0, 0, 0.1)',
+        '&:focus, &:hover, &.Mui-active': {
+            boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
+        },
+        '&:before': {
+            boxShadow: '0px 0px 1px 0px rgba(0,0,0,0.2)',
+        },
+    },
+    '& .MuiSlider-valueLabel': {
+        fontSize: 12,
+        fontWeight: 'normal',
+        top: -6,
+        backgroundColor: 'unset',
+        color: theme.palette.text.primary,
+        '&:before': {
+            display: 'none',
+        },
+        '& *': {
+            background: 'transparent',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+        },
+    },
+    '& .MuiSlider-track': {
+        border: 'none',
+        height: 4,
+    },
+    '& .MuiSlider-rail': {
+        opacity: 0.5,
+        backgroundColor: '#bfbfbf',
+        height: 4,
+    },
 }));
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -68,14 +67,33 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Projects() {
-    const { props } = usePage() as { props: { projects: { data: Project[] } } };
-    const initialProjects: Project[] = props.projects.data || [];
-    const [searchTerm, setSearchTerm] = useState('');
-    const [techStackFilter, setTechStackFilter] = useState<string[]>([]);
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
-    const [deadlineFilter, setDeadlineFilter] = useState<string>('');
-    const [statusFilter, setStatusFilter] = useState<string[]>([]);
-    const [sortOption, setSortOption] = useState<'price-asc' | 'price-desc' | 'newest' | 'oldest'>('newest');
+    const { props } = usePage<{
+        projects: { data: Project[] },
+        filters: {
+            title?: string,
+            tech_stack?: string[],
+            budget?: { from?: number, to?: number },
+            deadline?: string,
+            status?: string[],
+            sort?: string
+        }
+    }>();
+
+    const initialProjects: Project[] = props.projects?.data || [];
+    const initialFilters = props.filters || {};
+
+    // Filter states
+    const [searchTerm, setSearchTerm] = useState(initialFilters.title || '');
+    const [techStackFilter, setTechStackFilter] = useState<string[]>(initialFilters.tech_stack || []);
+    const [priceRange, setPriceRange] = useState<[number, number]>([
+        initialFilters.budget?.from || 0,
+        initialFilters.budget?.to || 10000
+    ]);
+    const [deadlineFilter, setDeadlineFilter] = useState(initialFilters.deadline || '');
+    const [statusFilter, setStatusFilter] = useState<string[]>(initialFilters.status || []);
+    const [sortOption, setSortOption] = useState<'budget' | '-budget' | '-created_at' | 'created_at'>(
+        initialFilters.sort as any || '-created_at'
+    );
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
 
@@ -92,34 +110,25 @@ export default function Projects() {
     const bidsDeadlineRef = useRef<HTMLInputElement>(null);
     const projectDeadlineRef = useRef<HTMLInputElement>(null);
 
+    // Apply filters without page reload
     const applyFilters = () => {
-        const params = new URLSearchParams();
+        const params: any = {};
 
-        if (searchTerm) params.append('filter[title]', searchTerm);
-
-        // Якщо фільтр за технічним стеком є, додаємо
-        if (techStackFilter.length > 0) params.append('filter[tech_stack]', techStackFilter.join(','));
-
-        // Якщо фільтр за статусом є, додаємо його
-        if (statusFilter.length > 0) params.append('filter[status]', statusFilter.join(','));
-
-        // Якщо є фільтр за дедлайном, додаємо його
-        if (deadlineFilter) params.append('filter[deadline]', deadlineFilter);
-
-        // Якщо є фільтр за бюджетом, додаємо його
+        if (searchTerm) params['filter[title]'] = searchTerm;
+        if (techStackFilter.length > 0) params['filter[tech_stack]'] = techStackFilter.join(',');
         if (priceRange[0] > 0 || priceRange[1] < 10000) {
-            params.append('filter[budget][from]', priceRange[0].toString());
-            params.append('filter[budget][to]', priceRange[1].toString());
+            params['filter[budget][from]'] = priceRange[0];
+            params['filter[budget][to]'] = priceRange[1];
         }
+        if (deadlineFilter) params['filter[deadline]'] = deadlineFilter;
+        if (statusFilter.length > 0) params['filter[status]'] = statusFilter.join(',');
+        if (sortOption) params['sort'] = sortOption;
 
-        // Якщо є опція сортування, додаємо її
-        if (sortOption) params.append('sort', sortOption === 'price-asc' ? 'budget' :
-            sortOption === 'price-desc' ? '-budget' :
-                sortOption === 'newest' ? '-created_at' : 'created_at');
-
-        window.location.href = `/projects?${params.toString()}`;
+        router.get('/projects', params, {
+            preserveState: true,
+            replace: true,
+        });
     };
-
 
     const handleCreateProject = () => {
         post('/projects', {
@@ -135,6 +144,8 @@ export default function Projects() {
                     bids_deadline: '',
                     project_deadline: '',
                 });
+                // Refresh the projects list after creation
+                router.reload({ only: ['projects'] });
             },
         });
     };
@@ -146,11 +157,13 @@ export default function Projects() {
     };
 
     const resetFilters = () => {
+        setSearchTerm('');
+        setTechStackFilter([]);
         setPriceRange([0, 10000]);
         setDeadlineFilter('');
         setStatusFilter([]);
-        setTechStackFilter([]);
-        setSearchTerm('');
+        setSortOption('-created_at');
+        router.get('/projects', {}, { preserveState: true });
     };
 
     return (
@@ -174,11 +187,11 @@ export default function Projects() {
                     </div>
                 </div>
 
-                {/* Панель фільтрів */}
+                {/* Filters panel */}
                 {showFilters && (
                     <div className="flex flex-col gap-4 rounded-lg border p-4 dark:border-gray-700">
                         <div className="flex flex-wrap items-center gap-4">
-                            {/* Пошук */}
+                            {/* Search */}
                             <div className="flex-1 min-w-[200px]">
                                 <Input
                                     type="text"
@@ -188,7 +201,7 @@ export default function Projects() {
                                 />
                             </div>
 
-                            {/* Технології */}
+                            {/* Technologies */}
                             <div className="flex-1 min-w-[200px]">
                                 <Label>Технології</Label>
                                 <MultiSelect
@@ -198,7 +211,7 @@ export default function Projects() {
                                 />
                             </div>
 
-                            {/* Ціна */}
+                            {/* Price */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline" className="flex items-center gap-1">
@@ -219,7 +232,7 @@ export default function Projects() {
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
-                            {/* Дедлайн */}
+                            {/* Deadline */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline" className="flex items-center gap-1">
@@ -247,7 +260,7 @@ export default function Projects() {
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
-                            {/* Статус */}
+                            {/* Status */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline" className="flex items-center gap-1">
@@ -279,39 +292,37 @@ export default function Projects() {
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            {/* Сортування */}
-                            <div className="flex justify-end">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" className="flex items-center gap-2">
-                                            <ArrowUpDown className="h-4 w-4" />
-                                            <span>
-                                    {sortOption === 'price-asc' && 'Від дешевих'}
-                                                {sortOption === 'price-desc' && 'Від дорогих'}
-                                                {sortOption === 'newest' && 'Нові'}
-                                                {sortOption === 'oldest' && 'Старі'}
-                                </span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem onClick={() => setSortOption('price-asc')}>
-                                            Від дешевих
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setSortOption('price-desc')}>
-                                            Від дорогих
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setSortOption('newest')}>
-                                            Спочатку нові
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setSortOption('oldest')}>
-                                            Спочатку старі
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
 
+                            {/* Sorting */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" className="flex items-center gap-2">
+                                        <ArrowUpDown className="h-4 w-4" />
+                                        <span>
+                                            {sortOption === 'budget' && 'Від дешевих'}
+                                            {sortOption === '-budget' && 'Від дорогих'}
+                                            {sortOption === '-created_at' && 'Нові'}
+                                            {sortOption === 'created_at' && 'Старі'}
+                                        </span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem onClick={() => setSortOption('budget')}>
+                                        Від дешевих
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setSortOption('-budget')}>
+                                        Від дорогих
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setSortOption('-created_at')}>
+                                        Спочатку нові
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setSortOption('created_at')}>
+                                        Спочатку старі
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
 
-                            {/* Скидання фільтрів */}
+                            {/* Reset filters */}
                             <Button
                                 variant="ghost"
                                 onClick={resetFilters}
@@ -319,10 +330,11 @@ export default function Projects() {
                             >
                                 Скинути фільтри
                             </Button>
+
+                            {/* Apply filters */}
                             <Button
-                                variant="ghost"
+                                variant="default"
                                 onClick={applyFilters}
-                                className="ml-auto"
                             >
                                 Застосувати фільтри
                             </Button>
@@ -330,8 +342,7 @@ export default function Projects() {
                     </div>
                 )}
 
-
-                {/* Форма створення проекту */}
+                {/* Project creation form */}
                 {isFormVisible && (
                     <div className="flex flex-col gap-4 rounded-lg border p-4 transition-all duration-500">
                         <h2 className="text-xl font-bold">Створити новий проєкт</h2>
@@ -422,9 +433,9 @@ export default function Projects() {
                     </div>
                 )}
 
-                {/* Список проектів */}
+                {/* Projects list */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {initialProjects?.length > 0 ? (
+                    {initialProjects.length > 0 ? (
                         initialProjects.map((project) => (
                             <ProjectCard
                                 key={project.id}
@@ -446,7 +457,6 @@ export default function Projects() {
                         </div>
                     )}
                 </div>
-
             </div>
 
             <style>

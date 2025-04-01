@@ -33,6 +33,7 @@ class ProjectService
             ])
             ->allowedSorts(['created_at', 'budget', 'bids_deadline', 'project_deadline'])
             ->allowedIncludes(['bids'])
+            ->latest()
             ->paginate($perPage);
     }
 

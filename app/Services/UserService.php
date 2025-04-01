@@ -24,6 +24,16 @@ class UserService
                 AllowedFilter::partial('name'),
                 AllowedFilter::custom('birthday', new RangeFilter()),
                 AllowedFilter::custom('skills', new JsonFilter()),
+                AllowedFilter::callback('rating', function ($query, $value) {
+                    if (is_array($value)) {
+                        if (isset($value['from'])) {
+                            $query->having('average_rating', '>=', $value['from']);
+                        }
+                        if (isset($value['to'])) {
+                            $query->having('average_rating', '<=', $value['to']);
+                        }
+                    }
+                }),
             ])
             ->withCount([
                 'projects as projects_count' => function ($query) {
@@ -31,7 +41,7 @@ class UserService
                 }
             ])
             ->withAvg('reviews as average_rating', 'rating')
-            ->allowedSorts(['name', 'created_at', 'birthday'])
+            ->allowedSorts(['name', 'created_at', 'birthday', 'average_rating',  'projects_count'])
             ->paginate($perPage);
     }
 

@@ -6,8 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge"
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Dashboard', href: '/dashboard' },
-  { title: 'Performance Profile', href: '/profile' },
+  { title: 'Панель керування', href: '/dashboard' },
 ];
 
 export default function PerformanceProfile() {
@@ -53,8 +52,8 @@ export default function PerformanceProfile() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Performance Profile" />
-      
-      <div className="space-y-6">
+
+      <div className="space-y-6 ml-3 mr-3 mt-3 mb-3">
         {/* Profile Header */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -63,7 +62,7 @@ export default function PerformanceProfile() {
               {profileStats.position}
             </Badge>
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
             {profileStats.skills.map((skill) => (
               <Badge key={skill} variant="secondary" className="font-normal">
@@ -83,8 +82,8 @@ export default function PerformanceProfile() {
 
         {/* Analytics Section */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <ChartCard 
-            title="Project Distribution" 
+          <ChartCard
+            title="Project Distribution"
             description="Current workload breakdown"
           >
             <ResponsiveContainer width="100%" height={200}>
@@ -112,10 +111,10 @@ export default function PerformanceProfile() {
           >
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={deploymentData}>
-                <Bar 
-                  dataKey="deployments" 
-                  fill="#8884d8" 
-                  radius={[4, 4, 0, 0]} 
+                <Bar
+                  dataKey="deployments"
+                  fill="#8884d8"
+                  radius={[4, 4, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -128,7 +127,7 @@ export default function PerformanceProfile() {
           >
             <div className="space-y-4">
               {profileStats.currentProjects.map((project) => (
-                <ProgressItem 
+                <ProgressItem
                   key={project.name}
                   label={project.name}
                   value={project.progress}
@@ -147,23 +146,23 @@ export default function PerformanceProfile() {
             </CardHeader>
             <CardContent className="space-y-4">
               {[
-                { 
-                  action: "Platform Redesign v1.2 deployed", 
+                {
+                  action: "Platform Redesign v1.2 deployed",
                   timestamp: "2023-06-15T14:32:00Z",
-                  status: "deployment" 
+                  status: "deployment"
                 },
-                { 
-                  action: "Code review completed", 
+                {
+                  action: "Code review completed",
                   timestamp: "2023-06-14T09:15:00Z",
-                  status: "review" 
+                  status: "review"
                 },
-                { 
-                  action: "Critical bug hotfix", 
+                {
+                  action: "Critical bug hotfix",
                   timestamp: "2023-06-12T18:45:00Z",
-                  status: "maintenance" 
+                  status: "maintenance"
                 },
               ].map((item, index) => (
-                <ActivityItem 
+                <ActivityItem
                   key={index}
                   action={item.action}
                   timestamp={item.timestamp}
@@ -179,26 +178,26 @@ export default function PerformanceProfile() {
               <CardDescription>Performance indicators</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <MetricItem 
-                label="Code Quality Score" 
-                value={profileStats.performance.codeQuality} 
-                threshold={85} 
+              <MetricItem
+                label="Code Quality Score"
+                value={profileStats.performance.codeQuality}
+                threshold={85}
               />
-              <MetricItem 
-                label="Delivery Efficiency" 
-                value={profileStats.performance.deliveryTime} 
-                threshold={75} 
+              <MetricItem
+                label="Delivery Efficiency"
+                value={profileStats.performance.deliveryTime}
+                threshold={75}
               />
-              <MetricItem 
-                label="Client Satisfaction" 
-                value={profileStats.performance.clientSatisfaction} 
-                threshold={85} 
+              <MetricItem
+                label="Client Satisfaction"
+                value={profileStats.performance.clientSatisfaction}
+                threshold={85}
               />
-              <MetricItem 
-                label="Defect Density" 
-                value={profileStats.performance.bugRate} 
-                threshold={15} 
-                inverse 
+              <MetricItem
+                label="Defect Density"
+                value={profileStats.performance.bugRate}
+                threshold={15}
+                inverse
               />
             </CardContent>
           </Card>
@@ -209,13 +208,13 @@ export default function PerformanceProfile() {
 }
 
 // Reusable Components
-function StatCard({ 
-  label, 
-  value, 
+function StatCard({
+  label,
+  value,
   unit = "",
   trend
-}: { 
-  label: string; 
+}: {
+  label: string;
   value: string | number;
   unit?: string;
   trend?: "up" | "down";
@@ -242,14 +241,14 @@ function StatCard({
   );
 }
 
-function ChartCard({ 
-  title, 
-  description, 
+function ChartCard({
+  title,
+  description,
   children,
   className = ""
-}: { 
-  title: string; 
-  description: string; 
+}: {
+  title: string;
+  description: string;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -264,12 +263,12 @@ function ChartCard({
   );
 }
 
-function ActivityItem({ 
-  action, 
+function ActivityItem({
+  action,
   timestamp,
   status
-}: { 
-  action: string; 
+}: {
+  action: string;
   timestamp: string;
   status: "deployment" | "review" | "maintenance";
 }) {
@@ -297,19 +296,19 @@ function ActivityItem({
   );
 }
 
-function MetricItem({ 
-  label, 
-  value, 
-  threshold, 
-  inverse = false 
-}: { 
-  label: string; 
-  value: number; 
+function MetricItem({
+  label,
+  value,
+  threshold,
+  inverse = false
+}: {
+  label: string;
+  value: number;
   threshold: number;
   inverse?: boolean;
 }) {
   const isGood = inverse ? value <= threshold : value >= threshold;
-  
+
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between text-sm">
@@ -321,12 +320,12 @@ function MetricItem({
         </span>
       </div>
       <div className="relative h-2 w-full rounded-full bg-muted">
-        <div 
-          className="absolute left-0 top-0 h-2 rounded-full bg-primary" 
+        <div
+          className="absolute left-0 top-0 h-2 rounded-full bg-primary"
           style={{ width: `${value}%` }}
         />
-        <div 
-          className="absolute top-0 h-2 border-r-2 border-foreground" 
+        <div
+          className="absolute top-0 h-2 border-r-2 border-foreground"
           style={{ left: `${threshold}%` }}
         />
       </div>
@@ -342,8 +341,8 @@ function ProgressItem({ label, value }: { label: string; value: number }) {
         <span className="text-muted-foreground">{value}%</span>
       </div>
       <div className="relative h-2 w-full rounded-full bg-muted">
-        <div 
-          className="absolute left-0 top-0 h-2 rounded-full bg-primary" 
+        <div
+          className="absolute left-0 top-0 h-2 rounded-full bg-primary"
           style={{ width: `${value}%` }}
         />
       </div>
