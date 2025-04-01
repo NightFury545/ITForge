@@ -17,6 +17,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { ProjectCard } from '@/components/project-card';
 import { Slider as MuiSlider } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import techStack from '@/data/tech-stack.json';
 
 const MaterialSlider = styled(MuiSlider)(({ theme }) => ({
     color: '#3a8589',
@@ -205,7 +206,7 @@ export default function Projects() {
                             <div className="flex-1 min-w-[200px]">
                                 <Label>Технології</Label>
                                 <MultiSelect
-                                    options={['React', 'Vue.js', 'Node.js', 'PHP', 'Laravel', 'MySQL']}
+                                    options={techStack}
                                     selected={techStackFilter}
                                     onChange={setTechStackFilter}
                                 />

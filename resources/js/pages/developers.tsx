@@ -17,6 +17,7 @@ import {
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Slider as MuiSlider } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import techStack from '@/data/tech-stack.json';
 
 const MaterialSlider = styled(MuiSlider)(({ theme }) => ({
     color: '#3a8589',
@@ -97,11 +98,6 @@ export default function DevelopersPage() {
     );
     const [showFilters, setShowFilters] = useState(false);
 
-    // Отримання унікальних навичок
-    const allSkills = Array.from(
-        new Set(initialDevelopers.flatMap(dev => dev.skills || []))
-    );
-
     // Застосування фільтрів
     const applyFilters = () => {
         const params: any = {};
@@ -169,7 +165,7 @@ export default function DevelopersPage() {
                             <div className="flex-1 min-w-[200px]">
                                 <Label>Навички</Label>
                                 <MultiSelect
-                                    options={allSkills}
+                                    options={techStack}
                                     selected={skillsFilter}
                                     onChange={setSkillsFilter}
                                 />
