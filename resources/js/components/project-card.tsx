@@ -60,7 +60,7 @@ export function ProjectCard({ id, title, description, budget, tech_stack, status
                         </span>
                     </div>
                     <div className="mt-4 text-lg font-bold text-gray-900 dark:text-gray-100">${budget}</div>
-                    <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">Status: {status}</div>
+                    <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">Статус: {status}</div>
                     <div ref={techScrollRef} className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto">
                         {tech_stack.map((tech, index) => (
                             <span

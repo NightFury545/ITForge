@@ -128,15 +128,15 @@ export default function PerformanceProfile({
     transactions = defaultProps.transactions,
 }: PerformanceProfileProps) {
     const siteStatsData = [
-        { name: 'Total Users', value: siteStats.totalUsers },
-        { name: 'Total Projects', value: siteStats.totalProjects },
-        { name: 'Total Chats', value: siteStats.totalChats },
+        { name: 'Кількість користувачів', value: siteStats.totalUsers },
+        { name: 'Кількість проєктів', value: siteStats.totalProjects },
+        { name: 'Кількість чатів', value: siteStats.totalChats },
     ];
 
     const earningsData = [
-        { name: 'Deposits', value: siteStats.totalDeposits },
-        { name: 'Payments', value: siteStats.totalPayments },
-        { name: 'Withdrawals', value: siteStats.totalWithdrawals },
+        { name: 'Депозит', value: siteStats.totalDeposits },
+        { name: 'Переказ', value: siteStats.totalPayments },
+        { name: 'Виплата', value: siteStats.totalWithdrawals },
     ];
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
@@ -148,31 +148,31 @@ export default function PerformanceProfile({
             <div className="mt-3 mr-3 mb-3 ml-3 space-y-6">
                 {/* Site Statistics Header */}
                 <div className="space-y-3">
-                    <h2 className="text-2xl font-semibold tracking-tight">Site Statistics</h2>
+                    <h2 className="text-2xl font-semibold tracking-tight">Статистика сайту</h2>
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="font-normal">
-                            Total Users: {siteStats.totalUsers}
+                            Кількість користувачів: {siteStats.totalUsers}
                         </Badge>
                         <Badge variant="secondary" className="font-normal">
-                            Total Projects: {siteStats.totalProjects}
+                            Кількість проєктів: {siteStats.totalProjects}
                         </Badge>
                         <Badge variant="secondary" className="font-normal">
-                            New Users (Week): {siteStats.newUsersLastWeek}
+                            Кількість нових користувачів (Тиждень): {siteStats.newUsersLastWeek}
                         </Badge>
                     </div>
                 </div>
 
                 {/* Site Stats Overview */}
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                    <StatCard label="Total Users" value={siteStats.totalUsers} trend="up" />
-                    <StatCard label="Total Projects" value={siteStats.totalProjects} />
-                    <StatCard label="Total Chats" value={siteStats.totalChats} />
-                    <StatCard label="Total Transactions" value={siteStats.totalTransactions} />
+                    <StatCard label="Кількість користувачів" value={siteStats.totalUsers} trend="up" />
+                    <StatCard label="Кількість проєктів" value={siteStats.totalProjects} />
+                    <StatCard label="Кількість чатів" value={siteStats.totalChats} />
+                    <StatCard label="Кількість транзакцій" value={siteStats.totalTransactions} />
                 </div>
 
                 {/* Site Analytics Section */}
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <ChartCard title="Site Overview" description="Key metrics distribution" compact>
+                    <ChartCard title="Огляд сайту" description="Розподіл ключових показників" compact>
                         <div className="flex h-64">
                             {/* Donut Chart */}
                             <div className="w-1/2">
@@ -220,7 +220,7 @@ export default function PerformanceProfile({
                         </div>
                     </ChartCard>
 
-                    <ChartCard title="Projects Created Over Time" description="Number of projects created on each date">
+                    <ChartCard title="Проекти, створені з часом" description="Кількість проектів, створених на кожну дату">
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
                                 data={siteStats.projectsCreatedOverTime}
@@ -254,7 +254,7 @@ export default function PerformanceProfile({
                         </ResponsiveContainer>
                     </ChartCard>
 
-                    <ChartCard title="Total Money Volume" description="Financial breakdown">
+                    <ChartCard title="Загальний обсяг грошей" description="Порівняння загальних сум депозитів, переказів і виплат за останній період.">
                         <ResponsiveContainer width="90%" height={300}>
                             <BarChart data={earningsData} margin={{ top: 20, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
@@ -286,8 +286,8 @@ export default function PerformanceProfile({
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <CardTitle>Wallet Balance</CardTitle>
-                                    <CardDescription>Available funds</CardDescription>
+                                    <CardTitle>Баланс гаманця</CardTitle>
+                                    <CardDescription>Наявні кошти</CardDescription>
                                 </div>
                                 <Badge variant="default" className="px-4 py-1 text-lg">
                                     ${profile.walletBalance?.toLocaleString()}
@@ -297,24 +297,24 @@ export default function PerformanceProfile({
                         <CardContent>
                             <div className="mb-4 grid grid-cols-3 gap-4">
                                 <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">Total Earned</p>
+                                    <p className="text-muted-foreground text-sm">Всього зароблено</p>
                                     <p className="font-semibold">${profile.earnings?.total?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">Pending</p>
+                                    <p className="text-muted-foreground text-sm">В очікуванні</p>
                                     <p className="font-semibold">${profile.earnings?.pending?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">Last Month</p>
+                                    <p className="text-muted-foreground text-sm">Останній місяць</p>
                                     <p className="font-semibold">${profile.earnings?.lastMonth?.toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">
                                 <Button variant="default" asChild>
-                                    <Link href="/deposit">Deposit</Link>
+                                    <Link href="/deposit">Депозит</Link>
                                 </Button>
                                 <Button variant="outline" asChild>
-                                    <Link href="/withdraw">Withdraw</Link>
+                                    <Link href="/withdraw">Зняти кошти</Link>
                                 </Button>
                             </div>
                         </CardContent>
@@ -322,20 +322,20 @@ export default function PerformanceProfile({
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Performance Metrics</CardTitle>
-                            <CardDescription>Key indicators</CardDescription>
+                            <CardTitle>Показники ефективності</CardTitle>
+                            <CardDescription>Ключові показники</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <MetricItem
-                                label="Active Projects"
+                                label="Активні проєкти"
                                 value={siteStats.totalProjects > 0 ? (((siteStats.inProgressProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                             <MetricItem
-                                label="Opened Projects"
+                                label="Відкриті проєкти"
                                 value={siteStats.totalProjects > 0 ? (((siteStats.openedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                             <MetricItem
-                                label="Completed Projects"
+                                label="Завершені проєкти"
                                 value={siteStats.totalProjects > 0 ? (((siteStats.completedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                         </CardContent>
@@ -343,15 +343,15 @@ export default function PerformanceProfile({
                 </div>
 
                 {/* Personal Projects Section */}
-                <SectionWithViewAll title="My Projects" href="/projects">
+                <SectionWithViewAll title="Мої проєкти" href="/projects">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Project</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Budget</TableHead>
-                                <TableHead>Deadline</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead>Проєкт</TableHead>
+                                <TableHead>Статус</TableHead>
+                                <TableHead>Бюджет</TableHead>
+                                <TableHead>Дедлайн</TableHead>
+                                <TableHead className="text-right">Дії</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

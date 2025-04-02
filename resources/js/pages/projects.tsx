@@ -395,7 +395,7 @@ export default function Projects() {
                         <div className="space-y-2">
                             <Label>Технологічний стек</Label>
                             <MultiSelect
-                                options={['React', 'Vue.js', 'Node.js', 'PHP', 'Laravel', 'MySQL']}
+                                options={techStack}
                                 selected={data.tech_stack}
                                 onChange={(selected) => setData('tech_stack', selected)}
                             />
