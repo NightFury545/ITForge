@@ -26,7 +26,7 @@ class CreateProjectRequest extends FormRequest
         return [
             'title' => 'required|string|max:32',
             'description' => 'required|string|max:564',
-            'budget' => 'required|numeric',
+            'budget' => 'required|numeric|min:1',
             'requirements' => 'required|string|max:256',
             'tech_stack' => 'required|array|min:1|max:12',
             'tech_stack.*' => 'string|max:32',

@@ -1,22 +1,42 @@
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
-import { Bar, BarChart, Pie, PieChart, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Link } from '@inertiajs/react'
+import { Head, Link } from '@inertiajs/react';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell, Legend,
+    Pie,
+    PieChart, RadialBar, RadialBarChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis
+} from 'recharts';
 
 interface PerformanceProfileProps {
     siteStats?: {
         totalUsers: number;
-        activeProjects: number;
-        completedProjects: number;
+        totalProjects: number;
+        totalChats: number;
         totalTransactions: number;
         newUsersLastWeek: number;
-        totalEarnings: number;
+        totalDeposits: number,
+        totalPayments: number,
+        totalWithdrawals: number,
         pendingWithdrawals: number;
+        inProgressProjects: number;
+        openedProjects: number;
+        completedProjects: number;
+        projectsCreatedOverTime: [
+            {
+                date: string;
+                projects: number;
+            }
+        ]
     };
     profile?: {
         position?: string;
@@ -24,7 +44,7 @@ interface PerformanceProfileProps {
         currentProjects?: {
             id: string;
             name: string;
-            progress: number;
+            budget: number;
             status: string;
         }[];
         walletBalance?: number;
@@ -38,7 +58,7 @@ interface PerformanceProfileProps {
         id: string;
         title: string;
         status: string;
-        progress: number;
+        budget: number;
         deadline: string;
     }[];
     bids?: {
@@ -70,12 +90,17 @@ interface PerformanceProfileProps {
 const defaultProps = {
     siteStats: {
         totalUsers: 0,
-        activeProjects: 0,
-        completedProjects: 0,
+        totalProjects: 0,
+        totalChats: 0,
         totalTransactions: 0,
         newUsersLastWeek: 0,
-        totalEarnings: 0,
-        pendingWithdrawals: 0
+        totalDeposits: 0,
+        totalPayments: 0,
+        totalWithdrawals: 0,
+        pendingWithdrawals: 0,
+        inProgressProjects: 0,
+        openedProjects: 0,
+        completedProjects: 0,
     },
     profile: {
         position: 'Developer',
@@ -85,8 +110,8 @@ const defaultProps = {
         earnings: {
             total: 0,
             pending: 0,
-            lastMonth: 0
-        }
+            lastMonth: 0,
+        },
     },
     projects: [],
     bids: [],
@@ -95,23 +120,23 @@ const defaultProps = {
 };
 
 export default function PerformanceProfile({
-                                               siteStats = defaultProps.siteStats,
-                                               profile = defaultProps.profile,
-                                               projects = defaultProps.projects,
-                                               bids = defaultProps.bids,
-                                               contracts = defaultProps.contracts,
-                                               transactions = defaultProps.transactions
-                                           }: PerformanceProfileProps) {
+    siteStats = defaultProps.siteStats,
+    profile = defaultProps.profile,
+    projects = defaultProps.projects,
+    bids = defaultProps.bids,
+    contracts = defaultProps.contracts,
+    transactions = defaultProps.transactions,
+}: PerformanceProfileProps) {
     const siteStatsData = [
-        { name: "Total Users", value: siteStats.totalUsers },
-        { name: "Active Projects", value: siteStats.activeProjects },
-        { name: "Completed Projects", value: siteStats.completedProjects },
+        { name: 'Total Users', value: siteStats.totalUsers },
+        { name: 'Total Projects', value: siteStats.totalProjects },
+        { name: 'Total Chats', value: siteStats.totalChats },
     ];
 
     const earningsData = [
-        { name: "Total", value: profile.earnings?.total || 0 },
-        { name: "Pending", value: profile.earnings?.pending || 0 },
-        { name: "Last Month", value: profile.earnings?.lastMonth || 0 },
+        { name: 'Deposits', value: siteStats.totalDeposits },
+        { name: 'Payments', value: siteStats.totalPayments },
+        { name: 'Withdrawals', value: siteStats.totalWithdrawals },
     ];
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
@@ -120,7 +145,7 @@ export default function PerformanceProfile({
         <AppLayout breadcrumbs={[{ title: 'Панель керування', href: '/dashboard' }]}>
             <Head title="Performance Profile" />
 
-            <div className="space-y-6 ml-3 mr-3 mt-3 mb-3">
+            <div className="mt-3 mr-3 mb-3 ml-3 space-y-6">
                 {/* Site Statistics Header */}
                 <div className="space-y-3">
                     <h2 className="text-2xl font-semibold tracking-tight">Site Statistics</h2>
@@ -129,7 +154,7 @@ export default function PerformanceProfile({
                             Total Users: {siteStats.totalUsers}
                         </Badge>
                         <Badge variant="secondary" className="font-normal">
-                            Active Projects: {siteStats.activeProjects}
+                            Total Projects: {siteStats.totalProjects}
                         </Badge>
                         <Badge variant="secondary" className="font-normal">
                             New Users (Week): {siteStats.newUsersLastWeek}
@@ -140,118 +165,156 @@ export default function PerformanceProfile({
                 {/* Site Stats Overview */}
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     <StatCard label="Total Users" value={siteStats.totalUsers} trend="up" />
-                    <StatCard label="Active Projects" value={siteStats.activeProjects} />
-                    <StatCard label="Completed Projects" value={siteStats.completedProjects} />
+                    <StatCard label="Total Projects" value={siteStats.totalProjects} />
+                    <StatCard label="Total Chats" value={siteStats.totalChats} />
                     <StatCard label="Total Transactions" value={siteStats.totalTransactions} />
                 </div>
 
                 {/* Site Analytics Section */}
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <ChartCard
-                        title="Site Overview"
-                        description="Key metrics distribution"
-                    >
-                        <ResponsiveContainer width="100%" height={200}>
-                            <PieChart>
-                                <Pie
-                                    data={siteStatsData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={80}
-                                    dataKey="value"
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                >
-                                    {siteStatsData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <ChartCard title="Site Overview" description="Key metrics distribution" compact>
+                        <div className="flex h-64">
+                            {/* Donut Chart */}
+                            <div className="w-1/2">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={siteStatsData.filter((item) => item.value > 0)}
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius={80}
+                                            innerRadius={50}
+                                            paddingAngle={2}
+                                            dataKey="value"
+                                            label={false}
+                                        >
+                                            {siteStatsData
+                                                .filter((item) => item.value > 0)
+                                                .map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#fff" strokeWidth={1} />
+                                                ))}
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            {/* Color indicators with values */}
+                            <div className="flex w-1/2 flex-col justify-center pl-4">
+                                {siteStatsData.map((item, index) => {
+                                    const total = siteStatsData.reduce((sum, i) => sum + i.value, 0);
+                                    const percent = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
+
+                                    return (
+                                        <div key={index} className="mb-3 flex items-center">
+                                            <div
+                                                className="mr-2 h-3 w-3 flex-shrink-0 rounded-full"
+                                                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                            />
+                                            <div className="text-sm text-gray-700">
+                                                <span className="font-medium">{item.name}</span>: {item.value} ({percent}%)
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </ChartCard>
 
-                    <ChartCard
-                        title="User Growth"
-                        description="Weekly new users"
-                    >
-                        <ResponsiveContainer width="100%" height={200}>
-                            <BarChart data={[
-                                { week: 'Week 1', users: 15 },
-                                { week: 'Week 2', users: 22 },
-                                { week: 'Week 3', users: 18 },
-                                { week: 'Week 4', users: 30 },
-                            ]}>
-                                <XAxis dataKey="week" />
-                                <YAxis />
-                                <Tooltip />
+                    <ChartCard title="Projects Created Over Time" description="Number of projects created on each date">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart
+                                data={siteStats.projectsCreatedOverTime}
+                                margin={{ top: 10, right: 20, left: 0, bottom: 30 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
+
+                                <XAxis
+                                    dataKey="date"
+                                    tick={{ fill: '#fff', fontSize: 8 }}
+                                    angle={-45}
+                                    textAnchor="end"
+                                    interval={1}
+                                />
+                                <YAxis tick={{ fill: '#fff' }} />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: '#1a202c',
+                                        color: '#fff',
+                                        borderRadius: '8px',
+                                        padding: '8px 12px',
+                                    }}
+                                />
                                 <Bar
-                                    dataKey="users"
-                                    fill="#8884d8"
-                                    radius={[4, 4, 0, 0]}
+                                    dataKey="projects"
+                                    fill="#4F46E5"
+                                    radius={[6, 6, 0, 0]}
+                                    animationDuration={1000}
                                 />
                             </BarChart>
                         </ResponsiveContainer>
                     </ChartCard>
 
-                    <ChartCard
-                        title="Earnings Distribution"
-                        description="Financial breakdown"
-                    >
-                        <ResponsiveContainer width="100%" height={200}>
-                            <PieChart>
-                                <Pie
-                                    data={earningsData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={80}
-                                    dataKey="value"
-                                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                >
-                                    {earningsData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                            </PieChart>
+                    <ChartCard title="Total Money Volume" description="Financial breakdown">
+                        <ResponsiveContainer width="90%" height={300}>
+                            <BarChart data={earningsData} margin={{ top: 20, right: 0, left: 0, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+                                <XAxis dataKey="name" tick={{ fill: '#fff', fontSize: 10 }} />
+                                <YAxis domain={[0, Math.max(...earningsData.map(d => d.value), 10)]} tick={{ fill: '#fff' }} />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                                        color: '#fff',
+                                        borderRadius: '6px',
+                                        padding: '8px 12px',
+                                        fontSize: '14px',
+                                        fontWeight: 'bold',
+                                        textAlign: 'center',
+                                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.3)',
+                                    }}
+                                    cursor={{ fill: 'rgba(0, 0, 0, 0.2)' }}
+                                />
+                                <Bar dataKey="value" fill="#4F46E5" radius={[10, 10, 0, 0]} />
+                            </BarChart>
                         </ResponsiveContainer>
                     </ChartCard>
+
                 </div>
 
                 {/* Wallet Balance Section */}
                 <div className="grid gap-6 md:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center justify-between">
                                 <div>
                                     <CardTitle>Wallet Balance</CardTitle>
                                     <CardDescription>Available funds</CardDescription>
                                 </div>
-                                <Badge variant="default" className="text-lg px-4 py-1">
+                                <Badge variant="default" className="px-4 py-1 text-lg">
                                     ${profile.walletBalance?.toLocaleString()}
                                 </Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-3 gap-4 mb-4">
+                            <div className="mb-4 grid grid-cols-3 gap-4">
                                 <div className="space-y-1">
-                                    <p className="text-sm text-muted-foreground">Total Earned</p>
+                                    <p className="text-muted-foreground text-sm">Total Earned</p>
                                     <p className="font-semibold">${profile.earnings?.total?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-sm text-muted-foreground">Pending</p>
+                                    <p className="text-muted-foreground text-sm">Pending</p>
                                     <p className="font-semibold">${profile.earnings?.pending?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-sm text-muted-foreground">Last Month</p>
+                                    <p className="text-muted-foreground text-sm">Last Month</p>
                                     <p className="font-semibold">${profile.earnings?.lastMonth?.toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">
                                 <Button variant="default" asChild>
-                                    <Link href="/wallet/deposit">Deposit</Link>
+                                    <Link href="/deposit">Deposit</Link>
                                 </Button>
                                 <Button variant="outline" asChild>
-                                    <Link href="/wallet/withdraw">Withdraw</Link>
+                                    <Link href="/withdraw">Withdraw</Link>
                                 </Button>
                             </div>
                         </CardContent>
@@ -264,19 +327,16 @@ export default function PerformanceProfile({
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <MetricItem
-                                label="Project Completion"
-                                value={75}
-                                threshold={70}
+                                label="Active Projects"
+                                value={siteStats.totalProjects > 0 ? (((siteStats.inProgressProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                             <MetricItem
-                                label="Client Satisfaction"
-                                value={85}
-                                threshold={80}
+                                label="Opened Projects"
+                                value={siteStats.totalProjects > 0 ? (((siteStats.openedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                             <MetricItem
-                                label="On-Time Delivery"
-                                value={90}
-                                threshold={85}
+                                label="Completed Projects"
+                                value={siteStats.totalProjects > 0 ? (((siteStats.completedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
                             />
                         </CardContent>
                     </Card>
@@ -289,7 +349,7 @@ export default function PerformanceProfile({
                             <TableRow>
                                 <TableHead>Project</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Progress</TableHead>
+                                <TableHead>Budget</TableHead>
                                 <TableHead>Deadline</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
@@ -304,7 +364,7 @@ export default function PerformanceProfile({
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <ProgressBar value={project.progress} />
+                                        ${(+project.budget).toFixed(2)}
                                     </TableCell>
                                     <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-right">
@@ -336,9 +396,7 @@ export default function PerformanceProfile({
                                     <TableCell className="font-medium">{bid.project_title}</TableCell>
                                     <TableCell>${bid.amount}</TableCell>
                                     <TableCell>
-                                        <Badge variant={bid.status === 'accepted' ? 'default' : 'outline'}>
-                                            {bid.status}
-                                        </Badge>
+                                        <Badge variant={bid.status === 'accepted' ? 'default' : 'outline'}>{bid.status}</Badge>
                                     </TableCell>
                                     <TableCell>{new Date(bid.created_at).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-right">
@@ -370,13 +428,10 @@ export default function PerformanceProfile({
                                     <TableCell className="font-medium">{contract.project_title}</TableCell>
                                     <TableCell>${contract.amount}</TableCell>
                                     <TableCell>
-                                        <Badge variant={contract.status === 'active' ? 'default' : 'secondary'}>
-                                            {contract.status}
-                                        </Badge>
+                                        <Badge variant={contract.status === 'active' ? 'default' : 'secondary'}>{contract.status}</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {new Date(contract.start_date).toLocaleDateString()} - {' '}
-                                        {new Date(contract.end_date).toLocaleDateString()}
+                                        {new Date(contract.start_date).toLocaleDateString()} - {new Date(contract.end_date).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
@@ -408,13 +463,9 @@ export default function PerformanceProfile({
                                         ${transaction.amount}
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={transaction.status === 'completed' ? 'default' : 'outline'}>
-                                            {transaction.status}
-                                        </Badge>
+                                        <Badge variant={transaction.status === 'completed' ? 'default' : 'outline'}>{transaction.status}</Badge>
                                     </TableCell>
-                                    <TableCell className="text-right">
-                                        {new Date(transaction.created_at).toLocaleDateString()}
-                                    </TableCell>
+                                    <TableCell className="text-right">{new Date(transaction.created_at).toLocaleDateString()}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -426,7 +477,7 @@ export default function PerformanceProfile({
 }
 
 // Reusable Components
-function StatCard({ label, value, unit = "", trend }: { label: string; value: string | number; unit?: string; trend?: "up" | "down"; }) {
+function StatCard({ label, value, unit = '', trend }: { label: string; value: string | number; unit?: string; trend?: 'up' | 'down' }) {
     return (
         <Card>
             <CardHeader className="pb-2">
@@ -434,20 +485,26 @@ function StatCard({ label, value, unit = "", trend }: { label: string; value: st
                 <div className="flex items-end justify-between">
                     <CardTitle className="text-2xl">
                         {value}
-                        {unit && <span className="text-base text-muted-foreground">{unit}</span>}
+                        {unit && <span className="text-muted-foreground text-base">{unit}</span>}
                     </CardTitle>
-                    {trend && (
-                        <span className={`text-sm ${trend === "up" ? "text-green-500" : "text-red-500"}`}>
-                            {trend === "up" ? "↑" : "↓"}
-                        </span>
-                    )}
+                    {trend && <span className={`text-sm ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>{trend === 'up' ? '↑' : '↓'}</span>}
                 </div>
             </CardHeader>
         </Card>
     );
 }
 
-function ChartCard({ title, description, children, className = "" }: { title: string; description: string; children: React.ReactNode; className?: string; }) {
+function ChartCard({
+    title,
+    description,
+    children,
+    className = '',
+}: {
+    title: string;
+    description: string;
+    children: React.ReactNode;
+    className?: string;
+}) {
     return (
         <Card className={className}>
             <CardHeader>
@@ -459,26 +516,18 @@ function ChartCard({ title, description, children, className = "" }: { title: st
     );
 }
 
-function MetricItem({ label, value, threshold, inverse = false }: { label: string; value: number; threshold: number; inverse?: boolean; }) {
+function MetricItem({ label, value, threshold, inverse = false }: { label: string; value: number; threshold: number; inverse?: boolean }) {
     const isGood = inverse ? value <= threshold : value >= threshold;
 
     return (
         <div className="space-y-1.5">
             <div className="flex justify-between text-sm">
                 <span className="font-medium">{label}</span>
-                <span className={`font-mono ${isGood ? "text-green-500" : "text-yellow-500"}`}>
-                    {value}%
-                </span>
+                <span className={`font-mono ${isGood ? 'text-green-500' : 'text-yellow-500'}`}>{value}%</span>
             </div>
-            <div className="relative h-2 w-full rounded-full bg-muted">
-                <div
-                    className="absolute left-0 top-0 h-2 rounded-full bg-primary"
-                    style={{ width: `${value}%` }}
-                />
-                <div
-                    className="absolute top-0 h-2 border-r-2 border-foreground"
-                    style={{ left: `${threshold}%` }}
-                />
+            <div className="bg-muted relative h-2 w-full rounded-full">
+                <div className="bg-primary absolute top-0 left-0 h-2 rounded-full" style={{ width: `${value}%` }} />
+                <div className="border-foreground absolute top-0 h-2 border-r-2" style={{ left: `${threshold}%` }} />
             </div>
         </div>
     );
@@ -490,19 +539,12 @@ function ProgressItem({ label, value, status }: { label: string; value: number; 
             <div className="flex justify-between text-sm">
                 <span className="font-medium">{label}</span>
                 <div className="flex items-center gap-2">
-                    {status && (
-                        <Badge variant={status === 'completed' ? 'default' : 'secondary'}>
-                            {status.replace('_', ' ')}
-                        </Badge>
-                    )}
+                    {status && <Badge variant={status === 'completed' ? 'default' : 'secondary'}>{status.replace('_', ' ')}</Badge>}
                     <span className="text-muted-foreground">{value}%</span>
                 </div>
             </div>
-            <div className="relative h-2 w-full rounded-full bg-muted">
-                <div
-                    className="absolute left-0 top-0 h-2 rounded-full bg-primary"
-                    style={{ width: `${value}%` }}
-                />
+            <div className="bg-muted relative h-2 w-full rounded-full">
+                <div className="bg-primary absolute top-0 left-0 h-2 rounded-full" style={{ width: `${value}%` }} />
             </div>
         </div>
     );
@@ -511,18 +553,25 @@ function ProgressItem({ label, value, status }: { label: string; value: number; 
 function ProgressBar({ value }: { value: number }) {
     return (
         <div className="flex items-center gap-2">
-            <div className="relative h-2 w-full rounded-full bg-muted">
-                <div
-                    className="absolute left-0 top-0 h-2 rounded-full bg-primary"
-                    style={{ width: `${value}%` }}
-                />
+            <div className="bg-muted relative h-2 w-full rounded-full">
+                <div className="bg-primary absolute top-0 left-0 h-2 rounded-full" style={{ width: `${value}%` }} />
             </div>
-            <span className="text-sm text-muted-foreground">{value}%</span>
+            <span className="text-muted-foreground text-sm">{value}%</span>
         </div>
     );
 }
 
-function SectionWithViewAll({ title, href, children, noPadding = false }: { title: string; href: string; children: React.ReactNode; noPadding?: boolean; }) {
+function SectionWithViewAll({
+    title,
+    href,
+    children,
+    noPadding = false,
+}: {
+    title: string;
+    href: string;
+    children: React.ReactNode;
+    noPadding?: boolean;
+}) {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -532,9 +581,7 @@ function SectionWithViewAll({ title, href, children, noPadding = false }: { titl
                 </Button>
             </div>
             <Card>
-                <CardContent className={noPadding ? "p-0" : "pt-6"}>
-                    {children}
-                </CardContent>
+                <CardContent className={noPadding ? 'p-0' : 'pt-6'}>{children}</CardContent>
             </Card>
         </div>
     );

@@ -81,11 +81,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function contracts(): HasMany
     {
-        return $this->hasMany(Contract::class)
-            ->where(function ($query) {
-                $query->where('client_id', $this->id)
-                    ->orWhere('developer_id', $this->id);
-            });
+        return $this->hasMany(Contract::class, 'client_id')
+            ->union(
+                $this->hasMany(Contract::class, 'developer_id')->getQuery()
+            );
     }
 
     /**
@@ -118,5 +117,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function chats(): HasMany
     {
         return $this->hasMany(Chat::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
