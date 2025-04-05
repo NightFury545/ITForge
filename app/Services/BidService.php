@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\BidStatus;
+use App\Events\BidAccepted;
 use App\Models\Bid;
 use App\Models\Project;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class BidService
 {
@@ -122,14 +124,11 @@ class BidService
      * @param string $bidId
      * @return void
      * @throws Exception
+     * @throws Throwable
      */
     public function acceptBid(string $bidId): void
     {
-        $bid = Bid::find($bidId);
-
-        if (!$bid) {
-            throw new Exception('Ставку не знайдено.');
-        }
+        $bid = Bid::findOrFail($bidId);
 
         $project = $bid->project;
 
@@ -139,8 +138,11 @@ class BidService
 
         $bid->update(['status' => BidStatus::Accepted->value]);
 
-        Bid::where('project_id', $project->id)
-            ->where('id', '!=', $bidId)
-            ->update(['status' => BidStatus::Rejected->value]);
+        try {
+            event(new BidAccepted($bid));
+        } catch (Throwable $e) {
+            throw $e;
+        }
     }
+
 }

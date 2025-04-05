@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignUuid('contract_id')->nullable()->constrained('contracts')->onDelete('set null');
             $table->enum('type', TransactionType::getValues());
             $table->decimal('amount', 10, 2);
-            $table->enum('status', TransactionStatus::getValues())->default(TransactionStatus::Pending);
+            $table->enum('status', TransactionStatus::getValues())->default(TransactionStatus::Pending->value);
             $table->string('method')->nullable();
             $table->timestamps();
         });

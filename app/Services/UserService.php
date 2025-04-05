@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ProjectStatus;
 use App\Enums\UserType;
 use App\Models\User;
 use App\Services\Filters\JsonFilter;
@@ -37,7 +38,7 @@ class UserService
             ])
             ->withCount([
                 'projects as projects_count' => function ($query) {
-                    $query->where('status', 'completed');
+                    $query->where('status', ProjectStatus::COMPLETED->value);
                 }
             ])
             ->withAvg('reviews as average_rating', 'rating')

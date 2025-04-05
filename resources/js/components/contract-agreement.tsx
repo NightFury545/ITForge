@@ -37,7 +37,9 @@ export function ContractAgreement({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl rounded-lg overflow-hidden p-0">
+        <DialogContent className="sm:max-w-2xl rounded-lg overflow-hidden p-0 max-h-[90vh] overflow-y-auto scrollbar-hidden">
+
+
         {/* Унікальний ідентифікатор контракту */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5">

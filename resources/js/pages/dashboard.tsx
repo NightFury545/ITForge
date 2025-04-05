@@ -50,8 +50,11 @@ interface PerformanceProfileProps {
         walletBalance?: number;
         earnings?: {
             total: number;
-            pending: number;
-            lastMonth: number;
+            spent: number;
+            lastMonthEarned: number;
+            lastMonthSpent: number;
+            deposit: number;
+            lastMonthDeposit: number;
         };
     };
     projects?: {
@@ -109,8 +112,11 @@ const defaultProps = {
         walletBalance: 0,
         earnings: {
             total: 0,
-            pending: 0,
-            lastMonth: 0,
+            spent: 0,
+            lastMonthEarned: 0,
+            lastMonthSpent: 0,
+            deposit: 0,
+            lastMonthDeposit: 0,
         },
     },
     projects: [],
@@ -222,19 +228,10 @@ export default function PerformanceProfile({
 
                     <ChartCard title="Проекти, створені з часом" description="Кількість проектів, створених на кожну дату">
                         <ResponsiveContainer width="100%" height={300}>
-                            <BarChart
-                                data={siteStats.projectsCreatedOverTime}
-                                margin={{ top: 10, right: 20, left: 0, bottom: 30 }}
-                            >
+                            <BarChart data={siteStats.projectsCreatedOverTime} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
 
-                                <XAxis
-                                    dataKey="date"
-                                    tick={{ fill: '#fff', fontSize: 8 }}
-                                    angle={-45}
-                                    textAnchor="end"
-                                    interval={1}
-                                />
+                                <XAxis dataKey="date" tick={{ fill: '#fff', fontSize: 8 }} angle={-45} textAnchor="end" interval={1} />
                                 <YAxis tick={{ fill: '#fff' }} />
                                 <Tooltip
                                     contentStyle={{
@@ -244,22 +241,20 @@ export default function PerformanceProfile({
                                         padding: '8px 12px',
                                     }}
                                 />
-                                <Bar
-                                    dataKey="projects"
-                                    fill="#4F46E5"
-                                    radius={[6, 6, 0, 0]}
-                                    animationDuration={1000}
-                                />
+                                <Bar dataKey="projects" fill="#4F46E5" radius={[6, 6, 0, 0]} animationDuration={1000} />
                             </BarChart>
                         </ResponsiveContainer>
                     </ChartCard>
 
-                    <ChartCard title="Загальний обсяг грошей" description="Порівняння загальних сум депозитів, переказів і виплат за останній період.">
+                    <ChartCard
+                        title="Загальний обсяг грошей"
+                        description="Порівняння загальних сум депозитів, переказів і виплат за останній період."
+                    >
                         <ResponsiveContainer width="90%" height={300}>
                             <BarChart data={earningsData} margin={{ top: 20, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                                 <XAxis dataKey="name" tick={{ fill: '#fff', fontSize: 10 }} />
-                                <YAxis domain={[0, Math.max(...earningsData.map(d => d.value), 10)]} tick={{ fill: '#fff' }} />
+                                <YAxis domain={[0, Math.max(...earningsData.map((d) => d.value), 10)]} tick={{ fill: '#fff' }} />
                                 <Tooltip
                                     contentStyle={{
                                         backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -277,7 +272,6 @@ export default function PerformanceProfile({
                             </BarChart>
                         </ResponsiveContainer>
                     </ChartCard>
-
                 </div>
 
                 {/* Wallet Balance Section */}
@@ -301,12 +295,24 @@ export default function PerformanceProfile({
                                     <p className="font-semibold">${profile.earnings?.total?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">В очікуванні</p>
-                                    <p className="font-semibold">${profile.earnings?.pending?.toLocaleString()}</p>
+                                    <p className="text-muted-foreground text-sm">Всього витрачено</p>
+                                    <p className="font-semibold">${profile.earnings?.spent?.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-muted-foreground text-sm">Останній місяць</p>
-                                    <p className="font-semibold">${profile.earnings?.lastMonth?.toLocaleString()}</p>
+                                    <p className="text-muted-foreground text-sm">Всього поповнено</p>
+                                    <p className="font-semibold">${profile.earnings?.deposit.toLocaleString()}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-muted-foreground text-sm">Останній місяць (зароблено)</p>
+                                    <p className="font-semibold">${profile.earnings?.lastMonthEarned?.toLocaleString()}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-muted-foreground text-sm">Останній місяць (витрачено)</p>
+                                    <p className="font-semibold">${profile.earnings?.lastMonthSpent?.toLocaleString()}</p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-muted-foreground text-sm">Останній місяць (поповнено)</p>
+                                    <p className="font-semibold">${profile.earnings?.lastMonthDeposit?.toLocaleString()}</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">
@@ -328,15 +334,25 @@ export default function PerformanceProfile({
                         <CardContent className="space-y-4">
                             <MetricItem
                                 label="Активні проєкти"
-                                value={siteStats.totalProjects > 0 ? (((siteStats.inProgressProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
+                                value={
+                                    siteStats.totalProjects > 0
+                                        ? (((siteStats.inProgressProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1)
+                                        : 0
+                                }
                             />
                             <MetricItem
                                 label="Відкриті проєкти"
-                                value={siteStats.totalProjects > 0 ? (((siteStats.openedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
+                                value={
+                                    siteStats.totalProjects > 0 ? (((siteStats.openedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0
+                                }
                             />
                             <MetricItem
                                 label="Завершені проєкти"
-                                value={siteStats.totalProjects > 0 ? (((siteStats.completedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1) : 0}
+                                value={
+                                    siteStats.totalProjects > 0
+                                        ? (((siteStats.completedProjects ?? 0) / siteStats.totalProjects) * 100).toFixed(1)
+                                        : 0
+                                }
                             />
                         </CardContent>
                     </Card>
@@ -363,13 +379,11 @@ export default function PerformanceProfile({
                                             {project.status.replace('_', ' ')}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>
-                                        ${(+project.budget).toFixed(2)}
-                                    </TableCell>
+                                    <TableCell>${(+project.budget).toFixed(2)}</TableCell>
                                     <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/projects/${project.id}`}>View</Link>
+                                            <Link href={`/projects/${project.id}`}>Переглянути</Link>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -379,15 +393,15 @@ export default function PerformanceProfile({
                 </SectionWithViewAll>
 
                 {/* Bids Section */}
-                <SectionWithViewAll title="My Bids" href="/bids">
+                <SectionWithViewAll title="Мої ставки" href="/bids">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Project</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead>Проєкт</TableHead>
+                                <TableHead>Сума</TableHead>
+                                <TableHead>Статус</TableHead>
+                                <TableHead>Дата</TableHead>
+                                <TableHead className="text-right">Дії</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -401,7 +415,7 @@ export default function PerformanceProfile({
                                     <TableCell>{new Date(bid.created_at).toLocaleDateString()}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/bids/${bid.id}`}>View</Link>
+                                            <Link href={`/projects/${bid.project_id}`}>Переглянути</Link>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -415,11 +429,11 @@ export default function PerformanceProfile({
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Project</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>Проєкт</TableHead>
+                                <TableHead>Сума</TableHead>
+                                <TableHead>Статус</TableHead>
                                 <TableHead>Period</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                                <TableHead className="text-right">Дії</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -435,7 +449,7 @@ export default function PerformanceProfile({
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/contracts/${contract.id}`}>View</Link>
+                                            <Link href={`/contracts/${contract.id}`}>Переглянути</Link>
                                         </Button>
                                     </TableCell>
                                 </TableRow>

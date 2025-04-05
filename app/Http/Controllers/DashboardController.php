@@ -51,22 +51,51 @@ class DashboardController extends Controller
                 }),
         ];
 
-        // Дані профілю користувача
         $profile = [
-            'position' => $user->user_type ?? 'Developer',
+            'position' => $user->user_type,
             'skills' => $user->skills ?? [],
             'walletBalance' => $user->wallet->balance ?? 0,
             'earnings' => [
                 'total' => $user->transactions()
-                    ->where('type', 'deposit')
+                    ->with('contract')
+                    ->whereHas('contract', function ($query) use ($user) {
+                        $query->where('developer_id', $user->id);
+                    })
+                    ->where('transactions.type', TransactionType::Payment->value)
+                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->sum('amount'),
+                'spent' => $user->transactions()
+                    ->with('contract')
+                    ->whereHas('contract', function ($query) use ($user) {
+                        $query->where('client_id', $user->id);
+                    })
+                    ->where('transactions.type', TransactionType::Payment->value)
+                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->sum('amount'),
+                'lastMonthEarned' => $user->transactions()
+                    ->with('contract')
+                    ->whereHas('contract', function ($query) use ($user) {
+                        $query->where('developer_id', $user->id);
+                    })
+                    ->where('transactions.type', TransactionType::Payment->value)
+                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('created_at', '>=', Carbon::now()->subMonth())
+                    ->sum('amount'),
+                'lastMonthSpent' => $user->transactions()
+                    ->with('contract')
+                    ->whereHas('contract', function ($query) use ($user) {
+                        $query->where('client_id', $user->id);
+                    })
+                    ->where('transactions.type', TransactionType::Payment->value)
+                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('created_at', '>=', Carbon::now()->subMonth())
+                    ->sum('amount'),
+                'deposit' => $user->transactions()
+                    ->where('type', TransactionType::Deposit->value)
                     ->where('status', TransactionStatus::Completed->value)
                     ->sum('amount'),
-                'pending' => $user->transactions()
-                    ->where('type', 'deposit')
-                    ->where('status', TransactionStatus::Pending->value)
-                    ->sum('amount'),
-                'lastMonth' => $user->transactions()
-                    ->where('type', 'deposit')
+                'lastMonthDeposit' => $user->transactions()
+                    ->where('type', TransactionType::Deposit->value)
                     ->where('status', TransactionStatus::Completed->value)
                     ->where('created_at', '>=', Carbon::now()->subMonth())
                     ->sum('amount'),
@@ -84,7 +113,6 @@ class DashboardController extends Controller
                 ->toArray()
         ];
 
-        // Проекти, де користувач є клієнтом
         $projects = $user->projects()
             ->orderBy('created_at', 'asc')
             ->get()
@@ -99,7 +127,6 @@ class DashboardController extends Controller
             })
             ->toArray();
 
-        // Ставки користувача (якщо він розробник)
         $bids = $user->bids()
             ->with('project')
             ->orderBy('created_at', 'desc')
@@ -116,7 +143,6 @@ class DashboardController extends Controller
             })
             ->toArray();
 
-        // Контракти користувача
         $contracts = $user->contracts()
             ->with('project')
             ->orderBy('created_at', 'desc')
@@ -133,7 +159,6 @@ class DashboardController extends Controller
             })
             ->toArray();
 
-        // Транзакції користувача
         $transactions = $user->transactions()
             ->orderBy('created_at', 'desc')
             ->get()

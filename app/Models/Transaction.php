@@ -16,7 +16,8 @@ class Transaction extends Model
         'contract_id',
         'type',
         'amount',
-        'status'
+        'status',
+        'method'
     ];
 
     /**
