@@ -36,7 +36,7 @@ export default function Welcome() {
                         <div className="space-x-4">
                             {auth.user ? (
                                 <Link href={route('dashboard')} className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                    Dashboard
+                                    Панель управління
                                 </Link>
                             ) : (
                                 <>
@@ -62,7 +62,7 @@ export default function Welcome() {
                             </p>
                             <div className="mt-6">
                                 {auth.user ? (
-                                    <Link href={route('dashboard')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                                    <Link href={route('projects.index')} className="px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
                                         Перейти до замовлень
                                     </Link>
                                 ) : (
