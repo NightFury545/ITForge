@@ -8,7 +8,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarGroupLabel>Платформа</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => {
                     if (item.title === 'Адмін панель' && user.role !== 'admin') {

@@ -31,7 +31,7 @@ class BidController extends Controller
     {
         $bids = $this->bidService->getBids($projectId);
 
-        return Inertia::render('Bids/Index', [
+        return Inertia::render('bids', [
             'bids' => $bids,
         ]);
     }
