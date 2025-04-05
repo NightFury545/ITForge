@@ -20,3 +20,4 @@ require __DIR__.'/web/deposit.php';
 require __DIR__.'/web/chat.php';
 require __DIR__.'/web/message.php';
 require __DIR__.'/web/bid.php';
+require __DIR__.'/web/admin-panel.php';
