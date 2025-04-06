@@ -7,14 +7,14 @@ export default function Welcome() {
 
     // Категорії
     const categories = [
-        { id: 'programming', name: 'Програмування', image: '/images/programming.jpg' },
-        { id: 'design', name: 'Дизайн та арт', image: '/images/design.jpg' },
-        { id: 'services', name: 'Послуги', image: '/images/services.jpg' },
-        { id: 'photo', name: 'Фото, аудіо та відео', image: '/images/photo.jpg' },
-        { id: 'marketing', name: 'Просування', image: '/images/marketing.jpg' },
-        { id: 'engineering', name: 'Архітектура та інжиніринг', image: '/images/engineering.jpg' },
-        { id: 'mobile', name: 'Мобільні додатки', image: '/images/mobile.jpg' },
-        { id: 'admin', name: 'Адміністрування', image: '/images/admin.jpg' },
+        { id: 'programming', name: 'Програмування', image: '/storage/images/programming.jpg' },
+        { id: 'design', name: 'Дизайн та арт', image: '/storage/images/design.jpg' },
+        { id: 'services', name: 'Послуги', image: '/storage/images/services.jpg' },
+        { id: 'photo', name: 'Фото, аудіо та відео', image: '/storage/images/photo.jpg' },
+        { id: 'marketing', name: 'Просування', image: '/storage/images/marketing.jpg' },
+        { id: 'engineering', name: 'Архітектура та інжиніринг', image: '/storage/images/engineering.jpg' },
+        { id: 'mobile', name: 'Мобільні додатки', image: '/storage/images/mobile.jpg' },
+        { id: 'admin', name: 'Адміністрування', image: '/storage/images/admin.jpg' },
     ];
 
     // Стан для обраної категорії
@@ -58,7 +58,7 @@ export default function Welcome() {
                                 Ефективна платформа для замовлення та розробки IT-проєктів
                             </h1>
                             <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                                Об’єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
+                                Об'єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
                             </p>
                             <div className="mt-6">
                                 {auth.user ? (
@@ -118,21 +118,22 @@ export default function Welcome() {
                 {/* Секція з категоріями */}
                 <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 p-6">
                     <div className="flex items-center justify-center h-[calc(100vh-100px)]">
-                        <section className="max-w-5xl mx-auto flex flex-col md:flex-row">
+                        <section className="max-w-5xl mx-auto flex flex-col md:flex-row gap-8">
                             <div className="md:w-1/3">
-                                <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-4">Шукайте роботу серед <span className="text-green-500">1736</span> відкритих фриланс-проєктів</h2>
-                                <ul className="space-y-3">
+                                <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-6">Шукайте роботу серед <span className="text-green-500">1736</span> відкритих фриланс-проєктів</h2>
+                                <ul className="space-y-2">
                                     {categories.map(category => (
                                         <li 
                                             key={category.id}
-                                            className={`cursor-pointer p-3 text-lg font-medium rounded-md transition ${
-                                                selectedCategory.id === category.id ? 'text-blue-600 bg-gray-200 dark:bg-gray-700' : 'text-gray-600 dark:text-gray-300'
+                                            className={`cursor-pointer p-3 rounded-md transition-all ${
+                                                selectedCategory.id === category.id 
+                                                    ? 'text-blue-600 bg-gray-200 dark:bg-gray-700 font-semibold' 
+                                                    : 'text-gray-600 dark:text-gray-300 font-medium'
                                             }`}
                                             onClick={() => setSelectedCategory(category)}
                                             style={{ 
-                                                width: '200px', // Фіксована ширина
-                                                textAlign: 'center', // Центрування тексту
-                                                fontWeight: selectedCategory.id === category.id ? 'bold' : 'normal' // Жирний шрифт для виділеного елемента
+                                                width: '200px',
+                                                textAlign: 'center'
                                             }}
                                         >
                                             {category.name}
