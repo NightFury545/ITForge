@@ -10,7 +10,7 @@ export default function Welcome() {
             id: 'programming', 
             name: 'Програмування', 
             image: '/storage/images/programming.jpg',
-            description: 'Від веб-розробки до системного програмування. Знайдіть фахівців у Python, Java, C++, PHP, Ruby та інших мовах. Спеціалісти з фреймворків як Laravel, Django, React, Angular та Vue.js.',
+            description: 'Від веб-розробки до системного програмування. Знайдіть фахівців у Python, Java, C++, PHP та інших мовах. Спеціалісти з фреймворків як Laravel, React та Vue.js.',
             stats: 'Понад 850 активних проектів'
         },
         { 
@@ -362,9 +362,7 @@ export default function Welcome() {
                                             >
                                                 <div className="flex justify-between items-center">
                                                     <span>{category.name}</span>
-                                                    <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
-                                                        {category.stats}
-                                                    </span>
+                                                   
                                                 </div>
                                             </li>
                                         ))}
@@ -477,66 +475,75 @@ export default function Welcome() {
                     </div>
                 </div>
 
-                {/* Тарифи */}
-                <div className="w-full bg-white dark:bg-gray-800 py-8 md:py-12">
-                    <div className="w-full max-w-6xl px-4 md:px-6 mx-auto">
-                        <section className="flex flex-col items-center">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white text-center mb-8 md:mb-12">
-                                Варіанти співпраці
-                            </h2>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                                {pricingPlans.map((plan, index) => (
-                                    <div 
-                                        key={index} 
-                                        className={`rounded-lg shadow-md overflow-hidden ${
-                                            index === 1 ? "ring-2 ring-blue-500 transform md:-translate-y-2" : ""
-                                        }`}
-                                    >
-                                        <div className={`p-6 ${
-                                            index === 1 ? "bg-blue-50 dark:bg-gray-700" : "bg-white dark:bg-gray-800"
-                                        }`}>
-                                            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-1">{plan.name}</h3>
-                                            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">{plan.price}</p>
-                                            
-                                            <ul className="space-y-3 mb-6">
-                                                {plan.features.map((feature, i) => (
-                                                    <li key={i} className="flex items-start">
-                                                        <span className="text-green-500 mr-2">✓</span>
-                                                        <span className="text-gray-600 dark:text-gray-300">{feature}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            
-                                            <div className="text-center">
-                                                <Link 
-                                                    href={route('register')} 
-                                                    className={`inline-block px-4 py-2 text-sm font-medium rounded-lg ${
-                                                        index === 1 
-                                                            ? "bg-blue-600 text-white hover:bg-blue-700" 
-                                                            : "bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-500"
-                                                    }`}
-                                                >
-                                                    Обрати тариф
-                                                </Link>
-                                            </div>
-                                            
-                                            {plan.bestFor && (
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
-                                                    Ідеально підходить для: {plan.bestFor}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            
-                            <div className="mt-8 text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                                <p>Всі тарифи включають доступ до повного функціоналу платформи. Комісія стягується тільки з успішно завершених проектів.</p>
-                            </div>
-                        </section>
+                {/* Наші переваги */}
+<div className="w-full bg-white dark:bg-gray-800 py-8 md:py-12">
+    <div className="w-full max-w-6xl px-4 md:px-6 mx-auto">
+        <section className="flex flex-col items-center">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white text-center mb-8 md:mb-12">
+                Чому обирають нашу платформу?
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                {[
+                    {
+                        icon: '🚀',
+                        title: 'Швидкий старт',
+                        description: 'Початок роботи за кілька хвилин. Простий інтерфейс та зрозумілий процес створення проектів.',
+                        color: 'text-blue-600'
+                    },
+                    {
+                        icon: '💼',
+                        title: 'Професійна спільнота',
+                        description: 'Доступ до бази перевірених фахівців з різних галузей IT. Середній досвід виконавців - 5+ років.',
+                        color: 'text-green-600'
+                    },
+                    {
+                        icon: '🛡️',
+                        title: 'Гарантії безпеки',
+                        description: 'Захищені платежі, юридичний супровід та система арбітражу для вирішення спорів.',
+                        color: 'text-purple-600'
+                    }
+                ].map((advantage, index) => (
+                    <div key={index} className="flex flex-col items-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm">
+                        <span className={`text-3xl mb-4 ${advantage.color}`}>{advantage.icon}</span>
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2 text-center">
+                            {advantage.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-center">
+                            {advantage.description}
+                        </p>
                     </div>
-                </div>
+                ))}
+            </div>
+
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl">
+                {[
+                    { value: '24/7', label: 'Підтримка' },
+                    { value: '5+', label: 'Років на ринку' },
+                    { value: '98%', label: 'Задоволених клієнтів' },
+                    { value: '1 год', label: 'Середній час відгуку' }
+                ].map((stat, index) => (
+                    <div key={index} className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg text-center">
+                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stat.value}</p>
+                        <p className="text-gray-600 dark:text-gray-300">{stat.label}</p>
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-8 text-center">
+                <Link 
+                    href={route('register')} 
+                    className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+                >
+                    Приєднатися до платформи
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </Link>
+            </div>
+        </section>
+    </div>
+</div>
 
                 {/* Безпека */}
                 <div className="w-full min-h-screen bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12 flex flex-col items-center justify-center">
