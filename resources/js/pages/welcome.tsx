@@ -26,12 +26,12 @@ export default function Welcome() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
-            <div className="relative">
+            <div className="flex flex-col items-center w-full">
                 {/* Головний блок */}
-                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-                    <div className="container mx-auto px-4 py-6 md:px-6 md:py-8">
+                <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center">
+                    <div className="w-full max-w-6xl px-4 py-6 md:px-6 md:py-8 flex flex-col items-center">
                         {/* Header */}
-                        <header className="flex justify-between items-center">
+                        <header className="w-full flex justify-between items-center">
                             <h2 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">🚀 ITForge</h2>
                             <div className="flex space-x-2 md:space-x-4">
                                 {auth.user ? (
@@ -64,11 +64,11 @@ export default function Welcome() {
 
                         {/* Hero section */}
                         <div className="flex items-center justify-center h-[calc(100vh-120px)] md:h-[calc(100vh-160px)]">
-                            <div className="text-center max-w-2xl mx-auto">
+                            <div className="text-center">
                                 <h1 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white leading-tight mb-4 md:mb-6">
                                     Ефективна платформа для замовлення та розробки IT-проєктів
                                 </h1>
-                                <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 md:mb-8">
+                                <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 md:mb-8 max-w-2xl mx-auto">
                                     Об'єднуємо компанії та професійних розробників для створення технологічних рішень будь-якої складності.
                                 </p>
                                 {auth.user ? (
@@ -92,15 +92,15 @@ export default function Welcome() {
                 </div>
 
                 {/* Як це працює */}
-                <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 py-8 md:py-12">
-                    <div className="container mx-auto px-4 md:px-6">
-                        <section className="max-w-4xl mx-auto">
+                <div className="w-full min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 py-8 md:py-12 flex flex-col items-center justify-center h-[calc(100vh-120px)] md:h-[calc(100vh-160px)]">
+                    <div className="w-full max-w-6xl px-4 md:px-6">
+                        <section className="flex flex-col items-center">
                             <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white text-center mb-8 md:mb-12">
                                 Як працює платформа?
                             </h2>
                             
                             {/* Mobile version (1 column) */}
-                            <div className="md:hidden grid grid-cols-1 gap-4">
+                            <div className="w-full md:hidden grid grid-cols-1 gap-4 max-w-md mx-auto">
                                 {[
                                     { icon: '📌', title: 'Створення замовлення', color: 'text-blue-600', text: 'Детальний опис проєкту, визначення термінів та бюджету.' },
                                     { icon: '🎯', title: 'Підбір виконавця', color: 'text-green-600', text: 'Перевірені розробники з високим рейтингом та портфоліо.' },
@@ -115,8 +115,8 @@ export default function Welcome() {
                                 ))}
                             </div>
                             
-                            {/* Desktop version (3 columns) */}
-                            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {/* Desktop version (3 columns with equal height) */}
+                            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                                 {[
                                     { icon: '📌', title: 'Створення замовлення', color: 'text-blue-600', text: 'Детальний опис проєкту, визначення термінів та бюджету.' },
                                     { icon: '🎯', title: 'Підбір виконавця', color: 'text-green-600', text: 'Перевірені розробники з високим рейтингом та портфоліо.' },
@@ -125,7 +125,7 @@ export default function Welcome() {
                                     { icon: '💼', title: 'Управління проєктами', color: 'text-green-600', text: 'Зручні інструменти для керування завданнями.' },
                                     { icon: '📈', title: 'Оптимізація процесів', color: 'text-purple-600', text: 'Постійне вдосконалення робочих процесів.' },
                                 ].map((item, index) => (
-                                    <div key={index} className="p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                                    <div key={index} className="flex flex-col p-6 bg-white dark:bg-gray-800 shadow-md rounded-lg h-full">
                                         <h3 className={`text-xl font-bold ${item.color} dark:${item.color.replace('600', '400')}`}>
                                             {item.icon} {item.title}
                                         </h3>
@@ -138,16 +138,16 @@ export default function Welcome() {
                 </div>
 
                 {/* Категорії */}
-                <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12">
-                    <div className="container mx-auto px-4 md:px-6">
-                        <section className="max-w-5xl mx-auto">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-6 md:mb-8">
+                <div className="w-full min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12 flex flex-col items-center justify-center h-[calc(100vh-120px)] md:h-[calc(100vh-160px)]">
+                    <div className="w-full max-w-6xl px-4 md:px-6">
+                        <section className="flex flex-col items-center">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white text-center mb-6 md:mb-8">
                                 Шукайте роботу серед <span className="text-green-500">1736</span> відкритих фриланс-проєктів
                             </h2>
                             
                             {/* Mobile version (horizontal scroll) */}
-                            <div className="md:hidden mb-6 overflow-x-auto pb-3">
-                                <div className="flex space-x-2 w-max">
+                            <div className="w-full md:hidden mb-6 overflow-x-auto pb-3">
+                                <div className="flex space-x-2 w-max mx-auto">
                                     {categories.map(category => (
                                         <button
                                             key={category.id}
@@ -165,8 +165,8 @@ export default function Welcome() {
                             </div>
                             
                             {/* Desktop version (vertical list) */}
-                            <div className="hidden md:flex gap-8">
-                                <div className="w-1/3">
+                            <div className="hidden md:flex w-full gap-8 justify-center">
+                                <div className="w-1/3 max-w-xs">
                                     <ul className="space-y-2">
                                         {categories.map(category => (
                                             <li 
@@ -184,7 +184,7 @@ export default function Welcome() {
                                     </ul>
                                 </div>
                                 
-                                <div className="w-2/3">
+                                <div className="w-2/3 max-w-2xl">
                                     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">
                                         <img 
                                             src={selectedCategory.image} 
@@ -201,7 +201,7 @@ export default function Welcome() {
                             </div>
                             
                             {/* Mobile image */}
-                            <div className="md:hidden bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md">
+                            <div className="w-full md:hidden max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md">
                                 <img 
                                     src={selectedCategory.image} 
                                     alt={selectedCategory.name}
@@ -218,15 +218,15 @@ export default function Welcome() {
                 </div>
 
                 {/* Безпека */}
-                <div className="min-h-screen bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12">
-                    <div className="container mx-auto px-4 md:px-6">
-                        <section className="max-w-3xl mx-auto text-center">
-                            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white mb-6 md:mb-8">
+                <div className="w-full min-h-screen bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-900 dark:to-gray-800 py-8 md:py-12 flex flex-col items-center  justify-center h-[calc(100vh-120px)] md:h-[calc(100vh-160px)]">
+                    <div className="w-full max-w-6xl px-4 md:px-6">
+                        <section className="flex flex-col items-center">
+                            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-white text-center mb-6 md:mb-8">
                                 Безпечне та надійне середовище
                             </h2>
                             
                             {/* Mobile version */}
-                            <div className="md:hidden space-y-4">
+                            <div className="w-full md:hidden space-y-4 max-w-md mx-auto">
                                 <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
                                     <p className="text-blue-600 dark:text-blue-400 font-medium">🔒 Захищені платежі</p>
                                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -248,25 +248,25 @@ export default function Welcome() {
                             </div>
                             
                             {/* Desktop version */}
-                            <div className="hidden md:block">
-                                <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+                            <div className="hidden md:flex flex-col items-center w-full">
+                                <p className="text-lg text-gray-600 dark:text-gray-300 text-center mb-8 max-w-3xl">
                                     Ваша безпека — наш пріоритет. Ми забезпечуємо прозорі умови співпраці та захист фінансових транзакцій.
                                 </p>
-                                <div className="grid grid-cols-3 gap-6">
-                                    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                                        <p className="text-xl text-blue-600 dark:text-blue-400 font-bold">🔒</p>
-                                        <p className="font-medium mt-2">Захищені платежі</p>
-                                    </div>
-                                    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                                        <p className="text-xl text-green-600 dark:text-green-400 font-bold">⚖️</p>
-                                        <p className="font-medium mt-2">Чесні рейтинги</p>
-                                    </div>
-                                    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                                        <p className="text-xl text-purple-600 dark:text-purple-400 font-bold">📜</p>
-                                        <p className="font-medium mt-2">Юридична підтримка</p>
-                                    </div>
+                                <div className="grid grid-cols-3 gap-6 w-full max-w-4xl">
+                                    {[
+                                        { icon: '🔒', title: 'Захищені платежі', color: 'text-blue-600' },
+                                        { icon: '⚖️', title: 'Чесні рейтинги', color: 'text-green-600' },
+                                        { icon: '📜', title: 'Юридична підтримка', color: 'text-purple-600' },
+                                    ].map((item, index) => (
+                                        <div key={index} className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                                            <p className={`text-2xl ${item.color} dark:${item.color.replace('600', '400')} font-bold`}>
+                                                {item.icon}
+                                            </p>
+                                            <p className="font-medium mt-2 text-center">{item.title}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                                <p className="text-gray-600 dark:text-gray-300 mt-8">
+                                <p className="text-gray-600 dark:text-gray-300 text-center mt-8 max-w-3xl">
                                     Ми прагнемо забезпечити найвищий рівень безпеки для наших користувачів.
                                 </p>
                             </div>
@@ -275,46 +275,44 @@ export default function Welcome() {
                 </div>
 
                 {/* Футер */}
-                <footer className="w-full bg-gray-800 dark:bg-gray-900 py-8 md:py-12">
-                    <div className="container mx-auto px-4 md:px-6">
-                        <div className="max-w-6xl mx-auto">
-                            <div className="flex flex-col md:flex-row justify-between items-center">
-                                <div className="mb-6 md:mb-0 text-center md:text-left">
-                                    <h2 className="text-xl md:text-2xl font-bold text-white mb-2">🚀 ITForge</h2>
-                                    <p className="text-gray-400 text-sm">
-                                        Професійний майданчик для розробників та замовників IT-послуг
-                                    </p>
-                                </div>
-                                
-                                <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-                                    <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
-                                        Про нас
-                                    </Link>
-                                    <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
-                                        Умови
-                                    </Link>
-                                    <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
-                                        Політика
-                                    </Link>
-                                    <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
-                                        Контакти
-                                    </Link>
-                                </div>
+                <footer className="w-full bg-gray-800 dark:bg-gray-900 py-8 md:py-12 flex flex-col items-center">
+                    <div className="w-full max-w-6xl px-4 md:px-6">
+                        <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                            <div className="mb-6 md:mb-0">
+                                <h2 className="text-xl md:text-2xl font-bold text-white mb-2">🚀 ITForge</h2>
+                                <p className="text-gray-400 text-sm">
+                                    Професійний майданчик для розробників та замовників IT-послуг
+                                </p>
                             </div>
                             
-                            <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400 text-xs md:text-sm">
-                                <p>© {new Date().getFullYear()} ITForge. Всі права захищено.</p>
-                                <div className="flex justify-center space-x-4 mt-3">
-                                    {['facebook', 'twitter', 'linkedin', 'github'].map((social) => (
-                                        <Link 
-                                            key={social} 
-                                            href="#" 
-                                            className="hover:text-blue-500 text-base"
-                                        >
-                                            <i className={`fab fa-${social}`}></i>
-                                        </Link>
-                                    ))}
-                                </div>
+                            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                                <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
+                                    Про нас
+                                </Link>
+                                <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
+                                    Умови
+                                </Link>
+                                <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
+                                    Політика
+                                </Link>
+                                <Link href="#" className="text-gray-400 hover:text-blue-500 text-xs md:text-sm">
+                                    Контакти
+                                </Link>
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400 text-xs md:text-sm">
+                            <p>© {new Date().getFullYear()} ITForge. Всі права захищено.</p>
+                            <div className="flex justify-center space-x-4 mt-3">
+                                {['facebook', 'twitter', 'linkedin', 'github'].map((social) => (
+                                    <Link 
+                                        key={social} 
+                                        href="#" 
+                                        className="hover:text-blue-500 text-base"
+                                    >
+                                        <i className={`fab fa-${social}`}></i>
+                                    </Link>
+                                ))}
                             </div>
                         </div>
                     </div>
