@@ -21,3 +21,6 @@ require __DIR__.'/web/chat.php';
 require __DIR__.'/web/message.php';
 require __DIR__.'/web/bid.php';
 require __DIR__.'/web/admin-panel.php';
+require __DIR__.'/web/notification.php';
+require __DIR__.'/web/contract.php';
+require __DIR__.'/web/review.php';

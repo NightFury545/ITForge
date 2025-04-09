@@ -37,9 +37,8 @@ class MessageController extends Controller
     public function index(Request $request, int $chatId): JsonResponse
     {
         try {
-            $perPage = $request->get('per_page', 20);
 
-            $messages = $this->messageService->getMessages($chatId, $perPage);
+            $messages = $this->messageService->getMessages($chatId);
 
             return response()->json([
                 'messages' => $messages,

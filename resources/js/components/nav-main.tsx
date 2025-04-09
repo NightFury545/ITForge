@@ -1,10 +1,10 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
+import { type NavItem, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const page = usePage();
-    const { user } = page.props.auth;
+    const { user } = usePage<SharedData>().props.auth;
 
     return (
         <SidebarGroup className="px-2 py-0">

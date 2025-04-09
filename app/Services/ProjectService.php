@@ -8,6 +8,7 @@ use App\Services\Filters\JsonFilter;
 use App\Services\Filters\RangeFilter;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class ProjectService
     /**
      * Отримати список проектів з фільтрацією, сортуванням та пошуком
      */
-    public function getProjects(int $perPage = 20): LengthAwarePaginator
+    public function getProjects(): LengthAwarePaginator
     {
         return QueryBuilder::for(Project::class)
             ->with('client')
@@ -34,7 +35,7 @@ class ProjectService
             ->allowedSorts(['created_at', 'budget', 'bids_deadline', 'project_deadline'])
             ->allowedIncludes(['bids'])
             ->latest()
-            ->paginate($perPage);
+            ->paginate();
     }
 
     /**

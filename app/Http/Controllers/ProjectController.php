@@ -22,7 +22,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request): Response
     {
-        $projects = $this->projectService->getProjects($request->query('per_page', 20));
+        $projects = $this->projectService->getProjects();
 
         return Inertia::render('projects', [
             'projects' => $projects,

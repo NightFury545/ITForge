@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ContractStatus;
 use App\Enums\ProjectStatus;
 use App\Enums\UserType;
 use App\Models\User;
@@ -17,9 +18,21 @@ class UserService
     /**
      * Отримати список користувачів з фільтрацією та сортуванням
      */
-    public function getUsers(int $perPage = 20): LengthAwarePaginator
+
+
+    public function getUsers(): LengthAwarePaginator
     {
-        return QueryBuilder::for(User::class)
+        return QueryBuilder::for(User::query()
+            ->select('users.*')
+            ->selectSub(function ($query) {
+                $query->from('projects')
+                    ->join('contracts', 'projects.id', '=', 'contracts.project_id')
+                    ->whereColumn('contracts.developer_id', 'users.id')
+                    ->where('projects.status', ProjectStatus::COMPLETED->value)
+                    ->where('contracts.status', ContractStatus::Completed->value)
+                    ->selectRaw('COUNT(*)');
+            }, 'projects_count')
+        )
             ->where('user_type', UserType::DEVELOPER->value)
             ->allowedFilters([
                 AllowedFilter::partial('name'),
@@ -36,22 +49,32 @@ class UserService
                     }
                 }),
             ])
-            ->withCount([
-                'projects as projects_count' => function ($query) {
-                    $query->where('status', ProjectStatus::COMPLETED->value);
-                }
-            ])
             ->withAvg('reviews as average_rating', 'rating')
-            ->allowedSorts(['name', 'created_at', 'birthday', 'average_rating',  'projects_count'])
-            ->paginate($perPage);
+            ->allowedSorts(['name', 'created_at', 'birthday', 'average_rating', 'projects_count'])
+            ->paginate();
     }
+
 
     /**
      * Отримати конкретного користувача за ім'ям
      */
     public function getUserByName(string $name): ?User
     {
-        return User::where('name', $name)->first();
+        return User::query()
+            ->select('users.*')
+            ->selectSub(function ($query) {
+                $query->from('projects')
+                    ->join('contracts', 'projects.id', '=', 'contracts.project_id')
+                    ->whereColumn('contracts.developer_id', 'users.id')
+                    ->where('projects.status', ProjectStatus::COMPLETED->value)
+                    ->where('contracts.status', ContractStatus::Completed->value)
+                    ->selectRaw('COUNT(*)');
+            }, 'projects_count')
+            ->withAvg('reviews as average_rating', 'rating')
+            ->with(['reviews.client', 'reviews.contract.project'])
+            ->where('name', $name)
+            ->first();
     }
+
 }
 

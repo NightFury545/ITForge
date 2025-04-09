@@ -54,22 +54,26 @@ export function ProjectCard({ id, title, description, budget, tech_stack, status
                             </TooltipContent>
                         </Tooltip>
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                            <Link href={`/users/${user.name}`} className="text-sm text-gray-600 hover:underline dark:text-gray-400">
+                            <Link href={`/users/${user.name}`}
+                                  className="text-sm text-gray-600 hover:underline dark:text-gray-400">
                                 {user.name}
                             </Link>
                         </span>
                     </div>
                     <div className="mt-4 text-lg font-bold text-gray-900 dark:text-gray-100">${budget}</div>
                     <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">Статус: {status}</div>
-                    <div ref={techScrollRef} className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto">
+                    <div
+                        ref={techScrollRef}
+                        className="tech-scroll-container mt-4 flex gap-2 overflow-x-auto whitespace-nowrap"
+                    >
                         {tech_stack.map((tech, index) => (
-                            <span
+                            <div
                                 key={index}
-                                className="flex items-center rounded-md border border-gray-400 bg-transparent px-3 py-1 text-sm text-gray-700 backdrop-blur-md dark:border-gray-500 dark:text-gray-300"
+                                className="flex shrink-0 items-center rounded-md border border-gray-400 bg-transparent px-3 py-1 text-sm text-gray-700 backdrop-blur-md dark:border-gray-500 dark:text-gray-300"
                             >
                                 <span className="mr-1">#</span>
                                 {tech}
-                            </span>
+                            </div>
                         ))}
                     </div>
                 </CardContent>

@@ -56,13 +56,12 @@ class DashboardController extends Controller
             'skills' => $user->skills ?? [],
             'walletBalance' => $user->wallet->balance ?? 0,
             'earnings' => [
-                'total' => $user->transactions()
-                    ->with('contract')
+                'total' => Transaction::query()
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('developer_id', $user->id);
                     })
-                    ->where('transactions.type', TransactionType::Payment->value)
-                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::Payment->value)
+                    ->where('status', TransactionStatus::Completed->value)
                     ->sum('amount'),
                 'spent' => $user->transactions()
                     ->with('contract')
@@ -72,13 +71,12 @@ class DashboardController extends Controller
                     ->where('transactions.type', TransactionType::Payment->value)
                     ->where('transactions.status', TransactionStatus::Completed->value)
                     ->sum('amount'),
-                'lastMonthEarned' => $user->transactions()
-                    ->with('contract')
+                'lastMonthEarned' => Transaction::query()
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('developer_id', $user->id);
                     })
-                    ->where('transactions.type', TransactionType::Payment->value)
-                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::Payment->value)
+                    ->where('status', TransactionStatus::Completed->value)
                     ->where('created_at', '>=', Carbon::now()->subMonth())
                     ->sum('amount'),
                 'lastMonthSpent' => $user->transactions()
@@ -144,7 +142,7 @@ class DashboardController extends Controller
             ->toArray();
 
         $contracts = $user->contracts()
-            ->with('project')
+            ->with(['project'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($contract) {
@@ -155,11 +153,33 @@ class DashboardController extends Controller
                     'amount' => $contract->amount,
                     'status' => $contract->status,
                     'created_at' => $contract->created_at,
+                    'client_name' => $contract->client->name,
+                    'developer_name' => $contract->developer->name,
+                    'bid' => [
+                        'amount' => $contract->amount,
+                        'developer_name' => $contract->developer->name,
+                        'developer_avatar' => $contract->developer->avatar,
+                    ],
+                    'project' => [
+                        'title' => $contract->project->title,
+                        'client' => $contract->project->client,
+                        'project_deadline' => $contract->project->project_deadline,
+                    ],
                 ];
             })
             ->toArray();
 
-        $transactions = $user->transactions()
+        $transactions = Transaction::query()
+            ->where(function($query) use ($user) {
+                $query->where('user_id', $user->id)
+
+                    ->orWhere(function($subQuery) use ($user) {
+                        $subQuery->where('type', TransactionType::Payment->value)
+                            ->whereHas('contract', function($contractQuery) use ($user) {
+                                $contractQuery->where('developer_id', $user->id);
+                            });
+                    });
+            })
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($transaction) {
@@ -169,6 +189,8 @@ class DashboardController extends Controller
                     'amount' => $transaction->amount,
                     'status' => $transaction->status,
                     'created_at' => $transaction->created_at,
+                    'contract_id' => $transaction->contract_id,
+                    'developer_id' => $transaction?->contract?->developer_id,
                 ];
             })
             ->toArray();

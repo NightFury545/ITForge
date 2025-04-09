@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button'; // Додано для кноп
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, User } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import toast from 'react-hot-toast';
+import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,16 +16,20 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function UserInfo({ user }: { user: User }) {
     const createChat = () => {
-        router.post(route('chats.store'), { developer_id: user.id }, {
-            onSuccess: (page) => {
-                if (page.props.flash?.success) {
-                    toast.success(page.props.flash?.success);
-                }
+        router.post(
+            route('chats.store'),
+            { developer_id: user.id },
+            {
+                onSuccess: (page) => {
+                    if (page.props.flash?.success) {
+                        toast.success(page.props.flash?.success);
+                    }
+                },
+                onError: (errors) => {
+                    toast.error(errors.error || 'Не вдалося створити чат.');
+                },
             },
-            onError: (errors) => {
-                toast.error(errors.error || 'Не вдалося створити чат.');
-            },
-        });
+        );
     };
 
     const formatDate = (dateString: string) => {
@@ -102,7 +106,7 @@ export default function UserInfo({ user }: { user: User }) {
                             <div className="rounded-lg bg-gray-800 p-6 shadow-sm">
                                 <h3 className="mb-6 text-xl font-semibold text-gray-100">Рейтинг</h3>
                                 <div className="flex items-center">
-                                    <span className="text-2xl font-medium text-gray-300">{user.average_rating?.toFixed(1) || '0'}</span>
+                                    <span className="text-2xl font-medium text-gray-300">{(+user.average_rating)?.toFixed(1) || '0'}</span>
                                     <span className="ml-1 text-sm text-gray-400">/ 5.0</span>
                                 </div>
                             </div>
@@ -191,14 +195,35 @@ export default function UserInfo({ user }: { user: User }) {
                         <div className="rounded-lg bg-gray-800 p-6 shadow-sm">
                             <h3 className="mb-6 text-xl font-semibold text-gray-100">Відгуки</h3>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <div className="rounded-lg border border-gray-700 bg-gray-700 p-4">
-                                    <p className="text-gray-100">"Дуже якісна робота, рекомендую!"</p>
-                                    <p className="text-sm text-gray-300">- Іван Петренко</p>
-                                </div>
-                                <div className="rounded-lg border border-gray-700 bg-gray-700 p-4">
-                                    <p className="text-gray-100">"Професіонал своєї справи, все зроблено вчасно."</p>
-                                    <p className="text-sm text-gray-300">- Олена Коваль</p>
-                                </div>
+                                {user?.reviews?.length > 0 ? (
+                                    user.reviews.map((review) => (
+                                        <div key={review.id} className="rounded-lg border border-gray-700 bg-gray-700 p-4">
+                                            <div className="mb-2 flex items-center justify-between">
+                                                <p className="text-gray-100">"{review.comment}"</p>
+                                                <span className="ml-2 text-sm text-yellow-400">
+                                                    {Array.from({ length: 5 }).map((_, i) => (
+                                                        <span key={i}>{i < review.rating ? '★' : '☆'}</span>
+                                                    ))}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-gray-300">
+                                                <Link href={`/users/${review.client?.name}`}>
+                                                    - {review.client?.name}
+                                                </Link>
+                                            </p>
+                                            {review?.contract?.project && (
+                                                <a
+                                                    href={`/projects/${review?.contract?.project.id}`}
+                                                    className="mt-1 inline-block text-sm text-blue-400 hover:underline"
+                                                >
+                                                    Переглянути проєкт: {review?.contract?.project?.title}
+                                                </a>
+                                            )}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-gray-400">Ще немає відгуків.</p>
+                                )}
                             </div>
                         </div>
                     </div>

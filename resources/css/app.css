@@ -218,7 +218,24 @@
     -ms-overflow-style: none;
 }
 
+@keyframes ping-once {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
 
+.animate-ping-once {
+    animation: ping-once 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
 
 
 

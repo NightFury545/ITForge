@@ -26,6 +26,7 @@ class ContractCreatedNotification extends Notification
             'message' => 'Вашу ставку прийнято. Створено контракт на проєкт "' . $this->contract->project->title . '".',
             'contract_id' => $this->contract->id,
             'project_id' => $this->contract->project_id,
+            'contract' => $this->contract,
         ];
     }
 }

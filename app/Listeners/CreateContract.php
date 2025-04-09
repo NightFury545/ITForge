@@ -26,7 +26,11 @@ class CreateContract
                 return;
             }
 
-            if (Contract::where('project_id', $bid->project_id)->exists()) {
+            $existingContract = Contract::where('project_id', $bid->project_id)
+                ->where('status', '!=', ContractStatus::Canceled)
+                ->first();
+
+            if ($existingContract) {
                 return;
             }
 

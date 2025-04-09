@@ -1,21 +1,15 @@
+import { ContractAgreement } from '@/components/contract-agreement';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell, Legend,
-    Pie,
-    PieChart, RadialBar, RadialBarChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
-} from 'recharts';
+import { SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+import axios from 'axios';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface PerformanceProfileProps {
     siteStats?: {
@@ -24,9 +18,9 @@ interface PerformanceProfileProps {
         totalChats: number;
         totalTransactions: number;
         newUsersLastWeek: number;
-        totalDeposits: number,
-        totalPayments: number,
-        totalWithdrawals: number,
+        totalDeposits: number;
+        totalPayments: number;
+        totalWithdrawals: number;
         pendingWithdrawals: number;
         inProgressProjects: number;
         openedProjects: number;
@@ -35,8 +29,8 @@ interface PerformanceProfileProps {
             {
                 date: string;
                 projects: number;
-            }
-        ]
+            },
+        ];
     };
     profile?: {
         position?: string;
@@ -133,6 +127,8 @@ export default function PerformanceProfile({
     contracts = defaultProps.contracts,
     transactions = defaultProps.transactions,
 }: PerformanceProfileProps) {
+    const { user } = usePage<SharedData>().props.auth;
+
     const siteStatsData = [
         { name: 'Кількість користувачів', value: siteStats.totalUsers },
         { name: 'Кількість проєктів', value: siteStats.totalProjects },
@@ -144,6 +140,32 @@ export default function PerformanceProfile({
         { name: 'Переказ', value: siteStats.totalPayments },
         { name: 'Виплата', value: siteStats.totalWithdrawals },
     ];
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleComplete = async (contractId: string) => {
+        try {
+            const response = await axios.post(`/contracts/${contractId}/complete`, {}, { withCredentials: true });
+
+            toast.success(response.data.message || 'Контракт успішно завершено');
+
+            setIsModalOpen(false);
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || 'Не вдалося завершити контракт');
+        }
+    };
+
+    const handleCancel = async (contractId: string) => {
+        try {
+            const response = await axios.post(`/contracts/${contractId}/cancel`);
+
+            toast.success(response.data.message || 'Контракт успішно скасовано');
+
+            setIsModalOpen(false);
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || 'Не вдалося скасувати контракт');
+        }
+    };
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
@@ -360,134 +382,194 @@ export default function PerformanceProfile({
 
                 {/* Personal Projects Section */}
                 <SectionWithViewAll title="Мої проєкти" href="/projects">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Проєкт</TableHead>
-                                <TableHead>Статус</TableHead>
-                                <TableHead>Бюджет</TableHead>
-                                <TableHead>Дедлайн</TableHead>
-                                <TableHead className="text-right">Дії</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {projects.slice(0, 5).map((project) => (
-                                <TableRow key={project.id}>
-                                    <TableCell className="font-medium">{project.title}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
-                                            {project.status.replace('_', ' ')}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>${(+project.budget).toFixed(2)}</TableCell>
-                                    <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/projects/${project.id}`}>Переглянути</Link>
-                                        </Button>
-                                    </TableCell>
+                    <div className="max-h-96 overflow-y-auto scrollbar-hidden">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Проєкт</TableHead>
+                                    <TableHead>Статус</TableHead>
+                                    <TableHead>Бюджет</TableHead>
+                                    <TableHead>Дедлайн</TableHead>
+                                    <TableHead className="text-right">Дії</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {projects.map((project) => (
+                                    <TableRow key={project.id}>
+                                        <TableCell className="font-medium">{project.title}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
+                                                {project.status.replace('_', ' ')}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>${(+project.budget).toFixed(2)}</TableCell>
+                                        <TableCell>{new Date(project.deadline).toLocaleDateString()}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="sm" asChild>
+                                                <Link href={`/projects/${project.id}`}>Переглянути</Link>
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </SectionWithViewAll>
 
                 {/* Bids Section */}
                 <SectionWithViewAll title="Мої ставки" href="/bids">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Проєкт</TableHead>
-                                <TableHead>Сума</TableHead>
-                                <TableHead>Статус</TableHead>
-                                <TableHead>Дата</TableHead>
-                                <TableHead className="text-right">Дії</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {bids.slice(0, 5).map((bid) => (
-                                <TableRow key={bid.id}>
-                                    <TableCell className="font-medium">{bid.project_title}</TableCell>
-                                    <TableCell>${bid.amount}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={bid.status === 'accepted' ? 'default' : 'outline'}>{bid.status}</Badge>
-                                    </TableCell>
-                                    <TableCell>{new Date(bid.created_at).toLocaleDateString()}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/projects/${bid.project_id}`}>Переглянути</Link>
-                                        </Button>
-                                    </TableCell>
+                    <div className="max-h-96 overflow-y-auto scrollbar-hidden">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Проєкт</TableHead>
+                                    <TableHead>Сума</TableHead>
+                                    <TableHead>Статус</TableHead>
+                                    <TableHead>Дата</TableHead>
+                                    <TableHead className="text-right">Дії</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {bids.map((bid) => (
+                                    <TableRow key={bid.id}>
+                                        <TableCell className="font-medium">{bid.project_title}</TableCell>
+                                        <TableCell>${bid.amount}</TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={bid.status === 'accepted' ? 'default' : 'outline'}>{bid.status}</Badge>
+                                        </TableCell>
+                                        <TableCell>{new Date(bid.created_at).toLocaleDateString()}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="ghost" size="sm" asChild>
+                                                <Link href={`/projects/${bid.project_id}`}>Переглянути</Link>
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </SectionWithViewAll>
 
                 {/* Contracts Section */}
                 <SectionWithViewAll title="My Contracts" href="/contracts">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Проєкт</TableHead>
-                                <TableHead>Сума</TableHead>
-                                <TableHead>Статус</TableHead>
-                                <TableHead>Period</TableHead>
-                                <TableHead className="text-right">Дії</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {contracts.slice(0, 5).map((contract) => (
-                                <TableRow key={contract.id}>
-                                    <TableCell className="font-medium">{contract.project_title}</TableCell>
-                                    <TableCell>${contract.amount}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={contract.status === 'active' ? 'default' : 'secondary'}>{contract.status}</Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        {new Date(contract.start_date).toLocaleDateString()} - {new Date(contract.end_date).toLocaleDateString()}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/contracts/${contract.id}`}>Переглянути</Link>
-                                        </Button>
-                                    </TableCell>
+                    <div className="max-h-96 overflow-y-auto scrollbar-hidden">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Проєкт</TableHead>
+                                    <TableHead>Сума</TableHead>
+                                    <TableHead>Статус</TableHead>
+                                    <TableHead>Клієнт</TableHead>
+                                    <TableHead>Розробник</TableHead>
+                                    <TableHead className="text-right">Дії</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {contracts.map((contract) => {
+                                    const [isModalOpen, setIsModalOpen] = useState(false);
+
+                                    return (
+                                        <TableRow key={contract.id}>
+                                            <TableCell className="font-medium">{contract.project_title}</TableCell>
+                                            <TableCell>${contract.amount}</TableCell>
+                                            <TableCell>
+                                                <Badge
+                                                    variant={contract.status === 'active' ? 'default' : 'secondary'}>{contract.status}</Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link
+                                                    href={`/users/${contract?.client_name}`}>{contract?.client_name}</Link>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link
+                                                    href={`/users/${contract?.developer_name}`}>{contract?.developer_name}</Link>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setIsModalOpen(true);
+                                                    }}
+                                                    variant="ghost"
+                                                    size="sm"
+                                                >
+                                                    Переглянути
+                                                </Button>
+                                            </TableCell>
+                                            <ContractAgreement
+                                                open={isModalOpen}
+                                                onOpenChange={setIsModalOpen}
+                                                project={contract.project}
+                                                bid={contract.bid}
+                                                contract={contract}
+                                                onConfirm={() => setIsModalOpen(false)}
+                                                onComplete={() => handleComplete(contract.id)}
+                                                onCancel={() => handleCancel(contract.id)}
+                                            />
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </SectionWithViewAll>
 
                 {/* Transactions Section */}
                 <SectionWithViewAll title="Recent Transactions" href="/transactions">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Date</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {transactions.slice(0, 5).map((transaction) => (
-                                <TableRow key={transaction.id}>
-                                    <TableCell className="capitalize">{transaction.type}</TableCell>
-                                    <TableCell className={transaction.type === 'deposit' ? 'text-green-500' : 'text-red-500'}>
-                                        ${transaction.amount}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant={transaction.status === 'completed' ? 'default' : 'outline'}>{transaction.status}</Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right">{new Date(transaction.created_at).toLocaleDateString()}</TableCell>
+                    <div className="max-h-96 overflow-y-auto scrollbar-hidden">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Тип</TableHead>
+                                    <TableHead>Сума</TableHead>
+                                    <TableHead>Статус</TableHead>
+                                    <TableHead>Контракт</TableHead>
+                                    <TableHead className="text-right">Дата</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {transactions.map((transaction) => (
+                                    <TableRow key={transaction.id}>
+                                        <TableCell className="capitalize">{transaction.type}</TableCell>
+                                        <TableCell
+                                            className={
+                                                (transaction.type === 'deposit' ||
+                                                    (transaction.type === 'payment' && transaction.developer_id === user.id)) &&
+                                                transaction.status !== 'failed'
+                                                    ? 'text-green-500'
+                                                    : 'text-red-500'
+                                            }
+                                        >
+                                            ${transaction.amount}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={transaction.status === 'completed' ? 'default' : 'outline'}>{transaction.status}</Badge>
+                                        </TableCell>
+                                        <TableCell className="whitespace-nowrap">
+                                            {transaction?.contract_id ? (
+                                                <span
+                                                    className="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                                <span className="font-mono tracking-tighter">
+                                                    {transaction.contract_id.slice(0, 12).toUpperCase()}
+                                                </span>
+                                            </span>
+                                            ) : (
+                                                <span className="text-xs text-gray-400 dark:text-gray-500">—</span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell
+                                            className="text-right">{new Date(transaction.created_at).toLocaleDateString()}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </SectionWithViewAll>
             </div>
         </AppLayout>
-    );
+);
 }
 
 // Reusable Components
@@ -580,19 +662,23 @@ function SectionWithViewAll({
     href,
     children,
     noPadding = false,
+    anable = false,
 }: {
     title: string;
     href: string;
     children: React.ReactNode;
     noPadding?: boolean;
+    anable: boolean;
 }) {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold">{title}</h3>
-                <Button variant="ghost" size="sm" asChild>
-                    <Link href={href}>View All</Link>
-                </Button>
+                {anable && (
+                    <Button variant="ghost" size="sm" asChild>
+                        <Link href={href}>View All</Link>
+                    </Button>
+                )}
             </div>
             <Card>
                 <CardContent className={noPadding ? 'p-0' : 'pt-6'}>{children}</CardContent>

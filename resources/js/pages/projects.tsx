@@ -183,7 +183,7 @@ export default function Projects() {
                             <span>Фільтри</span>
                         </Button>
                         <Button onClick={() => setIsFormVisible(!isFormVisible)}>
-                            {isFormVisible ? 'Сховати форму' : 'Створити новий проєкт'}
+                            {isFormVisible ? 'Сховати форму' : 'Створити проєкт'}
                         </Button>
                     </div>
                 </div>
