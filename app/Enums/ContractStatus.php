@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum ContractStatus: string
 {
-    case Active = 'active';
-    case Completed = 'completed';
-    case Canceled = 'canceled';
+    case ACTIVE = 'Активно';
+    case COMPLETED = 'Завершено';
+    case CANCELED = 'Відхилено';
 
     /**
      * Отримати всі значення енаму як масив.

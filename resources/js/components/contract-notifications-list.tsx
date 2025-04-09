@@ -25,14 +25,14 @@ interface NotificationContract {
     is_read: boolean;
     contract?: {
         id: string;
-        status: 'active' | 'completed' | 'cancelled';
+        status: 'Активно' | 'Завершено' | 'Відхилено';
         signed_at?: string;
     };
 }
 
 export function ContractList({ contracts }: { contracts: NotificationContract[] }) {
     const [selectedContract, setSelectedContract] = useState<NotificationContract | null>(null);
-
+    console.log(contracts);
     const completeContract = async (contractId: string) => {
         try {
             const response = await axios.post(`/contracts/${contractId}/complete`, {}, { withCredentials: true });
@@ -75,7 +75,7 @@ export function ContractList({ contracts }: { contracts: NotificationContract[] 
                         key={contract.id}
                         className={cn('hover:bg-accent/50 group cursor-pointer p-3 transition-colors sm:p-4', !contract.is_read && 'bg-accent/20')}
                         onClick={(e) => {
-                            e.stopPropagation(); // Зупиняємо спливання
+                            e.stopPropagation();
                             setSelectedContract(contract);
                         }}
                     >
@@ -103,7 +103,7 @@ export function ContractList({ contracts }: { contracts: NotificationContract[] 
                 <ContractAgreement
                     open={!!selectedContract}
                     onOpenChange={(open) => !open && setSelectedContract(null)}
-                    project={selectedContract.project}
+                    project={selectedContract.contract.project}
                     bid={selectedContract.bid}
                     contract={selectedContract.contract}
                     onConfirm={() => {

@@ -47,8 +47,8 @@ export default function UserInfo({ user }: { user: User }) {
                 <div className="mx-auto w-full max-w-6xl">
                     <div className="mb-8 text-center">
                         <Avatar className="mx-auto mb-4 h-24 w-24">
-                            <AvatarImage src={user.avatar || 'https://github.com/shadcn.png'} alt="User Avatar" />
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            <AvatarImage src={user?.avatar} alt="User Avatar" />
+                            <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <h2 className="text-2xl font-bold text-gray-100">{user.name}</h2>
 

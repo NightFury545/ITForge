@@ -12,15 +12,13 @@ interface ChatsPageProps {
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Чати', href: '/chats' }];
 
-// Отримуємо часовий пояс користувача
 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-// Функція форматування дати у правильний формат
 function formatDate(dateString: string): string {
     if (!dateString) return '—';
-    const utcDate = parseISO(dateString); // Парсимо дату з ISO формату
-    const localDate = toZonedTime(utcDate, userTimeZone); // Конвертуємо в локальний час
-    return format(localDate, 'dd.MM.yyyy HH:mm'); // Виводимо у форматі ДД.ММ.РРРР ГГ:ХХ
+    const utcDate = parseISO(dateString);
+    const localDate = toZonedTime(utcDate, userTimeZone);
+    return format(localDate, 'dd.MM.yyyy HH:mm');
 }
 
 export default function ChatsPage({ chats }: ChatsPageProps) {

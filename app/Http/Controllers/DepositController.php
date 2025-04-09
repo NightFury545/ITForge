@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionStatus;
+use App\Enums\TransactionType;
 use App\Models\Transaction;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -68,7 +70,7 @@ class DepositController extends Controller
             $paymentIntent = PaymentIntent::retrieve($request->payment_intent_id);
 
             if ($paymentIntent->status !== 'succeeded') {
-                throw new Exception('Payment not completed');
+                throw new Exception('Платіж не завершено');
             }
 
             $user = Auth::user();
@@ -82,8 +84,8 @@ class DepositController extends Controller
                     'user_id' => $user->id,
                     'amount' => $amount,
                     'method' => 'stripe',
-                    'status' => 'completed',
-                    'type' => 'deposit',
+                    'status' => TransactionStatus::COMPLETED->value,
+                    'type' => TransactionType::DEPOSIT->value,
                 ]);
             });
 

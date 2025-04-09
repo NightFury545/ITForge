@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum UserType: string
 {
-    case CLIENT = 'client';
-    case DEVELOPER = 'developer';
+    case CLIENT = 'Клієнт';
+    case DEVELOPER = 'Розробник';
 
     /**
      * Отримати всі значення енаму як масив.

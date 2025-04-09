@@ -22,12 +22,12 @@ class CreateContract
         DB::transaction(function () use ($event) {
             $bid = $event->bid;
 
-            if ($bid->status !== 'accepted') {
+            if ($bid->status !== BidStatus::ACCEPTED->value) {
                 return;
             }
 
             $existingContract = Contract::where('project_id', $bid->project_id)
-                ->where('status', '!=', ContractStatus::Canceled)
+                ->where('status', '!=', ContractStatus::CANCELED->value)
                 ->first();
 
             if ($existingContract) {
@@ -38,13 +38,13 @@ class CreateContract
             $client = $project->client;
 
             if ($client->wallet->balance < $bid->amount) {
-                $bid->update(['status' => BidStatus::Pending->value]);
+                $bid->update(['status' => BidStatus::PENDING->value]);
                 throw new Exception('Недостатньо коштів для створення контракту.');
             }
 
             Bid::where('project_id', $project->id)
                 ->where('id', '!=', $bid->id)
-                ->update(['status' => BidStatus::Rejected->value]);
+                ->update(['status' => BidStatus::REJECTED->value]);
 
             $client->wallet->decrement('balance', $bid->amount);
 
@@ -53,15 +53,15 @@ class CreateContract
                 'client_id' => $client->id,
                 'developer_id' => $bid->developer_id,
                 'amount' => $bid->amount,
-                'status' => ContractStatus::Active->value,
+                'status' => ContractStatus::ACTIVE->value,
             ]);
 
             Transaction::create([
                 'user_id' => $client->id,
                 'contract_id' => $contract->id,
-                'type' => TransactionType::Payment->value,
+                'type' => TransactionType::PAYMENT->value,
                 'amount' => $bid->amount,
-                'status' => TransactionStatus::Pending->value,
+                'status' => TransactionStatus::PENDING->value,
                 'method' => 'balance',
             ]);
 

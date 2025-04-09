@@ -27,7 +27,7 @@ interface ContractAgreementProps {
     };
     contract?: {
         id: string;
-        status: 'active' | 'completed' | 'canceled';
+        status: 'Активно' | 'Завершено' | 'Відхилено';
         signed_at?: string;
     };
     onConfirm: () => void;
@@ -52,21 +52,21 @@ export function ContractAgreement({ open, onOpenChange, project, bid, contract, 
         if (!contract) return null;
 
         switch (contract.status) {
-            case 'active':
+            case 'Активно':
                 return (
                     <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-1.5 text-green-800 dark:bg-green-900/80 dark:text-green-200">
                         <CheckIcon className="h-4 w-4" />
                         <span className="text-sm font-medium">Активно</span>
                     </div>
                 );
-            case 'completed':
+            case 'Завершено':
                 return (
                     <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-1.5 text-blue-800 dark:bg-blue-900/80 dark:text-blue-200">
                         <CheckCircle2Icon className="h-4 w-4" />
                         <span className="text-sm font-medium">Виконано</span>
                     </div>
                 );
-            case 'canceled':
+            case 'Відхилено':
                 return (
                     <div className="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-1.5 text-red-800 dark:bg-red-900/80 dark:text-red-200">
                         <XIcon className="h-4 w-4" />
@@ -228,7 +228,7 @@ export function ContractAgreement({ open, onOpenChange, project, bid, contract, 
                                 Підписати контракт
                             </button>
                         </div>
-                    ) : contract.status === 'active' ? (
+                    ) : contract.status === 'Активно' ? (
                         <div className="flex gap-4">
                             <button
                                 onClick={onCancel}

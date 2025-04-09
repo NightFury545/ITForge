@@ -8,7 +8,6 @@ use App\Enums\UserType;
 use App\Models\User;
 use App\Services\Filters\JsonFilter;
 use App\Services\Filters\RangeFilter;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -29,7 +28,7 @@ class UserService
                     ->join('contracts', 'projects.id', '=', 'contracts.project_id')
                     ->whereColumn('contracts.developer_id', 'users.id')
                     ->where('projects.status', ProjectStatus::COMPLETED->value)
-                    ->where('contracts.status', ContractStatus::Completed->value)
+                    ->where('contracts.status', ContractStatus::COMPLETED->value)
                     ->selectRaw('COUNT(*)');
             }, 'projects_count')
         )
@@ -67,7 +66,7 @@ class UserService
                     ->join('contracts', 'projects.id', '=', 'contracts.project_id')
                     ->whereColumn('contracts.developer_id', 'users.id')
                     ->where('projects.status', ProjectStatus::COMPLETED->value)
-                    ->where('contracts.status', ContractStatus::Completed->value)
+                    ->where('contracts.status', ContractStatus::COMPLETED->value)
                     ->selectRaw('COUNT(*)');
             }, 'projects_count')
             ->withAvg('reviews as average_rating', 'rating')

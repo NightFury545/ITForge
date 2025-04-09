@@ -54,7 +54,7 @@ class BidService
         }
 
         $acceptedBidExists = Bid::where('project_id', $data['project_id'])
-            ->where('status', 'accepted')
+            ->where('status', BidStatus::ACCEPTED->value)
             ->exists();
 
         if ($acceptedBidExists) {
@@ -107,7 +107,7 @@ class BidService
             throw new Exception("Ставку не знайдено.");
         }
 
-        if ($bid->status === BidStatus::Accepted->value) {
+        if ($bid->status === BidStatus::ACCEPTED->value) {
             throw new Exception("Ви не можете видалити прийняту ставку.");
         }
 
@@ -136,7 +136,7 @@ class BidService
             throw new Exception('Ви не можете прийняти цю ставку, оскільки не є автором проєкту.');
         }
 
-        $bid->update(['status' => BidStatus::Accepted->value]);
+        $bid->update(['status' => BidStatus::ACCEPTED->value]);
 
         try {
             event(new BidAccepted($bid));

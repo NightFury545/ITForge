@@ -4,10 +4,10 @@ namespace App\Enums;
 
 enum BidStatus: string
 {
-    case Pending = 'pending';
-    case Accepted = 'accepted';
-    case Rejected = 'rejected';
-    case Expired = 'expired';
+    case PENDING = 'В очікуванні';
+    case ACCEPTED = 'Прийнято';
+    case REJECTED = 'Відхилено';
+    case EXPIRED = 'Закінчився';
 
     /**
      * Отримати всі значення енаму як масив.

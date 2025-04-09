@@ -257,20 +257,20 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                     <div className="mt-2">
                                         <span
                                             className={`- block inline rounded-full px-3 py-1 text-sm font-medium ${
-                                                bid.status === 'accepted'
+                                                bid.status === 'Прийнято'
                                                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                                                    : bid.status === 'rejected'
+                                                    : bid.status === 'Відхилено'
                                                       ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                                                      : bid.status === 'expired'
+                                                      : bid.status === 'Закінчився'
                                                         ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
                                                         : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                                             }`}
                                         >
-                                            {bid.status === 'accepted'
+                                            {bid.status === 'Прийнято'
                                                 ? 'Прийнято'
-                                                : bid.status === 'rejected'
+                                                : bid.status === 'Відхилено'
                                                   ? 'Відхилено'
-                                                  : bid.status === 'expired'
+                                                  : bid.status === 'Закінчився'
                                                     ? 'Прострочено'
                                                     : 'Очікує'}
                                         </span>

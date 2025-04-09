@@ -398,7 +398,7 @@ export default function PerformanceProfile({
                                     <TableRow key={project.id}>
                                         <TableCell className="font-medium">{project.title}</TableCell>
                                         <TableCell>
-                                            <Badge variant={project.status === 'completed' ? 'default' : 'secondary'}>
+                                            <Badge variant={project.status === 'Завершено' ? 'default' : 'secondary'}>
                                                 {project.status.replace('_', ' ')}
                                             </Badge>
                                         </TableCell>
@@ -436,7 +436,7 @@ export default function PerformanceProfile({
                                         <TableCell>${bid.amount}</TableCell>
                                         <TableCell>
                                             <Badge
-                                                variant={bid.status === 'accepted' ? 'default' : 'outline'}>{bid.status}</Badge>
+                                                variant={bid.status === 'Прийнято' ? 'default' : 'outline'}>{bid.status}</Badge>
                                         </TableCell>
                                         <TableCell>{new Date(bid.created_at).toLocaleDateString()}</TableCell>
                                         <TableCell className="text-right">
@@ -452,7 +452,7 @@ export default function PerformanceProfile({
                 </SectionWithViewAll>
 
                 {/* Contracts Section */}
-                <SectionWithViewAll title="My Contracts" href="/contracts">
+                <SectionWithViewAll title="Мої контракти" href="/contracts">
                     <div className="max-h-96 overflow-y-auto scrollbar-hidden">
                         <Table>
                             <TableHeader>
@@ -475,7 +475,7 @@ export default function PerformanceProfile({
                                             <TableCell>${contract.amount}</TableCell>
                                             <TableCell>
                                                 <Badge
-                                                    variant={contract.status === 'active' ? 'default' : 'secondary'}>{contract.status}</Badge>
+                                                    variant={contract.status === 'Активно' ? 'default' : 'secondary'}>{contract.status}</Badge>
                                             </TableCell>
                                             <TableCell>
                                                 <Link
@@ -516,7 +516,7 @@ export default function PerformanceProfile({
                 </SectionWithViewAll>
 
                 {/* Transactions Section */}
-                <SectionWithViewAll title="Recent Transactions" href="/transactions">
+                <SectionWithViewAll title="Мої транзакції" href="/transactions">
                     <div className="max-h-96 overflow-y-auto scrollbar-hidden">
                         <Table>
                             <TableHeader>
@@ -534,9 +534,9 @@ export default function PerformanceProfile({
                                         <TableCell className="capitalize">{transaction.type}</TableCell>
                                         <TableCell
                                             className={
-                                                (transaction.type === 'deposit' ||
-                                                    (transaction.type === 'payment' && transaction.developer_id === user.id)) &&
-                                                transaction.status !== 'failed'
+                                                (transaction.type === 'Поповнення' ||
+                                                    (transaction.type === 'Оплата' && transaction.developer_id === user.id)) &&
+                                                transaction.status !== 'Не вдалося'
                                                     ? 'text-green-500'
                                                     : 'text-red-500'
                                             }
@@ -545,7 +545,7 @@ export default function PerformanceProfile({
                                         </TableCell>
                                         <TableCell>
                                             <Badge
-                                                variant={transaction.status === 'completed' ? 'default' : 'outline'}>{transaction.status}</Badge>
+                                                variant={transaction.status === 'Завершено' ? 'default' : 'outline'}>{transaction.status}</Badge>
                                         </TableCell>
                                         <TableCell className="whitespace-nowrap">
                                             {transaction?.contract_id ? (
@@ -635,7 +635,7 @@ function ProgressItem({ label, value, status }: { label: string; value: number; 
             <div className="flex justify-between text-sm">
                 <span className="font-medium">{label}</span>
                 <div className="flex items-center gap-2">
-                    {status && <Badge variant={status === 'completed' ? 'default' : 'secondary'}>{status.replace('_', ' ')}</Badge>}
+                    {status && <Badge variant={status === 'Завершено' ? 'default' : 'secondary'}>{status.replace('_', ' ')}</Badge>}
                     <span className="text-muted-foreground">{value}%</span>
                 </div>
             </div>
@@ -676,7 +676,7 @@ function SectionWithViewAll({
                 <h3 className="text-lg font-semibold">{title}</h3>
                 {anable && (
                     <Button variant="ghost" size="sm" asChild>
-                        <Link href={href}>View All</Link>
+                        <Link href={href}>Переглянути всі</Link>
                     </Button>
                 )}
             </div>

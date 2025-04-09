@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum TransactionStatus: string
 {
-    case Pending = 'pending';
-    case Completed = 'completed';
-    case Failed = 'failed';
+    case PENDING = 'В очікуванні';
+    case COMPLETED = 'Завершено';
+    case FAILED = 'Не вдалося';
 
     /**
      * Отримати всі значення енаму як масив.

@@ -26,15 +26,15 @@ class ContractService
                 throw new Exception('Лише клієнт може завершити контракт', 403);
             }
 
-            if ($contract->status !== ContractStatus::Active->value) {
+            if ($contract->status !== ContractStatus::ACTIVE->value) {
                 throw new Exception('Контракт має бути активним для завершення', 400);
             }
 
-            $contract->update(['status' => ContractStatus::Completed->value]);
+            $contract->update(['status' => ContractStatus::COMPLETED->value]);
 
             if ($contract->transaction) {
                 $contract->transaction->update([
-                    'status' => TransactionStatus::Completed->value
+                    'status' => TransactionStatus::COMPLETED->value
                 ]);
 
                 $contract->project->update([
@@ -65,15 +65,15 @@ class ContractService
                 throw new Exception('Ви не можете скасувати цей контракт', 403);
             }
 
-            if ($contract->status !== 'active') {
+            if ($contract->status !== ContractStatus::ACTIVE->value) {
                 throw new Exception('Контракт має бути активним для скасування', 400);
             }
 
-            $contract->update(['status' => ContractStatus::Canceled->value]);
+            $contract->update(['status' => ContractStatus::CANCELED->value]);
 
             if ($contract->transaction) {
                 $contract->transaction->update([
-                    'status' => TransactionStatus::Failed->value
+                    'status' => TransactionStatus::FAILED->value
                 ]);
 
                 $contract->project->update([
@@ -81,7 +81,7 @@ class ContractService
                 ]);
 
                 Bid::where('project_id', $contract->project_id)
-                    ->update(['status' => BidStatus::Pending->value]);
+                    ->update(['status' => BidStatus::PENDING->value]);
 
                 $client = $contract->client;
                 $client->wallet->increment('balance', $contract->amount);

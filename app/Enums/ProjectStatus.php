@@ -4,10 +4,10 @@ namespace App\Enums;
 
 enum ProjectStatus: string
 {
-    case OPEN = 'open';
-    case IN_PROGRESS = 'in_progress';
-    case COMPLETED = 'completed';
-    case CANCELED = 'canceled';
+    case OPEN = 'Відкрито';
+    case IN_PROGRESS = 'В процесі';
+    case COMPLETED = 'Завершено';
+    case CANCELED = 'Відхилено';
 
     /**
      * Метод для отримання всіх значень enum як масив.

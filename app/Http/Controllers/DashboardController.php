@@ -24,16 +24,16 @@ class DashboardController extends Controller
             'totalChats' => Chat::count(),
             'totalTransactions' => Transaction::count(),
             'newUsersLastWeek' => User::where('created_at', '>=', Carbon::now()->subWeek())->count(),
-            'totalDeposits' => Transaction::where('type', TransactionType::Deposit->value)
-                ->where('status', TransactionStatus::Completed->value)
+            'totalDeposits' => Transaction::where('type', TransactionType::DEPOSIT->value)
+                ->where('status', TransactionStatus::COMPLETED->value)
                 ->sum('amount'),
-            'totalPayments' => Transaction::where('type', TransactionType::Payment->value)
-                ->where('status', TransactionStatus::Completed->value)
+            'totalPayments' => Transaction::where('type', TransactionType::PAYMENT->value)
+                ->where('status', TransactionStatus::COMPLETED->value)
                 ->sum('amount'),
-            'totalWithdrawals' => Transaction::where('type', TransactionType::Withdraw->value)
-                ->where('status', TransactionStatus::Completed->value)
+            'totalWithdrawals' => Transaction::where('type', TransactionType::WITHDRAW->value)
+                ->where('status', TransactionStatus::COMPLETED->value)
                 ->sum('amount'),
-            'pendingWithdrawals' => Transaction::where('type', TransactionType::Withdraw->value)
+            'pendingWithdrawals' => Transaction::where('type', TransactionType::WITHDRAW->value)
                 ->where('status', 'pending')
                 ->sum('amount'),
             'inProgressProjects' => Project::where('status', ProjectStatus::IN_PROGRESS->value)->count(),
@@ -60,23 +60,23 @@ class DashboardController extends Controller
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('developer_id', $user->id);
                     })
-                    ->where('type', TransactionType::Payment->value)
-                    ->where('status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::PAYMENT->value)
+                    ->where('status', TransactionStatus::COMPLETED->value)
                     ->sum('amount'),
                 'spent' => $user->transactions()
                     ->with('contract')
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('client_id', $user->id);
                     })
-                    ->where('transactions.type', TransactionType::Payment->value)
-                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('transactions.type', TransactionType::PAYMENT->value)
+                    ->where('transactions.status', TransactionStatus::COMPLETED->value)
                     ->sum('amount'),
                 'lastMonthEarned' => Transaction::query()
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('developer_id', $user->id);
                     })
-                    ->where('type', TransactionType::Payment->value)
-                    ->where('status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::PAYMENT->value)
+                    ->where('status', TransactionStatus::COMPLETED->value)
                     ->where('created_at', '>=', Carbon::now()->subMonth())
                     ->sum('amount'),
                 'lastMonthSpent' => $user->transactions()
@@ -84,17 +84,17 @@ class DashboardController extends Controller
                     ->whereHas('contract', function ($query) use ($user) {
                         $query->where('client_id', $user->id);
                     })
-                    ->where('transactions.type', TransactionType::Payment->value)
-                    ->where('transactions.status', TransactionStatus::Completed->value)
+                    ->where('transactions.type', TransactionType::PAYMENT->value)
+                    ->where('transactions.status', TransactionStatus::COMPLETED->value)
                     ->where('created_at', '>=', Carbon::now()->subMonth())
                     ->sum('amount'),
                 'deposit' => $user->transactions()
-                    ->where('type', TransactionType::Deposit->value)
-                    ->where('status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::DEPOSIT->value)
+                    ->where('status', TransactionStatus::COMPLETED->value)
                     ->sum('amount'),
                 'lastMonthDeposit' => $user->transactions()
-                    ->where('type', TransactionType::Deposit->value)
-                    ->where('status', TransactionStatus::Completed->value)
+                    ->where('type', TransactionType::DEPOSIT->value)
+                    ->where('status', TransactionStatus::COMPLETED->value)
                     ->where('created_at', '>=', Carbon::now()->subMonth())
                     ->sum('amount'),
             ],
@@ -174,7 +174,7 @@ class DashboardController extends Controller
                 $query->where('user_id', $user->id)
 
                     ->orWhere(function($subQuery) use ($user) {
-                        $subQuery->where('type', TransactionType::Payment->value)
+                        $subQuery->where('type', TransactionType::PAYMENT->value)
                             ->whereHas('contract', function($contractQuery) use ($user) {
                                 $contractQuery->where('developer_id', $user->id);
                             });

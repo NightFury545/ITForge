@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('developer_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->text('proposal')->nullable();
-            $table->enum('status', BidStatus::getValues())->default(BidStatus::Pending);
+            $table->enum('status', BidStatus::getValues())->default(BidStatus::PENDING->value);
             $table->timestamps();
         });
     }

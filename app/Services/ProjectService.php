@@ -8,7 +8,6 @@ use App\Services\Filters\JsonFilter;
 use App\Services\Filters\RangeFilter;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -119,7 +118,7 @@ class ProjectService
             'tech_stack' => $data['tech_stack'],
             'bids_deadline' => $data['bids_deadline'],
             'project_deadline' => $data['project_deadline'],
-            'status' => ProjectStatus::OPEN,
+            'status' => ProjectStatus::OPEN->value,
         ];
     }
 

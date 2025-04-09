@@ -19,16 +19,13 @@ class MessageService
      */
     public function sendMessage(array $data)
     {
-        // Знаходимо чат або кидаємо помилку
         $chat = Chat::where('id', $data['chat_id'])->firstOrFail();
         $user = Auth::user();
 
-        // Перевіряємо, чи користувач має доступ до чату
         if ($user->isNot($chat->client) && $user->isNot($chat->developer)) {
             throw new Exception('Ви не маєте дозволу надсилати повідомлення в цьому чаті.');
         }
 
-        // Створюємо повідомлення
         $message = new Message();
         $message->fill([
             'chat_id' => $data['chat_id'],
@@ -37,13 +34,11 @@ class MessageService
         ]);
         $message->save();
 
-        // Оновлюємо дані про останнє повідомлення в чаті без виклику подій
         $chat->updateQuietly([
             'last_message' => $message->message,
             'last_message_at' => now(),
         ]);
 
-        // Відправляємо подію
         broadcast(new MessageSent($message));
 
         return $message;
@@ -58,7 +53,6 @@ class MessageService
      */
     public function getMessages(int $chatId): LengthAwarePaginator
     {
-        // Перевіряємо, чи існує чат
         if (!Chat::where('id', $chatId)->exists()) {
             throw new ModelNotFoundException('Чат не знайдено.');
         }

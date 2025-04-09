@@ -4,10 +4,10 @@ namespace App\Enums;
 
 enum TransactionType: string
 {
-    case Deposit = 'deposit';
-    case Withdraw = 'withdraw';
-    case Payment = 'payment';
-    case Refund = 'refund';
+    case DEPOSIT = 'Поповнення';
+    case WITHDRAW = 'Виведення';
+    case PAYMENT = 'Оплата';
+    case REFUND = 'Повернення коштів';
 
     /**
      * Отримати всі значення енаму як масив.

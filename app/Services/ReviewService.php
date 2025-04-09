@@ -22,11 +22,11 @@ class ReviewService
         $user = Auth::user();
         $contract = Contract::findOrFail($data['contract_id']);
 
-        if ($contract->client_id !== $user->id && $contract->developer_id !== $user->id) {
-            throw new Exception('Ви не маєте права залишати відгук до цього контракту.');
+        if ($contract->client_id !== $user->id) {
+            throw new Exception('Лише клієнт може залишати відгук.');
         }
 
-        if ($contract->status !== ContractStatus::Completed->value) {
+        if ($contract->status !== ContractStatus::COMPLETED->value) {
             throw new Exception('Відгук можна залишити лише після завершення контракту.');
         }
 

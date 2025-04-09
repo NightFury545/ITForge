@@ -102,8 +102,8 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
     };
 
     const userTypes = [
-        { value: 'developer', label: 'Розробник' },
-        { value: 'client', label: 'Клієнт' }
+        { value: 'Розробник', label: 'Розробник' },
+        { value: 'Клієнт', label: 'Клієнт' }
     ];
 
     const getAvatarUrl = () => {

@@ -268,15 +268,15 @@ export default function Projects() {
                                         <span>
                                             {statusFilter.length === 0 ? 'Статус' :
                                                 statusFilter.length === 1 ? (
-                                                    statusFilter[0] === 'active' ? 'Активний' :
-                                                        statusFilter[0] === 'in_progress' ? 'В роботі' : 'Завершений'
+                                                    statusFilter[0] === 'Активно' ? 'Активно' :
+                                                        statusFilter[0] === 'В процесі' ? 'В процесі' : 'Завершено'
                                                 ) : `${statusFilter.length} статуси`}
                                         </span>
                                         <ChevronDown className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-48">
-                                    {['active', 'in_progress', 'completed'].map((status) => (
+                                    {['Активно', 'В процесі', 'Завершено'].map((status) => (
                                         <DropdownMenuCheckboxItem
                                             key={status}
                                             checked={statusFilter.includes(status)}
@@ -286,9 +286,9 @@ export default function Projects() {
                                                 );
                                             }}
                                         >
-                                            {status === 'active' && 'Активний'}
-                                            {status === 'in_progress' && 'В роботі'}
-                                            {status === 'completed' && 'Завершений'}
+                                            {status === 'Активно' && 'Активно'}
+                                            {status === 'В процесі' && 'В процесі'}
+                                            {status === 'Завершено' && 'Завершено'}
                                         </DropdownMenuCheckboxItem>
                                     ))}
                                 </DropdownMenuContent>

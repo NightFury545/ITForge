@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('client_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('developer_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ContractStatus::getValues())->default(ContractStatus::Active->value);
+            $table->enum('status', ContractStatus::getValues())->default(ContractStatus::ACTIVE->value);
             $table->timestamps();
         });
     }

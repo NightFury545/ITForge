@@ -12,6 +12,7 @@ interface NotificationContract {
     message: string;
     project: {
         title: string;
+        project_deadline: string;
     };
     amount: number;
     created_at: string;
