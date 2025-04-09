@@ -9,7 +9,7 @@ export default function Welcome() {
         {
             id: 'programming',
             name: 'Програмування',
-            image: 'https://ibb.co/1fzNXgFy',
+            image: 'https://i.ibb.co/8DYwxC1v/programming.jpg',
             description:
                 'Від веб-розробки до системного програмування. Знайдіть фахівців у Python, Java, C++, PHP та інших мовах. Спеціалісти з фреймворків як Laravel, React та Vue.js.',
             stats: 'Понад 850 активних проєктів',
@@ -17,7 +17,7 @@ export default function Welcome() {
         {
             id: 'design',
             name: 'Дизайн та арт',
-            image: 'https://ibb.co/6fxVvT9',
+            image: 'https://i.ibb.co/b8ZqHCw/design.png',
             description:
                 'UI/UX дизайн, графічний дизайн, ілюстрація, 3D-моделювання. Створення логотипів, брендбуків, анімації та інших візуальних рішень.',
             stats: 'Понад 420 активних проєктів',
@@ -25,35 +25,35 @@ export default function Welcome() {
         {
             id: 'services',
             name: 'Послуги',
-            image: 'https://ibb.co/Y781f8b0',
+            image: 'https://i.ibb.co/BVjQTjwn/services.jpg',
             description: 'IT-консалтинг, технічна підтримка, адміністрування серверів, хмарні рішення, впровадження CRM та ERP систем.',
             stats: 'Понад 310 активних проєктів',
         },
         {
             id: 'photo',
             name: 'Фото, аудіо та відео',
-            image: 'https://ibb.co/cWwTMh3',
+            image: 'https://i.ibb.co/73Qy8tC/photo.jpg',
             description: 'Професійна обробка фото та відео, створення рекламних роликів, аудіо-продакшн, моушн-дизайн та візуальні ефекти.',
             stats: 'Понад 290 активних проєктів',
         },
         {
             id: 'marketing',
             name: 'Просування',
-            image: 'https://ibb.co/xKC6pCsK',
+            image: 'https://i.ibb.co/0pDrgDXp/marketing.jpg',
             description: 'SMM, SEO, контекстна реклама, таргетована реклама, маркетингові дослідження, аналітика та стратегії просування.',
             stats: 'Понад 380 активних проєктів',
         },
         {
             id: 'engineering',
             name: 'Архітектура та інжиніринг',
-            image: 'https://ibb.co/C5PXTKKt',
+            image: 'https://i.ibb.co/Y70KqBBW/engineering.jpg',
             description: "CAD/CAE системи, інженерні розрахунки, проєктування механізмів, електричних систем та промислових об'єктів.",
             stats: 'Понад 220 активних проєктів',
         },
         {
             id: 'mobile',
             name: 'Мобільні додатки',
-            image: 'https://ibb.co/Wvc35Tzy',
+            image: 'https://i.ibb.co/SwKxyLmn/mobile.png',
             description:
                 'Розробка iOS та Android додатків, крос-платформні рішення (Flutter, React Native), оптимізація продуктивності мобільних застосунків.',
             stats: 'Понад 470 активних проєктів',
@@ -61,7 +61,7 @@ export default function Welcome() {
         {
             id: 'admin',
             name: 'Адміністрування',
-            image: 'https://ibb.co/RT7wyKqf',
+            image: 'https://i.ibb.co/xq3THbNW/admin.jpg',
             description:
                 'Налаштування та підтримка серверів (Linux, Windows), мережева інфраструктура, кібербезпека, резервне копіювання та відновлення даних.',
             stats: 'Понад 340 активних проєктів',
