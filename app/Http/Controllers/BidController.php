@@ -27,7 +27,7 @@ class BidController extends Controller
      * @param int $projectId
      * @return Response
      */
-    public function index(int $projectId)
+    public function index(string $projectId)
     {
         $bids = $this->bidService->getBids($projectId);
 

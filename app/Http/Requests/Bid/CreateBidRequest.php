@@ -20,7 +20,7 @@ class CreateBidRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:1',
             'proposal' => 'nullable|string|max:124',
             'project_id' => 'required|exists:projects,id',
         ];

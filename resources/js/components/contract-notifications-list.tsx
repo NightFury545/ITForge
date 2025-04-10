@@ -61,7 +61,7 @@ export function ContractList({ contracts }: { contracts: NotificationContract[] 
     if (contracts.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center gap-2 p-6 sm:p-8">
-                <span className="text-muted-foreground text-sm sm:text-base">Немає нових повідомлень</span>
+                <span className="text-muted-foreground text-sm sm:text-base">Немає нових сповіщень</span>
                 <span className="text-muted-foreground/60 text-xs">Нові сповіщення з'являться тут</span>
             </div>
         );

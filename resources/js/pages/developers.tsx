@@ -98,7 +98,6 @@ export default function DevelopersPage() {
     );
     const [showFilters, setShowFilters] = useState(false);
 
-    // Застосування фільтрів
     const applyFilters = () => {
         const params: any = {};
 
@@ -120,7 +119,6 @@ export default function DevelopersPage() {
         });
     };
 
-    // Скидання фільтрів
     const resetFilters = () => {
         setSearchTerm('');
         setSkillsFilter([]);

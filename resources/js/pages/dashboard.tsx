@@ -396,7 +396,7 @@ export default function PerformanceProfile({
                             <TableBody>
                                 {projects.map((project) => (
                                     <TableRow key={project.id}>
-                                        <TableCell className="font-medium">{project.title}</TableCell>
+                                        <TableCell className="font-medium truncate max-w-[164px]">{project.title}</TableCell>
                                         <TableCell>
                                             <Badge variant={project.status === 'Завершено' ? 'default' : 'secondary'}>
                                                 {project.status.replace('_', ' ')}
@@ -432,7 +432,7 @@ export default function PerformanceProfile({
                             <TableBody>
                                 {bids.map((bid) => (
                                     <TableRow key={bid.id}>
-                                        <TableCell className="font-medium">{bid.project_title}</TableCell>
+                                        <TableCell className="font-medium truncate max-w-[164px]">{bid.project_title}</TableCell>
                                         <TableCell>${bid.amount}</TableCell>
                                         <TableCell>
                                             <Badge
@@ -471,7 +471,7 @@ export default function PerformanceProfile({
 
                                     return (
                                         <TableRow key={contract.id}>
-                                            <TableCell className="font-medium">{contract.project_title}</TableCell>
+                                            <TableCell className="font-medium truncate max-w-[164px]">{contract.project_title}</TableCell>
                                             <TableCell>${contract.amount}</TableCell>
                                             <TableCell>
                                                 <Badge

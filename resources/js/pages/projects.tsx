@@ -268,7 +268,7 @@ export default function Projects() {
                                         <span>
                                             {statusFilter.length === 0 ? 'Статус' :
                                                 statusFilter.length === 1 ? (
-                                                    statusFilter[0] === 'Активно' ? 'Активно' :
+                                                    statusFilter[0] === 'Відкрито' ? 'Відкрито' :
                                                         statusFilter[0] === 'В процесі' ? 'В процесі' : 'Завершено'
                                                 ) : `${statusFilter.length} статуси`}
                                         </span>
@@ -276,7 +276,7 @@ export default function Projects() {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-48">
-                                    {['Активно', 'В процесі', 'Завершено'].map((status) => (
+                                    {['Відкрито', 'В процесі', 'Завершено'].map((status) => (
                                         <DropdownMenuCheckboxItem
                                             key={status}
                                             checked={statusFilter.includes(status)}
@@ -286,7 +286,7 @@ export default function Projects() {
                                                 );
                                             }}
                                         >
-                                            {status === 'Активно' && 'Активно'}
+                                            {status === 'Відкрито' && 'Відкрито'}
                                             {status === 'В процесі' && 'В процесі'}
                                             {status === 'Завершено' && 'Завершено'}
                                         </DropdownMenuCheckboxItem>

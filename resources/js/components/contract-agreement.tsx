@@ -171,7 +171,7 @@ export function ContractAgreement({ open, onOpenChange, project, bid, contract, 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
                             <p className="text-sm text-gray-500 dark:text-gray-400">Проєкт</p>
-                            <p className="font-medium dark:text-white">{project.title}</p>
+                            <p className="font-medium dark:text-white truncate">{project.title}</p>
                         </div>
                         <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
                             <p className="text-sm text-gray-500 dark:text-gray-400">Сума</p>

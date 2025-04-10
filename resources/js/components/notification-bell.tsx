@@ -120,7 +120,7 @@ export function NotificationsBell() {
                         )}
                     </div>
                     <span className="group-data-[collapsible=icon]:hidden ml-2 group-hover:text-primary">
-                        Повідомлення
+                        Сповіщення
                     </span>
                 </SidebarMenuButton>
 

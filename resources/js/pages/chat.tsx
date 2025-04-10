@@ -2,9 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type Chat, type Message } from '@/types';
 import { ChevronLeftIcon, EllipsisHorizontalIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { TrashIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface ChatPageProps {
     chat: Chat;
@@ -21,7 +23,8 @@ export default function ChatPage({ chat }: ChatPageProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const { auth } = usePage().props;
-    console.log(chat.messages);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,6 +57,33 @@ export default function ChatPage({ chat }: ChatPageProps) {
         } catch (error) {
             console.error('Помилка відправки повідомлення:', error);
             setIsSending(false)
+        }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleDeleteChat = async () => {
+        if (confirm('Ви впевнені, що хочете видалити чат?')) {
+            router.delete(route('chats.destroy', chat.id), {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    toast.success(page.props.flash?.success || 'Чат успішно видалено.');
+                },
+                onError: (errors) => {
+                    toast.error(errors.error || 'Не вдалося видалити чат.');
+                },
+            });
         }
     };
 
@@ -176,9 +206,21 @@ export default function ChatPage({ chat }: ChatPageProps) {
                         <h2 className="truncate text-base font-semibold dark:text-white">{chat.name || 'Чат'}</h2>
                     </div>
                 </div>
-                <button className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <EllipsisHorizontalIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                </button>
+                {/* Кнопка з підменю */}
+                <div className="relative">
+                    <button className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setMenuOpen((prev) => !prev)}>
+                        <EllipsisHorizontalIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                    </button>
+
+                    {menuOpen && (
+                        <div className="absolute right-0 z-50 mt-2 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+                            <button onClick={handleDeleteChat} className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/40">
+                                <TrashIcon className="h-4 w-4" />
+                                <span className="truncate">Видалити чат</span>
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Область повідомлень */}
