@@ -136,8 +136,6 @@ class BidService
             throw new Exception('Ви не можете прийняти цю ставку, оскільки не є автором проєкту.');
         }
 
-        $bid->update(['status' => BidStatus::ACCEPTED->value]);
-
         try {
             event(new BidAccepted($bid));
         } catch (Throwable $e) {
