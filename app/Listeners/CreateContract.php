@@ -22,10 +22,6 @@ class CreateContract
         DB::transaction(function () use ($event) {
             $bid = $event->bid;
 
-            if ($bid->status !== BidStatus::ACCEPTED->value) {
-                return;
-            }
-
             $existingContract = Contract::where('project_id', $bid->project_id)
                 ->where('status', '!=', ContractStatus::CANCELED->value)
                 ->first();
@@ -38,9 +34,10 @@ class CreateContract
             $client = $project->client;
 
             if ($client->wallet->balance < $bid->amount) {
-                $bid->update(['status' => BidStatus::PENDING->value]);
                 throw new Exception('Недостатньо коштів для створення контракту.');
             }
+
+            $bid->update(['status' => BidStatus::ACCEPTED->value]);
 
             Bid::where('project_id', $project->id)
                 ->where('id', '!=', $bid->id)
