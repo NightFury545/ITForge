@@ -172,7 +172,7 @@ export default function Projects() {
             <Head title="Projects" />
             <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Проєкти</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mr-1">Проєкти</h1>
                     <div className="flex items-center gap-4">
                         <Button
                             variant="outline"
