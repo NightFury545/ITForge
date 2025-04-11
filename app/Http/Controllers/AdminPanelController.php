@@ -15,15 +15,15 @@ class AdminPanelController
 {
     public function index()
     {
-        $users = User::findAll();
-        $transactions = Transaction::findAll();
-        $bids = Bid::findAll();
-        $projects = Project::findAll();
-        $chats = Chat::findAll();
-        $messages = Message::findAll();
-        $contracts = Contract::findAll();
+        $users = User::all();
+        $transactions = Transaction::with('user')->get();
+        $bids = Bid::with('developer')->get();
+        $projects = Project::with('client')->get();
+        $chats = Chat::with(['client', 'developer'])->get();
+        $messages = Message::with('sender')->get();
+        $contracts = Contract::with(['client', 'developer', 'project'])->get();
 
-        return Inertia::render('admin-panel', [
+        return Inertia::render('admin', [
             'users' => $users,
             'transactions' => $transactions,
             'bids' => $bids,

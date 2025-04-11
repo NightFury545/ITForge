@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Message\CreateMessageRequest;
+use App\Models\Message;
 use App\Services\MessageService;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -48,5 +49,17 @@ class MessageController extends Controller
                 'error' => $e->getMessage(),
             ], 400);
         }
+    }
+
+    /**
+     * Видаляє користувача за айді
+     */
+    public function destroy(string $id)
+    {
+        $message = Message::findOrFail($id);
+
+        $message->delete();
+
+        return redirect()->back()->with('success', 'Повідомлення успішно видалено.');
     }
 }

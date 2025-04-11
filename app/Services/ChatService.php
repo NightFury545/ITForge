@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserRole;
 use App\Models\Chat;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -146,7 +147,7 @@ class ChatService
     {
         $userId = Auth::id();
 
-        if ($chat->client_id !== $userId && $chat->developer_id !== $userId) {
+        if ($chat->client_id !== $userId && $chat->developer_id !== $userId || Auth::user()->role !== UserRole::ADMIN->value) {
             throw new AccessDeniedHttpException('Ви не маєте доступу до цього чату.');
         }
     }
