@@ -249,7 +249,7 @@ export default function ProjectDetails({ project }: ProjectDetailsProps) {
                                                 </p>
                                             </div>
                                         </div>
-                                        <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{bid.amount} ₴</span>
+                                        <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{bid.amount} $</span>
                                     </div>
 
                                     {bid.proposal && <p className="mt-2 text-gray-600 dark:text-gray-300">{bid.proposal}</p>}
