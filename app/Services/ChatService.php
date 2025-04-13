@@ -147,7 +147,7 @@ class ChatService
     {
         $userId = Auth::id();
 
-        if ($chat->client_id !== $userId && $chat->developer_id !== $userId || Auth::user()->role !== UserRole::ADMIN->value) {
+        if ($chat->client_id !== $userId && $chat->developer_id !== $userId && Auth::user()->role !== UserRole::ADMIN->value) {
             throw new AccessDeniedHttpException('Ви не маєте доступу до цього чату.');
         }
     }
