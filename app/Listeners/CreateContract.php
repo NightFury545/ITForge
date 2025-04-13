@@ -27,7 +27,7 @@ class CreateContract
                 ->first();
 
             if ($existingContract) {
-                return;
+                throw new Exception('Контракт для цього проєкту вже існує.');
             }
 
             $project = $bid->project;
